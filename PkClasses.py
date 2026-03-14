@@ -69,11 +69,11 @@ class CharacterClass:
         return random.uniform(0.85, 1.0)
 
     def useMove(self, move, opponent,):
-        print(f"{self.Name} usa {move.name}!")
+        print(f"{self.Name} uses {move.name}!")
 
         # Accuracy check
         if random.random() > move.accuracy:
-            print("Ma fallisce!")
+            print("but it failed")
             return
 
         # Choose correct attack/defense stat
@@ -93,9 +93,10 @@ class CharacterClass:
 
         # Messages
         if is_crit:
-            print("Colpo critico!")
-        print(f"{opponent.Name} subisce {damage} danni.")
-        print(f"HP rimanenti di {opponent.Name}: {opponent.CurrentHP}")
+            print("critical hit!")
+        print(f"{opponent.Name} takes {damage} HP damage.")
+        print(f"HP left of {opponent.Name}: {opponent.CurrentHP}")
+
 
 
 print("character class loaded") 
@@ -157,5 +158,18 @@ SquirtleBase = PokemonBase(
     }),
     Moves=("tackle", "water gun")
 )
+RattataBase = PokemonBase(
+    PokedexNumber=19,
+    Name="Rattata",
+    Types=("normal",),
+    BaseStats=MappingProxyType({
+        "hp": 30,
+        "attack": 56,
+        "defense": 35,
+        "speed": 72,
+        "special": 35
+    }),
+    Moves=("tackle",)
+)
 
-PokemonList = [BulbasaurBase, CharmanderBase, SquirtleBase]
+PokemonList = [BulbasaurBase, CharmanderBase, SquirtleBase, RattataBase]
