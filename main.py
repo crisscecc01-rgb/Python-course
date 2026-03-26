@@ -1,7 +1,8 @@
 # main.py
-import random
 from PKGame import *
 from PkClasses import *
+from Database import PokemonDatabase as Pk_db
+
 
 def main():
     print("welcome in Pokémon simulator!")
@@ -10,26 +11,26 @@ def main():
     trainer = PokemonTrainerClass(trainer_name, [], [])
 
     print("Select your starter pokémon:")
-    for pokemon, opt in enumerate(PokemonList):
+    for pokemon, opt in enumerate(Pk_db.PokemonList):
         print(pokemon + 1, ':', opt.name)
     choice = (input("> "))
 
-    while not choice.isdigit() or int(choice) <1 or int(choice) > len(PokemonList):
-        print("Select between 1 and " + str(len(PokemonList)) + ":" )
-        for pokemon, opt in enumerate(PokemonList):
+    while not choice.isdigit() or int(choice) <1 or int(choice) > len(Pk_db.PokemonList):
+        print("Select between 1 and " + str(len(Pk_db.PokemonList)) + ":" )
+        for pokemon, opt in enumerate(Pk_db.PokemonList):
             print(pokemon + 1, ':', opt.name)
         choice = (input("> "))
     if choice == "1":
-        trainer.pk_list.append(create_playable_pokemon(BulbasaurBase, 5))
+        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[1], 5))
     elif choice == "2":
-        trainer.pk_list.append(create_playable_pokemon(CharmanderBase, 5))
+        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[4], 5))
     elif choice == "3":
-        trainer.pk_list.append(create_playable_pokemon(SquirtleBase, 5))
+        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[7], 5))
     elif choice == "4":
-        trainer.pk_list.append(create_playable_pokemon(RattataBase, 5))
+        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[19], 5))
     print(f"you selected {trainer.pk_list[0].name}!")
     
-    enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(RattataBase, 5)], [])
+    enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[19], 5)], [])
     EnemyPkIndex = 0
     UserPkIndex = 0
     print(f"Trainer battle starts against " + enemy.name)

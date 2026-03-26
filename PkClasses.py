@@ -1,14 +1,6 @@
-from dataclasses import dataclass
-from types import MappingProxyType
 import random
+from Database import PkTypesDatabase as PkT_db
 
-@dataclass(frozen=True)
-class PokemonBase:
-    pokedex_number: int
-    name: str
-    types: tuple
-    base_stats: MappingProxyType
-    moves: tuple
 
 class PokemonTrainerClass:
     def __init__(self, name, pk_list, items):
@@ -138,9 +130,9 @@ class PokemonCharacterClass:
     def calc_effectiveness(move, opponent):
         eff = 1.0
         for t in opponent.types:
-            if move.type in TYPE_CHART:
-                if t in TYPE_CHART[move.type]:
-                    eff = eff*TYPE_CHART[move.type][t]
+            if move.type in PkT_db.TYPE_CHART:
+                if t in PkT_db.TYPE_CHART[move.type]:
+                    eff = eff * PkT_db.TYPE_CHART[move.type][t]
                 else:
                     #print(f"Opponent type ({opponent.types}) in not registered for effectiveness evaluation")
                     eff*= 1
@@ -158,159 +150,3 @@ class PokemonCharacterClass:
     def calc_luck():
         return random.uniform(0.85, 1.0)
 
-
-#class used to define a move
-class Move:
-    def __init__(self, name, move_type, category, power, accuracy, pp, effect):
-        self.name = name
-        self.type = move_type
-        self.category = category
-        self.power = power
-        self.accuracy = accuracy
-        self.pp = pp
-        self.effect = effect
-
-    def move_copy(self):
-        return Move(
-            self.name,
-            self.type,
-            self.category,
-            self.power,
-            self.accuracy,
-            self.pp,
-            effect=self.effect.copy() if self.effect else None
-        )
-
-
-
-#list of effectivness, every type has its effective dictionary associated
-TYPE_CHART = {
-    "normal": {
-        "rock": 0.5, "ghost": 0, "steel": 0  
-    },
-    "fire": {
-        "fire": 0.5, "water": 0.5, "grass": 2, "ice": 2, "bug": 2,
-        "rock": 0.5, "dragon": 0.5
-    },
-    "water": {
-        "fire": 2, "water": 0.5, "grass": 0.5, "ground": 2,
-        "rock": 2, "dragon": 0.5
-    },
-    "grass": {
-        "fire": 0.5, "water": 2, "grass": 0.5, "poison": 0.5,
-        "ground": 2, "flying": 0.5, "bug": 0.5, "rock": 2,
-        "dragon": 0.5
-    },
-    "electric": {
-        "water": 2, "grass": 0.5, "electric": 0.5,
-        "ground": 0, "flying": 2, "dragon": 0.5
-    },
-    "ice": {
-        "fire": 0.5, "water": 0.5, "ice": 0.5,
-        "grass": 2, "ground": 2, "flying": 2, "dragon": 2
-    },
-    "fighting": {
-        "normal": 2, "ice": 2, "rock": 2,
-        "poison": 0.5, "flying": 0.5, "psychic": 0.5,
-        "bug": 0.5, "ghost": 0
-    },
-    "poison": {
-        "grass": 2, "poison": 0.5, "ground": 0.5,
-        "rock": 0.5, "ghost": 0.5
-    },
-    "ground": {
-        "fire": 2, "electric": 2, "grass": 0.5,
-        "poison": 2, "flying": 0, "bug": 0.5,
-        "rock": 2
-    },
-    "flying": {
-        "grass": 2, "electric": 0.5, "fighting": 2,
-        "bug": 2, "rock": 0.5
-    },
-    "psychic": {
-        "fighting": 2, "poison": 2,
-        "psychic": 0.5
-    },
-    "bug": {
-        "grass": 2, "psychic": 2,
-        "fire": 0.5, "fighting": 0.5, "poison": 2,
-        "flying": 0.5, "ghost": 0.5
-    },
-    "rock": {
-        "fire": 2, "ice": 2, "flying": 2, "bug": 2,
-        "fighting": 0.5, "ground": 0.5
-    },
-    "ghost": {
-        "ghost": 2, "psychic": 0  
-    },
-    "dragon": {
-        "dragon": 2
-    }
-}
-
-#defined moves, only damage moves and status moves
-MovesList = {
-    "tackle": Move("tackle", "normal", "physical", 35, 0.95, 35, None),
-    "razor leaf": Move("razor leaf", "grass", "physical", 55, 0.95, 25, None),
-    "ember": Move("ember", "fire", "special", 40, 1.0, 25, None),
-    "water gun": Move("water gun", "water", "special", 40, 1.0, 25, None),
-    "growl": Move("growl", "normal", "status", None, 1.0, 40, effect={"target_stat": ["opponent","attack",], "change": [-1,]}),
-    "tail wip": Move("tail wip", "normal", "status", None, 1.0, 40, effect={"target_stat": ["opponent", "defense",], "change": [-1,]}),
-    "growth": Move("growth", "normal", "status", None, 1.0, 40, effect={"target_stat": ["self", "attack", "defense"], "change": [+1, +1]})
-}
-
-
-BulbasaurBase = PokemonBase(
-    pokedex_number = 1,
-    name="Bulbasaur",
-    types=("Grass", "Poison"),
-    base_stats=MappingProxyType({
-        "hp": 45,
-        "attack": 49,
-        "defense": 49,
-        "speed": 45,
-        "special": 65
-    }),
-    moves=("tackle", "razor leaf", "growl", "growth")
-)
-CharmanderBase = PokemonBase(
-    pokedex_number=4,
-    name="Charmander",
-    types=("fire",),
-    base_stats=MappingProxyType({
-        "hp": 39,
-        "attack": 52,
-        "defense": 43,
-        "speed": 65,
-        "special": 50
-    }),
-    moves=("tackle", "ember", "tail wip")
-)
-SquirtleBase = PokemonBase(
-    pokedex_number=7,
-    name="Squirtle",
-    types=("water",),
-    base_stats=MappingProxyType({
-        "hp": 44,
-        "attack": 48,
-        "defense": 65,
-        "speed": 43,
-        "special": 50
-    }),
-    moves=("tackle", "water gun", "growl")
-)
-RattataBase = PokemonBase(
-    pokedex_number=19,
-    name="Rattata",
-    types=("normal",),
-    base_stats=MappingProxyType({
-        "hp": 30,
-        "attack": 56,
-        "defense": 35,
-        "speed": 40,
-        "special": 35
-    }),
-    moves=("tackle",)
-)
-
-PokemonList = [BulbasaurBase, CharmanderBase, SquirtleBase, RattataBase]

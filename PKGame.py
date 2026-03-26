@@ -1,10 +1,12 @@
 from PkClasses import *
+from Database import MovesDatabase as Mdb
+
 
 #creates a playable pokémon
 def create_playable_pokemon(base, level):
     stats_copy = dict(base.base_stats)
     current_hp = int(stats_copy["hp"])
-    move_objects = [MovesList[name].move_copy() for name in base.moves]
+    move_objects = [Mdb.MovesList[name].move_copy() for name in base.moves]
     return PokemonCharacterClass(
         name= base.name,
         level=level,
