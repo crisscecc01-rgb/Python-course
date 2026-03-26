@@ -11,24 +11,20 @@ def main():
     trainer = PokemonTrainerClass(trainer_name, [], [])
 
     print("Select your starter pokémon:")
-    starterPokemon = [create_playable_pokemon(Pk_db.PokemonList[0], 5), create_playable_pokemon(Pk_db.PokemonList[2], 5),create_playable_pokemon(Pk_db.PokemonList[4], 5)]
+    starterPokemon = [create_playable_pokemon(Pk_db.PokemonList[0], 5), create_playable_pokemon(Pk_db.PokemonList[3], 5),create_playable_pokemon(Pk_db.PokemonList[6], 5)]
     for pokemon, opt in enumerate(starterPokemon):
         print(pokemon + 1, ':', opt.name)
     choice = (input("> "))
 
     while not choice.isdigit() or int(choice) <1 or int(choice) > len(starterPokemon):
         print("Select between 1 and " + str(len(starterPokemon)) + ":" )
-        choice = (input("> "))
         for pokemon, opt in enumerate(starterPokemon):
             print(pokemon + 1, ':', opt.name)
+        choice = (input("> "))
 
 
 
     trainer.pk_list.append(starterPokemon[int(choice)-1])
-    heals = []
-    pokeballs = []
-    trainer.items = {"heals" : heals.append(HealClass("potion",10)),
-                     "pokeballs" : pokeballs.append(PokeBallClass("pokeball",10))}
 
     #print(trainer.pk_list)
     print(f"you selected {trainer.pk_list[0].name}!")
