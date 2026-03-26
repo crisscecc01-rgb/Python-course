@@ -11,26 +11,25 @@ def main():
     trainer = PokemonTrainerClass(trainer_name, [], [])
 
     print("Select your starter pokémon:")
-    for pokemon, opt in enumerate(Pk_db.PokemonList):
+    starterPokemon = [create_playable_pokemon(Pk_db.PokemonList[0], 5), create_playable_pokemon(Pk_db.PokemonList[2], 5),create_playable_pokemon(Pk_db.PokemonList[4], 5)]
+    for pokemon, opt in enumerate(starterPokemon):
         print(pokemon + 1, ':', opt.name)
     choice = (input("> "))
 
-    while not choice.isdigit() or int(choice) <1 or int(choice) > len(Pk_db.PokemonList):
-        print("Select between 1 and " + str(len(Pk_db.PokemonList)) + ":" )
-        for pokemon, opt in enumerate(Pk_db.PokemonList):
-            print(pokemon + 1, ':', opt.name)
+    while not choice.isdigit() or int(choice) <1 or int(choice) > len(starterPokemon):
+        print("Select between 1 and " + str(len(starterPokemon)) + ":" )
         choice = (input("> "))
-    if choice == "1":
-        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[1], 5))
-    elif choice == "2":
-        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[4], 5))
-    elif choice == "3":
-        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[7], 5))
-    elif choice == "4":
-        trainer.pk_list.append(create_playable_pokemon(Pk_db.PokemonList[19], 5))
+        for pokemon, opt in enumerate(starterPokemon):
+            print(pokemon + 1, ':', opt.name)
+
+
+
+    trainer.pk_list.append(starterPokemon[int(choice)-1])
+
+    #print(trainer.pk_list)
     print(f"you selected {trainer.pk_list[0].name}!")
     
-    enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[19], 5)], [])
+    enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[18], 5)], [])
     EnemyPkIndex = 0
     UserPkIndex = 0
     print(f"Trainer battle starts against " + enemy.name)

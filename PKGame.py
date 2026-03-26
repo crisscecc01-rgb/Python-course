@@ -1,6 +1,6 @@
 from PkClasses import *
 from Database import MovesDatabase as Mdb
-
+from Database import PokemonDatabase as Pk_db
 
 #creates a playable pokémon
 def create_playable_pokemon(base, level):
@@ -18,7 +18,7 @@ def create_playable_pokemon(base, level):
         "defense": 0,
         "speed": 0,
         "special": 0
-    },
+        },
         currentHP=current_hp
     )
 

@@ -13336,3 +13336,5 @@ PokemonList = [
         moves=('toxic', 'night shade', 'recover', 'withdraw')
     ),
 ]
+
+
