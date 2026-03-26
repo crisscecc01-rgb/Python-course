@@ -25,6 +25,10 @@ def main():
 
 
     trainer.pk_list.append(starterPokemon[int(choice)-1])
+    heals = []
+    pokeballs = []
+    trainer.items = {"heals" : heals.append(HealClass("potion",10)),
+                     "pokeballs" : pokeballs.append(PokeBallClass("pokeball",10))}
 
     #print(trainer.pk_list)
     print(f"you selected {trainer.pk_list[0].name}!")

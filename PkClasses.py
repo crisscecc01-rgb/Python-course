@@ -1,6 +1,9 @@
 import random
-from Database import PkTypesDatabase as PkT_db
 
+from fontTools.ttLib.tables.otTables import DeltaSetIndexMap
+
+from Database import PkTypesDatabase as PkT_db
+from Database import item_db
 
 class PokemonTrainerClass:
     def __init__(self, name, pk_list, items):
@@ -8,12 +11,52 @@ class PokemonTrainerClass:
         self.pk_list = pk_list
         self.items = items
 
-
     def __str__(self):
         return f"{self.name} has {len(self.pk_list)} Pokemon and {len(self.items)} items."
     def __repr__(self):
         return str(self)
 
+    def use_item(self, items):
+
+        def use_heals(heal):
+            pass
+
+        def use_pokeballs(pokeball):
+            pass
+
+        print("Which types of items do you want to use?:")
+        index = 1
+        for number in items:
+            print(index, ':', number)
+            index += 1
+        choice = (input("> "))
+
+        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(items):
+            print("Which types of items do you want to use?:")
+            index = 1
+            for number in items:
+                print(index, ':', number)
+                index += 1
+            choice = (input("> "))
+
+        if choice == 1:
+            use_heals(items["heals"])
+        elif choice == 2:
+            use_pokeballs(items["pokeballs"])
+
+
+
+class HealClass:
+    def __init__(self, name, number):
+        self.name = name
+        self.effect = item_db.heals_list[name]
+        self.number = number
+
+class PokeBallClass:
+    def __init__(self, name, number):
+        self.name = name
+        self.effect = item_db.pokeball_list[name]
+        self.number = number
 
 class PokemonCharacterClass:
     def __init__(self, name, level, types, stats, modifiers, moves, currentHP):
