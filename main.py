@@ -25,14 +25,15 @@ def main():
 
 
     trainer.pk_list.append(starterPokemon[int(choice)-1])
-    heals = []
-    pokeballs = []
-    trainer.items = {"heals": heals.append(HealClass("potion", 10)),
-                     "pokeballs": pokeballs.append(PokeBallClass("pokeball", 10))}
+    heals = [HealClass("Potion", 10)]
+    pokeballs = [PokeBallClass("PokeBall", 10)]
+    trainer.items = {"heals": heals,
+                     "pokeballs": pokeballs}
 
     #print(trainer.pk_list)
     print(f"you selected {trainer.pk_list[0].name}!")
-    
+    trainer.use_item()
+    '''
     enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[18], 5)], [])
     EnemyPkIndex = 0
     UserPkIndex = 0
@@ -47,7 +48,7 @@ def main():
         print(f"you've won the battle")
     elif BattleResult == 2:
         print(f"you've lost the battle")
-
+    '''
 
 
 if __name__ == "__main__":

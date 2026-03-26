@@ -2,7 +2,7 @@ import random
 
 from fontTools.ttLib.tables.otTables import DeltaSetIndexMap
 from Database import PkTypesDatabase as PkT_db
-from Database import ItemsDb as item_db
+from Database import ItemsDb as Item_db
 
 class PokemonTrainerClass:
     def __init__(self, name, pk_list, items):
@@ -15,46 +15,64 @@ class PokemonTrainerClass:
     def __repr__(self):
         return str(self)
 
-    def use_item(self, items):
+    def use_item(self):
 
-        def use_heals(heal):
-            pass
+        def use_heals(heals_list):
+            print("Which heal do you want to use?:")
+            for idx,heal in enumerate(heals_list):
+                print(f"{idx+1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
+            heal_choice = (input("> "))
+
+            while not heal_choice.isdigit() or int(heal_choice) < 1 or int(heal_choice) > len(heals_list):
+                print("Which heal do you want to use?:")
+                for idx, heal in enumerate(heals_list):
+                    print(f"{idx+1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
+                heal_choice = (input("> "))
+
+            heal_choice = int(heal_choice)-1
+            print(f" {self.name} uses one {heals_list[heal_choice].name} of {heals_list[heal_choice].number} available")
+            if heals_list[heal_choice].number > 1:
+                heals_list[heal_choice].number = heals_list[heal_choice].number - 1
+            else :
+                heals_list.remove(heals_list[heal_choice])
+            return heals_list[heal_choice].effect
+
 
         def use_pokeballs(pokeball):
             pass
 
         print("Which types of items do you want to use?:")
         index = 1
-        for number in items:
+        for number in self.items:
             print(index, ':', number)
             index += 1
         choice = (input("> "))
 
-        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(items):
+        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(self.items):
             print("Which types of items do you want to use?:")
             index = 1
-            for number in items:
+            for number in self.items:
                 print(index, ':', number)
                 index += 1
             choice = (input("> "))
 
-        if choice == 1:
-            use_heals(items["heals"])
-        elif choice == 2:
-            use_pokeballs(items["pokeballs"])
-
+        if choice == "1":
+            return use_heals(self.items["heals"])
+        elif choice == "2":
+            return use_pokeballs(self.items["pokeballs"])
+        return 0
 
 
 class HealClass:
     def __init__(self, name, number):
         self.name = name
-        self.effect = item_db.heals_list[name]
+        self.effect = Item_db.heals_dict[name]
         self.number = number
 
 class PokeBallClass:
     def __init__(self, name, number):
         self.name = name
-        self.effect = item_db.pokeball_list[name]
+        self.effect = Item_db.pokeball_dict[name]
         self.number = number
 
 class PokemonCharacterClass:
