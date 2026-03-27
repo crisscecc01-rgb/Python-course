@@ -23,16 +23,20 @@ class State:
                 print(trainer)
             case "Story":
                 print("You just entered the story!")
-                pass
             case "Exit":
                 print("You just exited the story. By!")
-                pass
             case "PokemonStore":
                 print("You just entered the pokemon store!")
-                pass
+                #trainer = BuyItems()
+                #print(trainer)
             case "PokemonCenter":
                 print("You just entered the pokemon center!")
-                pass
+                print("Do you want to heal your pokemons? (y/n)")
+                choice = input("> ")
+                #if choice == "y":
+                    #trainer = HealPokemons()
+                    #print(trainer)
+
             case "Explore":
                 print("You just entered the JUNGLE!")
                 pass
@@ -210,3 +214,10 @@ def createCharacter():
 
     print(f"you selected {trainer.pk_list[0].name}!")
     return trainer
+
+
+def BuyItems():
+    pass
+
+def HealPokemons():
+    pass
