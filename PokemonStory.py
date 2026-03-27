@@ -44,7 +44,7 @@ def BeginStory():
     print("Do you want to keep playing? (y/n)")
     choice = (input("> "))
     if choice == "y":
-        enterStory()
+        KeepPlaying(GameEngine)
     elif choice == "n":
         GameEngine.do_transition(Exit)
         GameEngine.eval_current()
@@ -53,15 +53,21 @@ def BeginStory():
             print("Do you want to keep playing? (y/n)")
             choice = (input("> "))
             if choice == "y":
-                enterStory()
+                KeepPlaying(GameEngine)
             elif choice == "n":
                 GameEngine.do_transition(Exit)
                 GameEngine.eval_current()
 
 
-def enterStory():
-    pass
+def KeepPlaying(GameEngine):
+    print("Where do you want to go?")
+    GameEngine.draw(show_current_state=True, node_size = 3000, arrowsize = 10)
+    '''
+    for states in GameEngine.G.nodes.data():
+        print(states.name,"\n")
 
+    choice = (input("> "))
+    '''
 
 
 

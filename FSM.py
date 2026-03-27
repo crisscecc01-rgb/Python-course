@@ -8,6 +8,10 @@ from Database import PokemonDatabase as Pk_db
 class State:
     def __init__(self, name=None):
         self.name = name
+    def __str__(self):
+        return self.name
+    def __repr__(self):
+        return self.name
 
     # Method to perform the operation of the current state of the FSM
     # (used by .eval_current() method of the FSM)
@@ -165,15 +169,17 @@ class FiniteStateMachine:
 
     # Method to draw the FSM and, eventually, visualize the current state of the FSM
     def draw(self, show_current_state=True, **kwds):
+        pos = nx.spring_layout(self.G)
         if show_current_state:
             nodes = list(self.G)
             colors = ['b']*len(nodes)
             colors[nodes.index(self.state)] = 'g'
-            nx.draw(self.G, with_labels=True,
+
+            nx.draw(self.G,pos, with_labels=True,
                     node_color = colors,
                     connectionstyle='arc3, rad = 0.1', **kwds)
         else:
-            nx.draw(self.G, with_labels=True,
+            nx.draw(self.G,pos, with_labels=True,
                     connectionstyle='arc3, rad = 0.1', **kwds)
         plt.show()
 
