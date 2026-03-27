@@ -1,5 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+from PKGame import *
+from PkClasses import *
+from Database import PokemonDatabase as Pk_db
 
 # Template of the State class for the FSM
 class State:
@@ -9,7 +12,32 @@ class State:
     # Method to perform the operation of the current state of the FSM
     # (used by .eval_current() method of the FSM)
     def run(self, *args, **kargs):
-        pass
+        match self.name:
+            case "CreateCharacter":
+                trainer = createCharacter()
+                print("You just created the trainer and selected your first pokemon!")
+                print(trainer)
+            case "Story":
+                print("You just entered the story!")
+                pass
+            case "Exit":
+                print("You just exited the story. By!")
+                pass
+            case "PokemonStore":
+                print("You just entered the pokemon store!")
+                pass
+            case "PokemonCenter":
+                print("You just entered the pokemon center!")
+                pass
+            case "Explore":
+                print("You just entered the JUNGLE!")
+                pass
+            case "Battle":
+                print("You just entered the Battle!")
+                pass
+            case _:
+                print("Not possible")
+                pass
 
     # Method to select the next state of the FSM
     # (used by .update() method of the FSM)
@@ -150,3 +178,29 @@ class FiniteStateMachine:
         plt.show()
 
 
+
+
+def createCharacter():
+    trainer_name = input("What's your name: ")
+    trainer = PokemonTrainerClass(trainer_name, [], [])
+    print("Select your starter pokémon:")
+    starterPokemon = [create_playable_pokemon(Pk_db.PokemonList[0], 5),
+                      create_playable_pokemon(Pk_db.PokemonList[3], 5),
+                      create_playable_pokemon(Pk_db.PokemonList[6], 5)]
+    for pokemon, opt in enumerate(starterPokemon):
+        print(pokemon + 1, ':', opt.name)
+    choice = (input("> "))
+
+    while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
+        print("Select between 1 and " + str(len(starterPokemon)) + ":")
+        for pokemon, opt in enumerate(starterPokemon):
+            print(pokemon + 1, ':', opt.name)
+        choice = (input("> "))
+    trainer.pk_list.append(starterPokemon[int(choice) - 1])
+    heals = [HealClass("Potion", 10)]
+    pokeballs = [PokeBallClass("PokeBall", 10)]
+    trainer.items = {"heals": heals,
+                     "pokeballs": pokeballs}
+
+    print(f"you selected {trainer.pk_list[0].name}!")
+    return trainer

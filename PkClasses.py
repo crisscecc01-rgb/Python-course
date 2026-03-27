@@ -10,8 +10,23 @@ class PokemonTrainerClass:
         self.pk_list = pk_list
         self.items = items
 
+    def str_pkList(self):
+        nomi = [item.name for item in self.pk_list]
+        string = ", ".join(nomi)
+
+        return f"[ {string} ]"
+
+    def str_items(self):
+        string = ""
+        for items in self.items:
+            string = string + str(self.items[items]) + "\n"
+        return string
+
     def __str__(self):
-        return f"{self.name} has {len(self.pk_list)} Pokemon and {len(self.items)} items."
+         string = (f"{self.name} has {len(self.pk_list)} Pokemon: {self.str_pkList()} \n"
+                   f"{self.name} has the following items: \n{self.str_items()}\n ")
+         return string
+
     def __repr__(self):
         return str(self)
 
@@ -69,11 +84,22 @@ class HealClass:
         self.effect = Item_db.heals_dict[name]
         self.number = number
 
+    def __str__(self):
+        return f"{self.number} x {self.name} (--> +{self.effect})"
+    def __repr__(self):
+        return str(self)
+
 class PokeBallClass:
     def __init__(self, name, number):
         self.name = name
         self.effect = Item_db.pokeball_dict[name]
         self.number = number
+
+    def __str__(self):
+        return f"{self.number} x {self.name} (--> {self.effect})"
+
+    def __repr__(self):
+        return str(self)
 
 class PokemonCharacterClass:
     def __init__(self, name, level, types, stats, modifiers, moves, currentHP):
