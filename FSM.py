@@ -28,10 +28,10 @@ class State:
                 print("You just exited the story. By!")
             case "PokemonStore":
                 print("You just entered the pokemon store!")
-                fsm.trainer = BuyItems(fsm.trainer)
+                fsm.trainer = DoSomething(BuyItems,fsm.trainer)
             case "PokemonCenter":
                 print("You just entered the pokemon center!")
-                fsm.trainer = HealPokemons(fsm.trainer)
+                fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
                 print("You just entered the JUNGLE!")
                 fsm.trainer = ExploreJungle(fsm.trainer)
@@ -229,6 +229,17 @@ def createCharacter():
     print(trainer)
     return trainer
 
+def DoSomething(function, trainer):
+    trainer_done = trainer
+    print("Do you want to do something? (y/n)")
+    choice = (input("> ")).strip().lower()
+    while choice != "n":
+        trainer_done = function(trainer_done)
+        print("Do you want to do something else? (y/n)")
+        choice = (input("> ")).strip().lower()
+
+    return trainer_done
+
 def BuyItems(trainer):
     print(f"Welcome to Market ! ")
     print(f"Your current inventory:\n{trainer.str_items()}")
@@ -295,7 +306,6 @@ def BuyItems(trainer):
     print(f"\nYour current inventory:\n{trainer.str_items()}")
     return trainer
 
-
 def HealPokemons(trainer):
     print(f"\nNurse Joy: 'Hi {trainer.name}, welcome to the Pokemon Center!'")
     print("Do you want to heal your pokemons? (y/n)")
@@ -306,7 +316,6 @@ def HealPokemons(trainer):
         print("Your Pokemons have now been healed!")
 
     return trainer
-
 
 def ExploreJungle(trainer):
     found_enemy = random.uniform(0, 1.0)
