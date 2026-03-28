@@ -10,6 +10,7 @@ import random
 class State:
     def __init__(self, name=None):
         self.name = name
+        self.outcome = None
     def __str__(self):
         return self.name
     def __repr__(self):
@@ -35,7 +36,22 @@ class State:
                 fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
                 print("You just entered the JUNGLE!")
-                pass
+                prob = 0
+                transitions = list(fsm.G.out_edges(self, data=True))
+                for s, n_state, attr in transitions:
+                    if n_state.name == "Battle":
+                        prob = attr.get("probability")
+                choice = "y"
+                while choice != "n":
+                    outcome_explore = ExploreJungle(prob)
+                    if outcome_explore:
+                        print("\nA wild Pokemon has appeared")
+                    else:
+                        print("\nStill no pokemon in sight!")
+                    self.outcome = outcome_explore
+                    print("Do you want to keep exploring?")
+                    choice = (input("> ")).strip().lower()
+
             case "Battle":
                 print("You just entered the Battle!")
                 pass
@@ -52,22 +68,13 @@ class State:
             return None
 
         if fsm.state.name == "Explore":
-            choice = "y"
-            while choice != "n":
-                Battle_state = None
-                for s in choices:
-                    if s.name == "Battle":
-                        Battle_state = s
-                if Battle_state:
-                    edge_data = fsm.G[fsm.state][Battle_state][0]
-                    prob = edge_data.get('probability')
-                    if ExploreJungle(prob):
-                        print("\nA wild Pokemon has appeared")
-                        return Battle_state
-                    else:
-                        print("\nStill no pokemon in sight!")
-                print("Do you want to keep exploring? (y/n)")
-                choice = (input("> ")).strip().lower()
+            Battle_state = None
+            for s in choices:
+                if s.name == "Battle":
+                    Battle_state = s
+            if self.outcome:
+                return Battle_state
+
 
         if fsm.state.name == "Battle":
             pass
