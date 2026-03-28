@@ -22,7 +22,6 @@ class State:
             case "CreateCharacter":
                 fsm.trainer = createCharacter()
                 print("You just created the trainer and selected your first pokemon!")
-                print(fsm.trainer)
             case "Story":
                 print("You just entered the story!")
             case "Exit":
@@ -30,16 +29,12 @@ class State:
             case "PokemonStore":
                 print("You just entered the pokemon store!")
                 fsm.trainer = BuyItems(fsm.trainer)
-                print(fsm.trainer)
             case "PokemonCenter":
                 print("You just entered the pokemon center!")
-                print("Do you want to heal your pokemons? (y/n)")
-                choice = input("> ")
-                if choice == "y":
-                    fsm.trainer = HealPokemons(fsm.trainer)
-
+                fsm.trainer = HealPokemons(fsm.trainer)
             case "Explore":
                 print("You just entered the JUNGLE!")
+                fsm.trainer = ExploreJungle(fsm.trainer)
                 pass
             case "Battle":
                 print("You just entered the Battle!")
@@ -51,7 +46,23 @@ class State:
     # Method to select the next state of the FSM
     # (used by .update() method of the FSM)
     def update(self, choices, *args, **kargs):
-        pass
+        if not choices:
+            print("No transition possible, machine halting.")
+            return None
+        print(f"You are currently in: {self.name}")
+        print("Where do you want to go? (Possible destinations):")
+
+        for state in choices:
+            print(f"--> {state.name}")
+
+        while True:
+            choice_input = input("> ").strip()
+
+            for state in choices:
+                if state.name == choice_input:
+                    return state
+
+            print("Can't go here! Chose from the list.")
 
 
 class FiniteStateMachine:
@@ -168,7 +179,7 @@ class FiniteStateMachine:
             return choices[0]
         elif callable(getattr(self.state, update, None)):
             method = getattr(self.state, update, None)
-            return method(choices, *args, **kargs)
+            return method(choices, *args,fsm=self, **kargs)
         else:
             print("Update rule is undefined, machine halting.")
             return None
@@ -215,77 +226,91 @@ def createCharacter():
                      "pokeballs": pokeballs}
 
     print(f"you selected {trainer.pk_list[0].name}!")
+    print(trainer)
     return trainer
-
 
 def BuyItems(trainer):
     print(f"Welcome to Market ! ")
     print(f"Your current inventory:\n{trainer.str_items()}")
-    print("What do you want to buy?")
-    categories = list(trainer.items.keys())
-    for items,cat in enumerate(categories):
-        print(f"{items+1}: {trainer.items[cat]}")
+    print("Do you want to buy something? (y/n)")
+    choice = (input("> ")).strip().lower()
+    if choice == "y":
+        print("What do you want to buy?")
+        categories = list(trainer.items.keys())
+        for items,cat in enumerate(categories):
+            print(f"{items+1}: {trainer.items[cat]}")
 
-    choice = input("> ")
-    if not choice.isdigit() or int(choice) not in range(1, len(categories) + 1):
-        print("We don't have that category here.")
-        return trainer
+        choice = input("> ")
+        if not choice.isdigit() or int(choice) not in range(1, len(categories) + 1):
+            print("We don't have that category here.")
+            return trainer
 
-    selected_category = categories[int(choice) - 1]
-    if selected_category == "heals":
-        item_name = "Potion"  #to be updated in order to choose between the ones available in database
-        print(f"How many {item_name} do you want to buy?")
-        qty_input = input("> ")
+        selected_category = categories[int(choice) - 1]
+        if selected_category == "heals":
+            item_name = "Potion"  #to be updated in order to choose between the ones available in database
+            print(f"How many {item_name} do you want to buy?")
+            qty_input = input("> ")
 
-        if qty_input.isdigit() and int(qty_input) > 0:
-            qty = int(qty_input)
+            if qty_input.isdigit() and int(qty_input) > 0:
+                qty = int(qty_input)
 
-            found = False
-            for item in trainer.items["heals"]:
-                if item.name == item_name:
-                    item.number += qty
-                    found = True
-                    break
+                found = False
+                for item in trainer.items["heals"]:
+                    if item.name == item_name:
+                        item.number += qty
+                        found = True
+                        break
 
-            if not found:
-                new_item = HealClass(item_name, qty)
-                trainer.items["heals"].append(new_item)
+                if not found:
+                    new_item = HealClass(item_name, qty)
+                    trainer.items["heals"].append(new_item)
 
-            print(f"You received {qty} {item_name}!")
-        else:
-            print("Not a valid quantity.")
+                print(f"You received {qty} {item_name}!")
+            else:
+                print("Not a valid quantity.")
 
-    elif selected_category == "pokeballs":
-        item_name = "PokeBall" #to be updated in order to choose between the ones available in database
-        print(f"How many {item_name} do you want to buy?")
-        qty_input = input("> ")
+        elif selected_category == "pokeballs":
+            item_name = "PokeBall" #to be updated in order to choose between the ones available in database
+            print(f"How many {item_name} do you want to buy?")
+            qty_input = input("> ")
 
-        if qty_input.isdigit() and int(qty_input) > 0:
-            qty = int(qty_input)
+            if qty_input.isdigit() and int(qty_input) > 0:
+                qty = int(qty_input)
 
-            found = False
-            for item in trainer.items["pokeballs"]:
-                if item.name == item_name:
-                    item.number += qty
-                    found = True
-                    break
+                found = False
+                for item in trainer.items["pokeballs"]:
+                    if item.name == item_name:
+                        item.number += qty
+                        found = True
+                        break
 
-            if not found:
-                new_item = HealClass(item_name, qty)
-                trainer.items["pokeballs"].append(new_item)
+                if not found:
+                    new_item = HealClass(item_name, qty)
+                    trainer.items["pokeballs"].append(new_item)
 
-            print(f"You received {qty} {item_name}!")
-        else:
-            print("Not a valid quantity.")
+                print(f"You received {qty} {item_name}!")
+            else:
+                print("Not a valid quantity.")
 
     print(f"\nYour current inventory:\n{trainer.str_items()}")
     return trainer
 
 
 def HealPokemons(trainer):
-    print(f"Nurse -big tits- Joy: 'Hi {trainer.name}, i will heal your Pokemon!'")
-    for pokemon in trainer.pk_list:
-        pokemon.currentHP = int(pokemon.stats["hp"])
-    print("Your Pokemons have now been healed!")
+    print(f"\nNurse Joy: 'Hi {trainer.name}, welcome to the Pokemon Center!'")
+    print("Do you want to heal your pokemons? (y/n)")
+    choice = input("> ").strip().lower()
+    if choice != "n":
+        for pokemon in trainer.pk_list:
+            pokemon.currentHP = int(pokemon.stats["hp"])
+        print("Your Pokemons have now been healed!")
+
     return trainer
+
+
+def ExploreJungle(trainer):
+    found_enemy = random.uniform(0, 1.0)
+    return trainer
+
+
 

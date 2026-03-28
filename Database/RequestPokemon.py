@@ -1,7 +1,7 @@
 import requests
 
 # --- configuration ---
-NUMERO_POKEMON = 1025
+NUMERO_POKEMON = 151
 NOME_FILE_OUTPUT = "PokemonDatabase.py"
 
 
