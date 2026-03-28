@@ -29,6 +29,7 @@ def BeginStory():
     GameEngine.add_transition(Story, Exit, type = "choice")
     GameEngine.add_transition(Story, Explore, type = "choice")
     GameEngine.add_transition(Explore, Story, type = "choice")
+    GameEngine.add_transition(Explore, Explore, type = "choice")
     GameEngine.add_transition(Explore, Battle, type = "consequence", probability = 0.5)
     GameEngine.add_transition(Battle, Story, type = "consequence")
     GameEngine.add_transition(Battle, PokemonCenter, type = "consequence")

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from PKGame import *
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
+import random
 
 
 # Template of the State class for the FSM
@@ -34,7 +35,6 @@ class State:
                 fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
                 print("You just entered the JUNGLE!")
-                fsm.trainer = ExploreJungle(fsm.trainer)
                 pass
             case "Battle":
                 print("You just entered the Battle!")
@@ -46,22 +46,51 @@ class State:
     # Method to select the next state of the FSM
     # (used by .update() method of the FSM)
     def update(self, choices, *args, **kargs):
+        fsm = kargs.get('fsm')
         if not choices:
             print("No transition possible, machine halting.")
             return None
+
+        if fsm.state.name == "Explore":
+            choice = "y"
+            while choice != "n":
+                Battle_state = None
+                for s in choices:
+                    if s.name == "Battle":
+                        Battle_state = s
+                if Battle_state:
+                    edge_data = fsm.G[fsm.state][Battle_state][0]
+                    prob = edge_data.get('probability')
+                    if ExploreJungle(prob):
+                        print("\nA wild Pokemon has appeared")
+                        return Battle_state
+                    else:
+                        print("\nStill no pokemon in sight!")
+                print("Do you want to keep exploring? (y/n)")
+                choice = (input("> ")).strip().lower()
+
+        if fsm.state.name == "Battle":
+            pass
+
+
+
+        valid_choices = []
+        for state in choices:
+            edge_data = fsm.G[fsm.state][state][0]
+            if edge_data.get('type') == 'choice':
+                valid_choices.append(state)
+
         print(f"You are currently in: {self.name}")
         print("Where do you want to go? (Possible destinations):")
 
-        for state in choices:
+        for state in valid_choices:
             print(f"--> {state.name}")
 
         while True:
             choice_input = input("> ").strip()
-
-            for state in choices:
+            for state in valid_choices:
                 if state.name == choice_input:
                     return state
-
             print("Can't go here! Chose from the list.")
 
 
@@ -316,9 +345,9 @@ def HealPokemons(trainer):
 
     return trainer
 
-def ExploreJungle(trainer):
-    found_enemy = random.uniform(0, 1.0)
-    return trainer
+def ExploreJungle(prob):
+    enemy = random.uniform(0, 1.0)
+    return prob >= enemy
 
 
 
