@@ -231,8 +231,7 @@ def createCharacter():
 
 def DoSomething(function, trainer):
     trainer_done = trainer
-    print("Do you want to do something? (y/n)")
-    choice = (input("> ")).strip().lower()
+    choice = "y"
     while choice != "n":
         trainer_done = function(trainer_done)
         print("Do you want to do something else? (y/n)")
