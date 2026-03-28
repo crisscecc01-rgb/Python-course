@@ -4,6 +4,7 @@ from PKGame import *
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 
+
 # Template of the State class for the FSM
 class State:
     def __init__(self, name=None):
@@ -16,26 +17,26 @@ class State:
     # Method to perform the operation of the current state of the FSM
     # (used by .eval_current() method of the FSM)
     def run(self, *args, **kargs):
+        fsm = kargs.get('fsm')
         match self.name:
             case "CreateCharacter":
-                trainer = createCharacter()
+                fsm.trainer = createCharacter()
                 print("You just created the trainer and selected your first pokemon!")
-                print(trainer)
+                print(fsm.trainer)
             case "Story":
                 print("You just entered the story!")
             case "Exit":
                 print("You just exited the story. By!")
             case "PokemonStore":
                 print("You just entered the pokemon store!")
-                #trainer = BuyItems()
-                #print(trainer)
+                fsm.trainer = BuyItems(fsm.trainer)
+                print(fsm.trainer)
             case "PokemonCenter":
                 print("You just entered the pokemon center!")
                 print("Do you want to heal your pokemons? (y/n)")
                 choice = input("> ")
-                #if choice == "y":
-                    #trainer = HealPokemons()
-                    #print(trainer)
+                if choice == "y":
+                    fsm.trainer = HealPokemons(fsm.trainer)
 
             case "Explore":
                 print("You just entered the JUNGLE!")
@@ -59,6 +60,7 @@ class FiniteStateMachine:
         self.state = None
         self.start_state = None
         self.final_states = set()
+        self.trainer = None
 
     # Method to initialize the FSM to the start state
     def initialize(self):
@@ -144,7 +146,7 @@ class FiniteStateMachine:
     def eval_current(self, *args, run='run', **kargs):
         method = getattr(self.state, run, None)
         if callable(method):
-            method(*args, **kargs)
+            method(*args,fsm = self, **kargs)
 
     # Method to perform the transition between the current state and the target state
     def do_transition(self, target, *args, attr='fun', **kargs):
@@ -216,8 +218,74 @@ def createCharacter():
     return trainer
 
 
-def BuyItems():
-    pass
+def BuyItems(trainer):
+    print(f"Welcome to Market ! ")
+    print(f"Your current inventory:\n{trainer.str_items()}")
+    print("What do you want to buy?")
+    categories = list(trainer.items.keys())
+    for items,cat in enumerate(categories):
+        print(f"{items+1}: {trainer.items[cat]}")
 
-def HealPokemons():
-    pass
+    choice = input("> ")
+    if not choice.isdigit() or int(choice) not in range(1, len(categories) + 1):
+        print("We don't have that category here.")
+        return trainer
+
+    selected_category = categories[int(choice) - 1]
+    if selected_category == "heals":
+        item_name = "Potion"  #to be updated in order to choose between the ones available in database
+        print(f"How many {item_name} do you want to buy?")
+        qty_input = input("> ")
+
+        if qty_input.isdigit() and int(qty_input) > 0:
+            qty = int(qty_input)
+
+            found = False
+            for item in trainer.items["heals"]:
+                if item.name == item_name:
+                    item.number += qty
+                    found = True
+                    break
+
+            if not found:
+                new_item = HealClass(item_name, qty)
+                trainer.items["heals"].append(new_item)
+
+            print(f"You received {qty} {item_name}!")
+        else:
+            print("Not a valid quantity.")
+
+    elif selected_category == "pokeballs":
+        item_name = "PokeBall" #to be updated in order to choose between the ones available in database
+        print(f"How many {item_name} do you want to buy?")
+        qty_input = input("> ")
+
+        if qty_input.isdigit() and int(qty_input) > 0:
+            qty = int(qty_input)
+
+            found = False
+            for item in trainer.items["pokeballs"]:
+                if item.name == item_name:
+                    item.number += qty
+                    found = True
+                    break
+
+            if not found:
+                new_item = HealClass(item_name, qty)
+                trainer.items["pokeballs"].append(new_item)
+
+            print(f"You received {qty} {item_name}!")
+        else:
+            print("Not a valid quantity.")
+
+    print(f"\nYour current inventory:\n{trainer.str_items()}")
+    return trainer
+
+
+def HealPokemons(trainer):
+    print(f"Nurse -big tits- Joy: 'Hi {trainer.name}, i will heal your Pokemon!'")
+    for pokemon in trainer.pk_list:
+        pokemon.currentHP = int(pokemon.stats["hp"])
+    print("Your Pokemons have now been healed!")
+    return trainer
+

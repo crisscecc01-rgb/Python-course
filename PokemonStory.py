@@ -93,6 +93,12 @@ def KeepPlaying(GameEngine):
                 if PokemonStore_state:
                     GameEngine.do_transition(PokemonStore_state)
                     GameEngine.eval_current()
+                    print("Do you want to do something else? (y/n)")
+                    choice = (input("> "))
+                    while choice != "n":
+                        GameEngine.eval_current()
+                        print("Do you want to do something else? (y/n)")
+                        choice = input("> ")
                 else:
                     print("Can't go here!")
 
@@ -105,6 +111,12 @@ def KeepPlaying(GameEngine):
                 if PokemonCenter_state:
                     GameEngine.do_transition(PokemonCenter_state)
                     GameEngine.eval_current()
+                    print("Do you want to do something else? (y/n)")
+                    choice = (input("> "))
+                    while choice != "n":
+                        GameEngine.eval_current()
+                        print("Do you want to do something else? (y/n)")
+                        choice = input("> ")
                 else:
                     print("Can't go here!")
 
@@ -117,6 +129,12 @@ def KeepPlaying(GameEngine):
                 if Explore_state:
                     GameEngine.do_transition(Explore_state)
                     GameEngine.eval_current()
+                    print("Do you want to do something else? (y/n)")
+                    choice = (input("> "))
+                    while choice != "n":
+                        GameEngine.eval_current()
+                        print("Do you want to do something else? (y/n)")
+                        choice = input("> ")
                 else:
                     print("Can't go here!")
 
