@@ -84,3 +84,40 @@ def pk_battle(trainer, enemy, UserPkIndex, EnemyPkIndex):
                 print(f"{enemy.pk_list[EnemyPkIndex].name} has {enemy.pk_list[EnemyPkIndex].currentHP} left")
                 return 0
 
+def pk_wild_battle(trainer, UserPkIndex, wild_pokemon):
+    selected_move = show_HUD(trainer.pk_list[UserPkIndex], wild_pokemon)
+    # speed check
+    if trainer.pk_list[UserPkIndex].stats["speed"] > wild_pokemon.stats["speed"]:
+        trainer.pk_list[UserPkIndex].use_move(selected_move, wild_pokemon)
+
+        if wild_pokemon.currentHP == 0:
+            print(f"{wild_pokemon.name} has no HP left")
+            return 1
+        else:
+
+            opponent_move = wild_pokemon.moves[int(random.random() * len(wild_pokemon.moves))]
+            wild_pokemon.use_move(opponent_move, trainer.pk_list[UserPkIndex])
+
+            if trainer.pk_list[UserPkIndex].currentHP == 0:
+                print(f"{trainer.pk_list[UserPkIndex].name} has no HP left")
+                return 2
+            else:
+                print(f"{trainer.pk_list[UserPkIndex].name} has {trainer.pk_list[UserPkIndex].currentHP} left")
+                return 0
+    else:
+        opponent_move = wild_pokemon.moves[int(random.random() * len(wild_pokemon.moves))]
+        wild_pokemon.use_move(opponent_move, trainer.pk_list[UserPkIndex])
+
+        if trainer.pk_list[UserPkIndex].currentHP == 0:
+            print(f"{trainer.pk_list[UserPkIndex].name} has no HP left")
+            return 2
+        else:
+
+            trainer.pk_list[UserPkIndex].use_move(selected_move, wild_pokemon)
+
+            if wild_pokemon.currentHP == 0:
+                print(f"{wild_pokemon.name} has no HP left")
+                return 1
+            else:
+                print(f"{wild_pokemon.name} has {wild_pokemon.currentHP} left")
+                return 0

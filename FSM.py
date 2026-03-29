@@ -42,18 +42,22 @@ class State:
                     if n_state.name == "Battle":
                         prob = attr.get("probability")
                 choice = "y"
+                outcome_explore = False
                 while choice != "n":
                     outcome_explore = ExploreJungle(prob)
                     if outcome_explore:
                         print("\nA wild Pokemon has appeared")
+                        break
                     else:
                         print("\nStill no pokemon in sight!")
-                    self.outcome = outcome_explore
-                    print("Do you want to keep exploring?")
-                    choice = (input("> ")).strip().lower()
+                        print("Do you want to keep exploring?")
+                        choice = (input("> ")).strip().lower()
+                self.outcome = outcome_explore
+
 
             case "Battle":
                 print("You just entered the Battle!")
+                self.outcome = Battle(fsm.trainer)
                 pass
             case _:
                 print("Not possible")
@@ -77,7 +81,17 @@ class State:
 
 
         if fsm.state.name == "Battle":
-            pass
+            PokemonCenter_state = None
+            Story_state = None
+            for s in choices:
+                if s.name == "Story":
+                    Story_state = s
+                elif s.name == "PokemonCenter":
+                    PokemonCenter_state = s
+            if self.outcome:
+                return Story_state
+            else:
+                return PokemonCenter_state
 
 
 
@@ -356,5 +370,28 @@ def ExploreJungle(prob):
     enemy = random.uniform(0, 1.0)
     return prob >= enemy
 
+def Battle(trainer):
+    enemy_number = random.randint(1, 151)
+    #Not challenging a trainer but a wild Pokémon
+    #enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], [])
+    # EnemyPkIndex = 0
+    enemy_pokemon = create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)
+
+    UserPkIndex = 0
+    print(f"Battle starts against a wild {enemy_pokemon.name}!")
+    #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
+    print("Go " + trainer.pk_list[UserPkIndex].name + "!")
+    BattleResult = 0
+    while BattleResult == 0:
+        BattleResult = pk_wild_battle(trainer, 0, enemy_pokemon)
+
+    if BattleResult == 1:
+        print(f"you've won the battle")
+        return True
+    elif BattleResult == 2:
+        print(f"you've lost the battle")
+        return False
+
+    return False
 
 
