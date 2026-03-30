@@ -1,8 +1,5 @@
 import random
-from matplotlib.transforms import BlendedAffine2D
 import PkClasses
-
-
 
 def move_selection(userPk):
     print("Select a move:")
