@@ -106,7 +106,6 @@ def pk_wild_battle(trainer, UserPkIndex, wild_pokemon):
                 print(f"{wild_pokemon.name} has {wild_pokemon.currentHP} left")
                 return 0
 
-
 def ChoosePokemonAlive(trainer):
     list_index_alive = []
     for index, pokemon in enumerate(trainer.pk_list):
@@ -123,7 +122,6 @@ def ChoosePokemonAlive(trainer):
             print("Chose better")
             choice = input("> ").strip().lower()
         return int(choice) - 1
-
 
 def RandomPokemonAlive(trainer):
     list_index_alive = []

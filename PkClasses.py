@@ -5,9 +5,10 @@ from Database import PkTypesDatabase as PkT_db
 from Database import ItemsDb as Item_db
 
 class PokemonTrainerClass:
-    def __init__(self, name, pk_list, items):
+    def __init__(self, name, pk_list, pk_active_index, items):
         self.name = name
         self.pk_list = pk_list
+        self.pk_active_index = pk_active_index
         self.items = items
 
     def str_pkList(self):
@@ -30,31 +31,9 @@ class PokemonTrainerClass:
     def __repr__(self):
         return str(self)
 
-    def use_item(self):
-
-        def use_heals(heals_list):
-            print("Which heal do you want to use?:")
-            for idx,heal in enumerate(heals_list):
-                print(f"{idx+1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
-            heal_choice = (input("> "))
-
-            while not heal_choice.isdigit() or int(heal_choice) < 1 or int(heal_choice) > len(heals_list):
-                print("Which heal do you want to use?:")
-                for idx, heal in enumerate(heals_list):
-                    print(f"{idx+1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
-                heal_choice = (input("> "))
-
-            heal_choice = int(heal_choice)-1
-            print(f" {self.name} uses one {heals_list[heal_choice].name} of {heals_list[heal_choice].number} available")
-            if heals_list[heal_choice].number > 1:
-                heals_list[heal_choice].number = heals_list[heal_choice].number - 1
-            else :
-                heals_list.remove(heals_list[heal_choice])
-            return heals_list[heal_choice].effect
+    def use_item(self, enemy_pokemon, choice):
 
 
-        def use_pokeballs(pokeball):
-            pass
 
         print("Which types of items do you want to use?:")
         index = 1
