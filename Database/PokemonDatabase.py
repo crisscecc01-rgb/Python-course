@@ -1,14 +1,5 @@
 from types import MappingProxyType
-from dataclasses import dataclass
-
-@dataclass
-class PokemonBase:
-    pokedex_number: int
-    name: str
-    types: tuple
-    base_stats: MappingProxyType
-    moves: tuple
-
+from PkClasses import PokemonBase
 PokemonList = [
     PokemonBase(
         pokedex_number=1,

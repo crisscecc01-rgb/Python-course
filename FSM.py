@@ -374,25 +374,56 @@ def ExploreJungle(prob):
 
 def Battle(trainer):
     enemy_number = random.randint(1, 151)
-    #Not challenging a trainer but a wild Pokémon
-    #enemy = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], [])
-    # EnemyPkIndex = 0
-    enemy_pokemon = create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)
-
-    UserPkIndex = 0
+    enemy_pokemon = create_playable_pokemon(Pk_db.PokemonList[enemy_number - 1], 5)
+    enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], [])
+    EnemyPkIndex = 0
+    TrainerPkIndex = 0
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
-    print("Go " + trainer.pk_list[UserPkIndex].name + "!")
-    BattleResult = 0
-    while BattleResult == 0:
-        BattleResult = pk_wild_battle(trainer, 0, enemy_pokemon)
+    print("Go " + trainer.pk_list[TrainerPkIndex].name + "!")
 
-    if BattleResult == 1:
-        print(f"you've won the battle")
-        return True
-    elif BattleResult == 2:
-        print(f"you've lost the battle")
-        return False
+    for index,pokemon in enumerate(trainer.pk_list):
+        if pokemon.currentHP > 0:
+            TrainerPkIndex = index
+            break
+
+    BattleResult = 0
+    wild = True
+
+    while BattleResult == 0:
+
+
+        if wild:
+            BattleResult = pk_wild_battle(trainer, TrainerPkIndex, enemy_pokemon)
+        else:
+            BattleResult = pk_battle(trainer, enemy_trainer,TrainerPkIndex , EnemyPkIndex)
+
+        if BattleResult == 2:
+            list_index_alive = []
+            for index,pokemon in enumerate(trainer.pk_list):
+                if pokemon.currentHP > 0:
+                    BattleResult = 0
+                    print(f"{index+1} Pokemon available: {trainer.pk_list[index]}")
+                    list_index_alive.append(index+1)
+            print("Chose your next pokemon")
+            choice = input("> ").strip().lower()
+            while not int(choice) in list_index_alive:
+                print("Chose better")
+                choice = input("> ").strip().lower()
+
+            TrainerPkIndex = int(choice)-1
+
+
+
+        if BattleResult == 1:
+            print(f"you've won the battle")
+            return True
+        elif BattleResult == 2:
+            print(f"you've lost the battle")
+            return False
+
+
+
 
     return False
 

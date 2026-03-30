@@ -6,28 +6,6 @@ NUMERO_MOSSE = 165
 NOME_FILE_OUTPUT = "MovesDatabase.py"
 
 # --- DEFINIZIONE DELLA CLASSE DA SCRIVERE NEL FILE ---
-CLASSE_MOVE_TESTO = """class Move:
-    def __init__(self, name, move_type, category, power, accuracy, pp, effect):
-        self.name = name
-        self.type = move_type
-        self.category = category
-        self.power = power
-        self.accuracy = accuracy
-        self.pp = pp
-        self.effect = effect
-
-    def move_copy(self):
-        return Move(
-            self.name,
-            self.type,
-            self.category,
-            self.power,
-            self.accuracy,
-            self.pp,
-            effect=self.effect.copy() if self.effect else None
-        )
-
-"""
 
 
 def ottieni_dati_mossa(id_mossa):
@@ -73,8 +51,7 @@ def genera_file_database_mosse():
 
     with open(NOME_FILE_OUTPUT, "w", encoding="utf-8") as f:
         # 1. Scriviamo la classe Move in cima al file
-        f.write(CLASSE_MOVE_TESTO)
-
+        f.write("from PkClasses import Move\n")
         # 2. Apriamo il dizionario delle mosse
         f.write("MovesList = {\n")
 

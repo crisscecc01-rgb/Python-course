@@ -19,15 +19,7 @@ def genera_file_database():
     with open(NOME_FILE_OUTPUT, "w", encoding="utf-8") as f:
         # 1. Scriviamo le importazioni e la struttura della classe
         f.write("from types import MappingProxyType\n")
-        f.write("from dataclasses import dataclass\n\n")
-        f.write("@dataclass\n")
-        f.write("class PokemonBase:\n")
-        f.write("    pokedex_number: int\n")
-        f.write("    name: str\n")
-        f.write("    types: tuple\n")
-        f.write("    base_stats: MappingProxyType\n")
-        f.write("    moves: tuple\n\n")
-
+        f.write("from PkClasses import PokemonBase\n")
         # 2. Apriamo la lista
         f.write("PokemonList = [\n")
 
