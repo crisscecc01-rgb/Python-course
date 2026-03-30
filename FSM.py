@@ -1,5 +1,6 @@
 from os import add_dll_directory
-
+import PriorityList
+import bigtree
 import networkx as nx
 import matplotlib.pyplot as plt
 from PkClasses import *
@@ -399,36 +400,55 @@ def Battle(trainer):
             TrainerPkIndex = index
             break
 
-    BattleResult = 0
-    wild = True
 
-    while BattleResult == 0:
-        if wild:
-            BattleResult = pk_wild_battle(trainer, TrainerPkIndex, enemy_pokemon)
+    node_trainer = rootTrainer
+    useTrainerMove.value["priority"] = get_modified_stat(trainer.pk_list[TrainerPkIndex], trainer.pk_list[TrainerPkIndex].stats["speed"])
+    while not node_trainer.is_leaf:
+        node_trainer.value["choice"] = node_trainer.value["function"]
+        choice = node_trainer.value["choice"]
+        if choice < 0 or choice > len(node_trainer.children):
+            node_trainer = node_trainer
+        elif choice == 0:
+            node_trainer = node_trainer.parent
         else:
-            BattleResult = pk_battle(trainer, enemy_trainer,TrainerPkIndex , EnemyPkIndex)
+            node_trainer = node_trainer.children[choice - 1]
 
-        if BattleResult == 2:
-            alive = ChoosePokemonAlive(trainer)
-            if alive > -1:
-                BattleResult = 0
-                TrainerPkIndex = alive
-                print(f"{trainer.pk_list[TrainerPkIndex].name} is sent on the field!")
-
-        if BattleResult == 1:
-            alive = RandomPokemonAlive(enemy_trainer)
-            if alive > -1:
-                BattleResult = 0
-                EnemyPkIndex = alive
-                print(f"{enemy_trainer.pk_list[EnemyPkIndex].name} is sent on the field!")
-
-        if BattleResult == 1:
-            print(f"you've won the battle")
-            return True
-        elif BattleResult == 2:
-            print(f"you've lost the battle")
-            return False
-
-    return False
+    piority_list = PriorityQueue()
+    trainer_data = Data(node_trainer, node_trainer.value["priority"])
+    enemy_data = Data(enemy_data, enemy_data.value["choice"])
 
 
+    return FalseTrue
+
+
+
+
+
+
+
+#TREE INITIALIZATION
+Escape_priority = 1000
+Heal_priority = 800
+Pokemon_priority = 800
+
+rootTrainer = Node("Menu", value={"function":printMenu, "choice":choice})
+movesTrainerMenu = Node("Moves", value={"function":printMenu, "choice":choice}, parent=rootTrainer)
+useTrainerEscape = Node("Escape", value={"function":use_escape_battle, "priority":Escape_priority}, parent=rootTrainer)
+changeTrainerPokemonMenu = Node("Pokemons", value={"function":printMenu,"choice":choice}, parent=rootTrainer)
+itemTrainerMenu = Node("Items", value={"function":printMenu,"choice":choice}, parent=rootTrainer)
+
+useTrainerMove = Node("useMove", value={"function":use_move, "priority":priority}, parent = movesTrainerMenu)
+useTrainerChangePokemon = Node("useChangePokemon", vvalue={"function":use_change_pokemon, "priority":priority}, parent = changeTrainerPokemonMenu)
+HealTrainerMenu = Node("Heals", values={"function":printMenu, "choice":choice}, parent=itemTrainerMenu)
+PokeballTrainerMenu = Node("Pokeball", values={"function":printMenu, "choice":choice}, parent=itemTrainerMenu)
+useTrainerHeal = Node("useHeal", value={"function":use_heal,"priority":Heal_priority}, parent = HealTrainerMenu)
+useTrainerPokeball = Node("usePokeball", value={"function":use_pokeball, "priority":Pokemon_priority}, parent = PokeballTrainerMenu)
+
+
+
+def printMenu(lista):
+    pass
+def use_escape_battle(trainer_pokemon, enemy_pokemon):
+    pass
+def use_change_pokemon(pokemonIndex):
+    return pokemonIndex
