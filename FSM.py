@@ -1,6 +1,7 @@
+from os import add_dll_directory
+
 import networkx as nx
 import matplotlib.pyplot as plt
-from PKGame import *
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 import random
@@ -33,6 +34,17 @@ class State:
                 fsm.trainer = DoSomething(BuyItems,fsm.trainer)
             case "PokemonCenter":
                 print("You just entered the pokemon center!")
+                battleState = None
+                for state in fsm.G.nodes():
+                    if state.name == "Battle":
+                        battleState = state
+                if not battleState.outcome:
+                    battleState.outcome = True
+                    for pokemon in fsm.trainer.pk_list:
+                        pokemon.currentHP = int(pokemon.stats["hp"])
+                        for index, move in enumerate(pokemon.moves):
+                            pokemon.moves[index].pp = Mdb.MovesList[move.name].pp
+                    print("You've been defeated. Your Pokemons have now been healed!")
                 fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
                 print("You just entered the JUNGLE!")
@@ -391,29 +403,24 @@ def Battle(trainer):
     wild = True
 
     while BattleResult == 0:
-
-
         if wild:
             BattleResult = pk_wild_battle(trainer, TrainerPkIndex, enemy_pokemon)
         else:
             BattleResult = pk_battle(trainer, enemy_trainer,TrainerPkIndex , EnemyPkIndex)
 
         if BattleResult == 2:
-            list_index_alive = []
-            for index,pokemon in enumerate(trainer.pk_list):
-                if pokemon.currentHP > 0:
-                    BattleResult = 0
-                    print(f"{index+1} Pokemon available: {trainer.pk_list[index]}")
-                    list_index_alive.append(index+1)
-            print("Chose your next pokemon")
-            choice = input("> ").strip().lower()
-            while not int(choice) in list_index_alive:
-                print("Chose better")
-                choice = input("> ").strip().lower()
+            alive = ChoosePokemonAlive(trainer)
+            if alive > -1:
+                BattleResult = 0
+                TrainerPkIndex = alive
+                print(f"{trainer.pk_list[TrainerPkIndex].name} is sent on the field!")
 
-            TrainerPkIndex = int(choice)-1
-
-
+        if BattleResult == 1:
+            alive = RandomPokemonAlive(enemy_trainer)
+            if alive > -1:
+                BattleResult = 0
+                EnemyPkIndex = alive
+                print(f"{enemy_trainer.pk_list[EnemyPkIndex].name} is sent on the field!")
 
         if BattleResult == 1:
             print(f"you've won the battle")
@@ -421,9 +428,6 @@ def Battle(trainer):
         elif BattleResult == 2:
             print(f"you've lost the battle")
             return False
-
-
-
 
     return False
 

@@ -1,6 +1,5 @@
 import random
 from types import MappingProxyType
-
 from Database import MovesDatabase as Mdb
 from Database import PkTypesDatabase as PkT_db
 from Database import ItemsDb as Item_db
@@ -390,3 +389,33 @@ def pk_wild_battle(trainer, UserPkIndex, wild_pokemon):
             else:
                 print(f"{wild_pokemon.name} has {wild_pokemon.currentHP} left")
                 return 0
+
+
+def ChoosePokemonAlive(trainer):
+    list_index_alive = []
+    for index, pokemon in enumerate(trainer.pk_list):
+        if pokemon.currentHP > 0:
+            print(f"{index + 1} Pokemon available: {trainer.pk_list[index]}")
+            list_index_alive.append(index + 1)
+    if not list_index_alive:
+        print("You have no pokemon alive!")
+        return -1
+    else:
+        print("Chose your next pokemon")
+        choice = input("> ").strip().lower()
+        while not int(choice) in list_index_alive:
+            print("Chose better")
+            choice = input("> ").strip().lower()
+        return int(choice) - 1
+
+
+def RandomPokemonAlive(trainer):
+    list_index_alive = []
+    for index, pokemon in enumerate(trainer.pk_list):
+        if pokemon.currentHP > 0:
+            list_index_alive.append(index + 1)
+    if not list_index_alive:
+        return -1
+    else:
+        choice = random.randint(0, len(list_index_alive) - 1)
+        return list_index_alive[choice]
