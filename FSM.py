@@ -362,6 +362,8 @@ def HealPokemons(trainer):
     if choice != "n":
         for pokemon in trainer.pk_list:
             pokemon.currentHP = int(pokemon.stats["hp"])
+            for index,move in enumerate(pokemon.moves):
+                pokemon.moves[index].pp = Mdb.MovesList[move.name].pp
         print("Your Pokemons have now been healed!")
 
     return trainer

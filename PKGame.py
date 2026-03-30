@@ -43,6 +43,8 @@ def move_selection(userPk):
 def show_HUD(UserPk, opponent):
     print(f"{opponent.name} current hp: {opponent.currentHP}")
     print(f"{UserPk.name}  current hp: {UserPk.currentHP}")
+    #if move move_selection()
+    #if item item_selection()
     return move_selection(UserPk)
 
 #function which is used to generate a single battle turn. if the user loose it returns 2, if the user wins it returs 1, otherwise it returns 0
