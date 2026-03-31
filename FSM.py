@@ -89,11 +89,17 @@ class State:
 
         if fsm.state.name == "Explore":
             Battle_state = None
+            Story_state = None
             for s in choices:
                 if s.name == "Battle":
                     Battle_state = s
+                elif s.name == "Story":
+                    Story_state = s
+
             if self.outcome:
                 return Battle_state
+            else:
+                return Story_state
 
 
         if fsm.state.name == "Battle":
@@ -129,7 +135,6 @@ class State:
                 if state.name == choice_input:
                     return state
             print("Can't go here! Chose from the list.")
-
 
 class FiniteStateMachine:
     def __init__(self):
@@ -266,9 +271,6 @@ class FiniteStateMachine:
                     connectionstyle='arc3, rad = 0.1', **kwds)
         plt.show()
 
-
-
-
 def createCharacter():
     trainer_name = input("What's your name: ")
     trainer = PokemonTrainerClass(trainer_name, [],0, [])
@@ -394,12 +396,12 @@ def wild_Battle(trainer):
     #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], 0,[])
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
-    print("Go " + trainer.pk_list[trainer.pk_active_index].name + "!")
-
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
             trainer.pk_active_index = index
             break
+
+    print("Go " + trainer.pk_list[trainer.pk_active_index].name + "!")
 
     # TREE INITIALIZATION
 
@@ -408,111 +410,127 @@ def wild_Battle(trainer):
     Heal_priority = 800
     Pokeball_priority = 800
 
-    choice = None
-    # TRAINER TREE
-    rootTrainer = Node("Menu", value={"function": printMenu, "choice": choice})
-    movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-    changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-    itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-    HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-    PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-    Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
+    battle_ongoing = True
+    while battle_ongoing:
+        active_pokemon = trainer.pk_list[trainer.pk_active_index]
 
-    # WILD POKÉMON TREE
-    rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
-    movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
-    Node("Escape", value={"function": lambda: use_escape_battle(), "priority": Escape_priority}, parent=rootEnemy)
+        if active_pokemon.currentHP <= 0:
+            print(f"{active_pokemon.name} fainted!")
+            alive = [pk for pk in trainer.pk_list if pk.currentHP > 0]
+            if not alive:
+                print("You have no more usable pokemon! You are dead!")
+                return False
 
+            new_index = trainer.ChoosePokemonAlive()
+            trainer.pk_active_index = new_index
+            active_pokemon = trainer.pk_list[trainer.pk_active_index]
+            print(f"Go {active_pokemon.name}!")
 
-    node_trainer = rootTrainer
-    node_enemy = rootEnemy
+        if enemy_pokemon.currentHP <= 0:
+            print(f"Wild {enemy_pokemon.name} fainted| You won|")
+            return True
 
+        print(f"\n==========================================")
+        print(f"Wild {enemy_pokemon.name} HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
+        print(f"Your {active_pokemon.name} HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
+        print(f"==========================================")
 
-    #cyclig all turns
-    #CHANGING NODES due to user choices
-    active_pokemon = trainer.pk_list[trainer.pk_active_index]
-    for move in active_pokemon.moves:
-        Node(move.name,
-             value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
-                    "priority": active_pokemon.get_modified_stat(active_pokemon.stats["speed"])},
-             parent=movesTrainerMenu)
+        choice = None
+        # TRAINER TREE
+        rootTrainer = Node("Menu", value={"function": printMenu, "choice": choice})
+        movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+        PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+        Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
 
-    for heal in trainer.items["heals"]:
-        healNode = Node(heal.name,
-             value={"function":printMenu,
-                    "choice": choice},
-             parent=HealTrainerMenu)
+        for move in active_pokemon.moves:
+            Node(move.name,
+                 value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
+                        "priority": active_pokemon.get_modified_stat(active_pokemon.stats["speed"])},
+                 parent=movesTrainerMenu)
+
+        for heal in trainer.items["heals"]:
+            healNode = Node(heal.name,
+                            value={"function": printMenu,
+                                   "choice": choice},
+                            parent=HealTrainerMenu)
+
+            for pokemon in trainer.pk_list:
+                if 0 < pokemon.currentHP < pokemon.stats["hp"]:
+                    Node(pokemon.name,
+                         value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p, h),
+                                "priority": Heal_priority},
+                         parent=healNode)
+
+        for pokeball in trainer.items["pokeballs"]:
+            Node(pokeball.name,
+                 value={"function": lambda pb=pokeball: trainer.use_pokeball(pb),
+                        "priority": Pokeball_priority},
+                 parent=PokeballTrainerMenu)
 
         for pokemon in trainer.pk_list:
-            if 0 < pokemon.currentHP < pokemon.stats["hp"]:
-                Node(pokemon.name,
-                     value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p,h),
-                            "priority": Heal_priority},
-                     parent=healNode)
+            Node(pokemon.name,
+                 value={"function": lambda pk=pokemon: trainer.use_change_pokemon(pk),
+                        "priority": Pokemon_priority},
+                 parent=changeTrainerPokemonMenu)
 
-    for pokeball in trainer.items["pokeballs"]:
-        Node(pokeball.name,
-             value={"function": lambda pb= pokeball: trainer.use_pokeball(pb),
-                    "priority": Pokeball_priority},
-             parent=PokeballTrainerMenu)
+        # WILD POKÉMON TREE
+        rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
+        movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
+        Node("Escape", value={"function": lambda: use_escape_battle(), "priority": Escape_priority}, parent=rootEnemy)
 
-    for pokemon in trainer.pk_list:
-        Node(pokemon.name,
-             value={"function": lambda pk=pokemon: trainer.change_pokemon(pokemon),
-                    "priority": Pokemon_priority},
-             parent=changeTrainerPokemonMenu)
+        for move in enemy_pokemon.moves:
+            Node(move.name,
+                 value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
+                        "priority": enemy_pokemon.get_modified_stat(enemy_pokemon.stats["speed"])},
+                 parent=movesEnemyMenu)
 
 
-    for move in enemy_pokemon.moves:
-        Node(move.name,
-             value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
-                    "priority": enemy_pokemon.get_modified_stat(enemy_pokemon.stats["speed"])},
-             parent=movesEnemyMenu)
 
-
-    while not node_trainer.is_leaf:
-        node_trainer.value["choice"] = node_trainer.value["function"](node_trainer)
-        choice_trainer = node_trainer.value["choice"]
-        if choice_trainer < 0 or choice_trainer > len(node_trainer.children):
-            node_trainer = node_trainer
-        elif choice_trainer == 0:
-            if node_trainer.parent is not None:
-                node_trainer = node_trainer.parent
+        node_trainer = rootTrainer
+        while not node_trainer.is_leaf:
+            node_trainer.value["choice"] = node_trainer.value["function"](node_trainer)
+            choice_trainer = node_trainer.value["choice"]
+            if choice_trainer < 0 or choice_trainer > len(node_trainer.children):
+                node_trainer = node_trainer
+            elif choice_trainer == 0:
+                if node_trainer.parent is not None:
+                    node_trainer = node_trainer.parent
+                else:
+                    print("Can't exit the Battle")
             else:
-                print("Can't exit the Battle")
-        else:
-            node_trainer = node_trainer.children[choice_trainer - 1]
+                node_trainer = node_trainer.children[choice_trainer - 1]
 
-
-    while not node_enemy.is_leaf:
-        node_enemy.value["choice"] = node_enemy.value["function"](node_enemy)
-        choice_enemy = node_enemy.value["choice"]
-        if choice_enemy < 0 or choice_enemy > len(node_enemy.children):
-            node_enemy = node_enemy
-        elif choice_enemy == 0:
-            node_enemy = node_enemy.parent
-        else:
-            node_enemy = node_enemy.children[choice_enemy - 1]
-
+        node_enemy = rootEnemy
+        while not node_enemy.is_leaf:
+            node_enemy.value["choice"] = node_enemy.value["function"](node_enemy)
+            choice_enemy = node_enemy.value["choice"]
+            if choice_enemy < 0 or choice_enemy > len(node_enemy.children):
+                node_enemy = node_enemy
+            elif choice_enemy == 0:
+                node_enemy = node_enemy.parent
+            else:
+                node_enemy = node_enemy.children[choice_enemy - 1]
 
 
 
-    if node_trainer.value["priority"] > node_enemy.value["priority"]:
-        node_trainer.value["function"]()
-        if enemy_pokemon.currentHP > 0:
-            node_enemy.value["function"]()
-    elif node_trainer.value["priority"] < node_enemy.value["priority"]:
-        node_enemy.value["function"]()
-        if active_pokemon.currentHP > 0:
+        print("---Turn result---")
+        if node_trainer.value["priority"] > node_enemy.value["priority"]:
             node_trainer.value["function"]()
-    else:
-        #in case equal priority i start (for now)
-        node_trainer.value["function"]()
-        if enemy_pokemon.currentHP > 0:
+            if enemy_pokemon.currentHP > 0:
+                node_enemy.value["function"]()
+
+        elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             node_enemy.value["function"]()
-
-
-    return
+            if active_pokemon.currentHP > 0:
+                node_trainer.value["function"]()
+        else:
+            #in case equal priority i start (for now)
+            node_trainer.value["function"]()
+            if enemy_pokemon.currentHP > 0:
+                node_enemy.value["function"]()
 
 def Battle(trainer):
     return False
@@ -529,9 +547,10 @@ def printMenu(node):
 def printMenu_ai(node):
     return random.randint(1,len(node.children))
 
-
 def use_escape_battle():
-    pass
+    #for now alwasy escape
+    print("Escape Battle successfully")
+    return True
 
 
 

@@ -52,6 +52,16 @@ class PokemonTrainerClass:
                 choice = input("> ").strip().lower()
             return int(choice) - 1
 
+    def RandomPokemonAlive(self):
+        list_index_alive = []
+        for index, pokemon in enumerate(self.pk_list):
+            if pokemon.currentHP > 0:
+                list_index_alive.append(index + 1)
+        if not list_index_alive:
+            return -1
+        else:
+            choice = random.randint(0, len(list_index_alive) - 1)
+            return list_index_alive[choice]
 
     def use_heal(self, pokemon, heal):
         for pk in self.pk_list:
@@ -63,8 +73,6 @@ class PokemonTrainerClass:
 
     def use_pokeball(self, pokeball):
         pass
-
-
 
 class Move:
     def __init__(self, name, move_type, category, power, accuracy, pp, effect):
