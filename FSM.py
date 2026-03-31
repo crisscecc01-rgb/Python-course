@@ -449,7 +449,7 @@ def wild_Battle(trainer):
         for move in active_pokemon.moves:
             Node(move.name,
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
-                        "priority": active_pokemon.get_modified_stat(active_pokemon.stats["speed"])},
+                        "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu)
 
         for heal in trainer.items["heals"]:
@@ -485,7 +485,7 @@ def wild_Battle(trainer):
         for move in enemy_pokemon.moves:
             Node(move.name,
                  value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
-                        "priority": enemy_pokemon.get_modified_stat(enemy_pokemon.stats["speed"])},
+                        "priority": enemy_pokemon.get_modified_stat("speed")},
                  parent=movesEnemyMenu)
 
 
