@@ -273,9 +273,9 @@ def createCharacter():
     trainer_name = input("What's your name: ")
     trainer = PokemonTrainerClass(trainer_name, [],0, [])
     print("Select your starter pokémon:")
-    starterPokemon = [create_playable_pokemon(Pk_db.PokemonList[0], 5),
-                      create_playable_pokemon(Pk_db.PokemonList[3], 5),
-                      create_playable_pokemon(Pk_db.PokemonList[6], 5)]
+    starterPokemon = [Pk_db.PokemonList[0].create_playable_pokemon(5),
+                      Pk_db.PokemonList[3].create_playable_pokemon(5),
+                      Pk_db.PokemonList[6].create_playable_pokemon(5)]
     for pokemon, opt in enumerate(starterPokemon):
         print(pokemon + 1, ':', opt.name)
     choice = (input("> "))
@@ -390,8 +390,8 @@ def ExploreJungle(prob):
 
 def wild_Battle(trainer):
     enemy_number = random.randint(1, 151)
-    enemy_pokemon = create_playable_pokemon(Pk_db.PokemonList[enemy_number - 1], 5)
-    enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], 0,[])
+    enemy_pokemon = Pk_db.PokemonList[enemy_number - 1].create_playable_pokemon(5)
+    #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], 0,[])
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
     print("Go " + trainer.pk_list[trainer.pk_active_index].name + "!")
@@ -414,21 +414,14 @@ def wild_Battle(trainer):
     movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
     changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
     itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-    HealTrainerMenu = Node("Heals", values={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-    PokeballTrainerMenu = Node("Pokeball", values={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+    HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+    PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
     Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
 
     # WILD POKÉMON TREE
-    rootEnemy = Node("Menu", value={"function": printMenu, "choice": choice})
-    movesEnemyMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootEnemy)
-    Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootEnemy)
-    for move in enemy_pokemon.moves:
-        Node(move.name,
-             value={"function": enemy_pokemon.use_move,
-                    "priority": enemy_pokemon.get_modified_stat(enemy_pokemon.stats["speed"])},
-             parent=movesEnemyMenu)
-
-
+    rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
+    movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
+    Node("Escape", value={"function": lambda: use_escape_battle(), "priority": Escape_priority}, parent=rootEnemy)
 
 
     node_trainer = rootTrainer
@@ -436,16 +429,15 @@ def wild_Battle(trainer):
 
 
     #cyclig all turns
-
     #CHANGING NODES due to user choices
     active_pokemon = trainer.pk_list[trainer.pk_active_index]
     for move in active_pokemon.moves:
         Node(move.name,
-             value={"function": active_pokemon.use_move,
+             value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                     "priority": active_pokemon.get_modified_stat(active_pokemon.stats["speed"])},
              parent=movesTrainerMenu)
 
-    for heal in trainer.items["heal"]:
+    for heal in trainer.items["heals"]:
         healNode = Node(heal.name,
              value={"function":printMenu,
                     "choice": choice},
@@ -454,37 +446,44 @@ def wild_Battle(trainer):
         for pokemon in trainer.pk_list:
             if 0 < pokemon.currentHP < pokemon.stats["hp"]:
                 Node(pokemon.name,
-                     value={"function": pokemon.use_heal,
+                     value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p,h),
                             "priority": Heal_priority},
                      parent=healNode)
 
     for pokeball in trainer.items["pokeballs"]:
         Node(pokeball.name,
-             value={"function": trainer.use_pokeball,
+             value={"function": lambda pb= pokeball: trainer.use_pokeball(pb),
                     "priority": Pokeball_priority},
              parent=PokeballTrainerMenu)
 
     for pokemon in trainer.pk_list:
         Node(pokemon.name,
-             value={"function": trainer.change_pokemon,
+             value={"function": lambda pk=pokemon: trainer.change_pokemon(pokemon),
                     "priority": Pokemon_priority},
              parent=changeTrainerPokemonMenu)
 
 
+    for move in enemy_pokemon.moves:
+        Node(move.name,
+             value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
+                    "priority": enemy_pokemon.get_modified_stat(enemy_pokemon.stats["speed"])},
+             parent=movesEnemyMenu)
 
-    choice_trainer = None
+
     while not node_trainer.is_leaf:
         node_trainer.value["choice"] = node_trainer.value["function"](node_trainer)
         choice_trainer = node_trainer.value["choice"]
         if choice_trainer < 0 or choice_trainer > len(node_trainer.children):
             node_trainer = node_trainer
         elif choice_trainer == 0:
-            node_trainer = node_trainer.parent
+            if node_trainer.parent is not None:
+                node_trainer = node_trainer.parent
+            else:
+                print("Can't exit the Battle")
         else:
             node_trainer = node_trainer.children[choice_trainer - 1]
 
 
-    choice_enemy = None
     while not node_enemy.is_leaf:
         node_enemy.value["choice"] = node_enemy.value["function"](node_enemy)
         choice_enemy = node_enemy.value["choice"]
@@ -499,71 +498,41 @@ def wild_Battle(trainer):
 
 
     if node_trainer.value["priority"] > node_enemy.value["priority"]:
-        node_trainer.value["function"](trainer, enemy_pokemon, choice_trainer-1)
-        node_enemy.value["function"](trainer, enemy_pokemon, choice_enemy-1)
+        node_trainer.value["function"]()
+        if enemy_pokemon.currentHP > 0:
+            node_enemy.value["function"]()
+    elif node_trainer.value["priority"] < node_enemy.value["priority"]:
+        node_enemy.value["function"]()
+        if active_pokemon.currentHP > 0:
+            node_trainer.value["function"]()
+    else:
+        #in case equal priority i start (for now)
+        node_trainer.value["function"]()
+        if enemy_pokemon.currentHP > 0:
+            node_enemy.value["function"]()
 
 
     return
 
+def Battle(trainer):
+    return False
 
 def printMenu(node):
-    index = 1
-    for node in node.children:
-        print(f"{index}) {node.name}\n")
-    return (input("> ")).strip().lower()
+    print("0) BACK")
+    for index,child in enumerate(node.children):
+        print(f"{index+1}) {child.name}\n")
+    try:
+        return int(input("> ").strip())
+    except ValueError:
+        return -1
+
+def printMenu_ai(node):
+    return random.randint(1,len(node.children))
 
 
-def printMenu_enemy(node, enemy_pokemon):
+def use_escape_battle():
     pass
 
 
-def use_escape_battle(trainer, enemy_pokemon, choice):
-    pass
-def use_change_pokemon(trainer, enemy_pokemon, new_pokemon_index):
-    trainer.pk_active_index = new_pokemon_index
-def use_heal(trainer, enemy_pokemon, choice):
-    for idx, heal in enumerate(trainer.items["heals"]):
-        print(f"{idx + 1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
-    heal_choice = (input("> "))
-
-    while not heal_choice.isdigit() or int(heal_choice) < 1 or int(heal_choice) > len(heals_list):
-        print("Which heal do you want to use?:")
-        for idx, heal in enumerate(heals_list):
-            print(f"{idx + 1} : you have {heal.number} {heal.name} ( --> +{heal.effect}) available")
-        heal_choice = (input("> "))
-
-    heal_choice = int(heal_choice) - 1
-    print(f" {self.name} uses one {heals_list[heal_choice].name} of {heals_list[heal_choice].number} available")
-    if heals_list[heal_choice].number > 1:
-        heals_list[heal_choice].number = heals_list[heal_choice].number - 1
-    else:
-        heals_list.remove(heals_list[heal_choice])
-    return heals_list[heal_choice].effect
-
-def use_pokeball(pokeball):
-    pass
-
-    def use_item(self, enemy_pokemon, choice):
 
 
-
-        print("Which types of items do you want to use?:")
-        index = 1
-        for number in self.items:
-            print(index, ':', number)
-            index += 1
-        choice = (input("> "))
-
-        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(self.items):
-            print("Which types of items do you want to use?:")
-            index = 1
-            for number in self.items:
-                print(index, ':', number)
-                index += 1
-            choice = (input("> "))
-
-        if choice == "1":
-            return use_heals(self.items["heals"])
-        elif choice == "2":
-            return use_pokeball(self.items["pokeballs"])
-        return 0

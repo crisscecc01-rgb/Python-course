@@ -1,5 +1,4 @@
 import random
-from types import MappingProxyType
 from Database import MovesDatabase as Mdb
 from Database import PkTypesDatabase as PkT_db
 from Database import ItemsDb as Item_db
@@ -31,6 +30,40 @@ class PokemonTrainerClass:
     def __repr__(self):
         return str(self)
 
+    def use_change_pokemon(self, pokemon):
+        for index, pk in enumerate(self.pk_list):
+            if pk.name == pokemon.name:
+                self.pk_active_index = index
+
+    def ChoosePokemonAlive(self):
+        list_index_alive = []
+        for index, pokemon in enumerate(self.pk_list):
+            if pokemon.currentHP > 0:
+                print(f"{index + 1} Pokemon available: {self.pk_list[index]}")
+                list_index_alive.append(index + 1)
+        if not list_index_alive:
+            print("You have no pokemon alive!")
+            return -1
+        else:
+            print("Chose your next pokemon")
+            choice = input("> ").strip().lower()
+            while not int(choice) in list_index_alive:
+                print("Chose better")
+                choice = input("> ").strip().lower()
+            return int(choice) - 1
+
+
+    def use_heal(self, pokemon, heal):
+        for pk in self.pk_list:
+            if pk.name == pokemon.name:
+                start_hp = pk.current_hp
+                pk.current_hp += heal.number
+                print(f"{self.name} use {heal.name} on {pk.name} healing {pk.current_hp-start_hp} HP")
+
+
+    def use_pokeball(self, pokeball):
+        pass
+
 
 
 class Move:
@@ -53,7 +86,6 @@ class Move:
             self.pp,
             effect=self.effect.copy() if self.effect else None
         )
-
 
 class HealClass:
     def __init__(self, name, number):
@@ -93,9 +125,7 @@ class PokemonCharacterClass:
         return string
 
     # function used to apply status or damage from a move
-    def use_move(self, move,  opponent):
-        # check if the move is in the move pool
-
+    def use_move(self, move, opponent):
         # reduces the pp of the move
         if move.pp > 0:
             print(f"{self.name} uses {move.name} against {opponent.name}!")
@@ -217,7 +247,6 @@ class PokemonCharacterClass:
     def calc_luck():
         return random.uniform(0.85, 1.0)
 
-
 class PokemonBase:
     def __init__(self,pokedex_number, name, types, base_stats,moves):
         self.pokedex_number = pokedex_number
@@ -227,23 +256,22 @@ class PokemonBase:
         self.moves = moves
 
 #creates a playable pokémon
-def create_playable_pokemon(base, level):
-    stats_copy = dict(base.base_stats)
-    current_hp = int(stats_copy["hp"])
-    move_objects = [Mdb.MovesList[name].move_copy() for name in base.moves]
-    return PokemonCharacterClass(
-        name= base.name,
-        level=level,
-        types=base.types,
-        stats=stats_copy,
-        moves=move_objects,
-        modifiers={
-        "attack": 0,
-        "defense": 0,
-        "speed": 0,
-        "special": 0
-        },
-        currentHP=current_hp
-    )
+    def create_playable_pokemon(self, level):
+        stats_copy = dict(self.base_stats)
+        current_hp = int(stats_copy["hp"])
+        move_objects = [Mdb.MovesList[name].move_copy() for name in self.moves]
+        return PokemonCharacterClass(
+            name= self.name,
+            level=level,
+            types=self.types,
+            stats=stats_copy,
+            moves=move_objects,
+            modifiers={
+            "attack": 0,
+            "defense": 0,
+            "speed": 0,
+            "special": 0
+            },
+            currentHP=current_hp
+        )
 
-#function to select a move
