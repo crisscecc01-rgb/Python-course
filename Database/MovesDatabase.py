@@ -1,4 +1,4 @@
-from PkClasses import Move
+from Move import Move
 MovesList = {
     "pound": Move("pound", "normal", "physical", 40, 1.0, 35, None),
     "karate chop": Move("karate chop", "fighting", "physical", 50, 1.0, 25, None),

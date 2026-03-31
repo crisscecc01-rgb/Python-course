@@ -51,7 +51,7 @@ def genera_file_database_mosse():
 
     with open(NOME_FILE_OUTPUT, "w", encoding="utf-8") as f:
         # 1. Scriviamo la classe Move in cima al file
-        f.write("from PkClasses import Move\n")
+        f.write("from Move import Move\n")
         # 2. Apriamo il dizionario delle mosse
         f.write("MovesList = {\n")
 

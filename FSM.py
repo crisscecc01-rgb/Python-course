@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
+from Database import MovesDatabase as Mdb
 import random
 
 
