@@ -116,8 +116,6 @@ class State:
             else:
                 return PokemonCenter_state
 
-
-
         valid_choices = []
         for state in choices:
             edge_data = fsm.G[fsm.state][state][0]
@@ -127,15 +125,25 @@ class State:
         print(f"You are currently in: {self.name}")
         print("Where do you want to go? (Possible destinations):")
 
-        for state in valid_choices:
-            print(f"--> {state.name}")
+        for index, state in enumerate(valid_choices):
+            print(f"{index + 1})--> {state.name}")
 
         while True:
             choice_input = input("> ").strip()
-            for state in valid_choices:
-                if state.name == choice_input:
-                    return state
-            print("Can't go here! Chose from the list.")
+            try:
+                if 0 < int(choice_input) < len(valid_choices):
+                    for index, state in enumerate(valid_choices):
+                        if index + 1 == int(choice_input):
+                            return valid_choices[index]
+                else:
+                    print("Can't go here! Chose from the list.")
+                    for index, state in enumerate(valid_choices):
+                        print(f"{index + 1})--> {state.name}")
+            except ValueError:
+                print("Can't go here! Chose from the list.")
+                for index, state in enumerate(valid_choices):
+                    print(f"{index + 1})--> {state.name}")
+
 
 class FiniteStateMachine:
     def __init__(self):
@@ -519,26 +527,32 @@ def wild_Battle(trainer):
 
         print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
-            end_battle = node_trainer.value["function"]()
-            if end_battle: return True
-            if enemy_pokemon.currentHP > 0:
-                end_battle = node_enemy.value["function"]()
+            end_battle, keep_turn = node_trainer.value["function"]()
+            if keep_turn:
                 if end_battle: return True
+                if enemy_pokemon.currentHP > 0:
+                    end_battle, keep_turn = node_enemy.value["function"]()
+                    if keep_turn:
+                        if end_battle: return True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
-            end_battle = node_enemy.value["function"]()
-            if end_battle: return True
-            if active_pokemon.currentHP > 0:
-                end_battle = node_trainer.value["function"]()
+            end_battle, keep_turn = node_enemy.value["function"]()
+            if keep_turn:
                 if end_battle: return True
+                if active_pokemon.currentHP > 0:
+                    end_battle, keep_turn = node_trainer.value["function"]()
+                    if keep_turn:
+                        if end_battle: return True
 
         else:
             #in case equal priority i start (for now)
-            end_battle = node_trainer.value["function"]()
-            if end_battle: return True
-            if enemy_pokemon.currentHP > 0:
-                end_battle = node_enemy.value["function"]()
+            end_battle, keep_turn = node_trainer.value["function"]()
+            if keep_turn:
                 if end_battle: return True
+                if enemy_pokemon.currentHP > 0:
+                    end_battle, keep_turn = node_enemy.value["function"]()
+                    if keep_turn:
+                        if end_battle: return True
 
 def Battle(trainer):
     return False
@@ -553,12 +567,23 @@ def printMenu(node):
         return -1
 
 def printMenu_ai(node):
-    return random.randint(1,len(node.children))
+    if node.is_root:
+       return 0
+    else:
+        return random.randint(1,len(node.children))
 
 def use_escape_battle():
     #for now alwasy escape
     print("Escape Battle successfully")
-    return True
+    if random.random() > 0.6:
+        return True, True
+    else:
+        return False, True
+
+   # def use_escape_battle_wild():
+      # return False, False
+
+
 
 
 

@@ -81,13 +81,14 @@ class PokemonTrainerClass:
         return False, canheal
 
     def use_pokeball(self, pokeball, enemy_pokemon):
+        canusepk =  True
         if random.random() > pokeball.accuracy:
             print(f"{self.name} caught a wild {enemy_pokemon.name}")
             self.pk_list.append(enemy_pokemon)
-            return True
+            return True, canusepk
         else:
             print(f"Unlucky: Wild {enemy_pokemon.name} exit the pokeball")
-            return False
+            return False, canusepk
 
 class HealClass:
     def __init__(self, name, number):
@@ -161,7 +162,7 @@ class PokemonCharacterClass:
                 # Accuracy check
                 if random.random() > move.accuracy:
                     print("\nBut it failed!")
-                    return
+                    return False, True
 
                 for stat in move.effect["target_stat"][1:]:
                     if opponent.modifiers[stat] > 5:
@@ -201,7 +202,7 @@ class PokemonCharacterClass:
                 print(f"{move} is SUPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
             print(f"HP left of {opponent.name}: {opponent.currentHP}")
-
+            return False, True
     # get the modified stats from the applied status to the Pk
     def get_modified_stat(self, stat):
         if self.modifiers[stat] >= 0:
