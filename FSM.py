@@ -425,7 +425,7 @@ def wild_Battle(trainer):
 
         if active_pokemon.currentHP <= 0:
             print(f"{active_pokemon.name} fainted!")
-            alive = [pk for pk in trainer.pk_list if pk.currentHP > 0]
+            alive = [pk for pk in trainer.pk_list if pk.currentHP >= 0]
             if not alive:
                 print("You have no more usable pokemon! You are dead!")
                 return False
@@ -467,7 +467,7 @@ def wild_Battle(trainer):
                             parent=HealTrainerMenu)
 
             for pokemon in trainer.pk_list:
-                if 0 < pokemon.currentHP < pokemon.stats["hp"]:
+                if 0 < pokemon.currentHP <= pokemon.stats["hp"]:
                     Node(pokemon.name,
                          value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p, h),
                                 "priority": Heal_priority},
@@ -475,7 +475,7 @@ def wild_Battle(trainer):
 
         for pokeball in trainer.items["pokeballs"]:
             Node(pokeball.name,
-                 value={"function": lambda pb=pokeball: trainer.use_pokeball(pb),
+                 value={"function": lambda pb=pokeball, e=enemy_pokemon : trainer.use_pokeball(pb, e),
                         "priority": Pokeball_priority},
                  parent=PokeballTrainerMenu)
 
@@ -492,7 +492,7 @@ def wild_Battle(trainer):
 
         for move in enemy_pokemon.moves:
             Node(move.name,
-                 value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
+                 value={"function": lambda m=move: enemy_pokemon.use_move(m, trainer.pk_list[trainer.pk_active_index]),
                         "priority": enemy_pokemon.get_modified_stat("speed")},
                  parent=movesEnemyMenu)
 
@@ -568,16 +568,18 @@ def printMenu(node):
 
 def printMenu_ai(node):
     if node.is_root:
-       return 0
+       return 1
     else:
         return random.randint(1,len(node.children))
 
 def use_escape_battle():
     #for now alwasy escape
-    print("Escape Battle successfully")
+
     if random.random() > 0.6:
+        print("Escape Battle successfully")
         return True, True
     else:
+        print("You cannot escape battle")
         return False, True
 
    # def use_escape_battle_wild():

@@ -33,7 +33,15 @@ class PokemonTrainerClass:
     def use_change_pokemon(self, pokemon):
         for index, pk in enumerate(self.pk_list):
             if pk.name == pokemon.name:
-                self.pk_active_index = index
+                if self.pk_active_index == index:
+                    print(f"The pokemon is already on the field!")
+                    return False, False
+                else:
+                    self.pk_active_index = index
+                    print(f"Go {self.pk_list[index].name}!")
+                    return False, True
+
+
 
     def ChoosePokemonAlive(self):
         list_index_alive = []
@@ -82,7 +90,7 @@ class PokemonTrainerClass:
 
     def use_pokeball(self, pokeball, enemy_pokemon):
         canusepk =  True
-        if random.random() > pokeball.accuracy:
+        if random.random() > pokeball.catch_rate:
             print(f"{self.name} caught a wild {enemy_pokemon.name}")
             self.pk_list.append(enemy_pokemon)
             return True, canusepk
@@ -104,11 +112,11 @@ class HealClass:
 class PokeBallClass:
     def __init__(self, name, number):
         self.name = name
-        self.effect = Item_db.pokeball_dict[name]
+        self.catch_rate = Item_db.pokeball_dict[name]
         self.number = number
 
     def __str__(self):
-        return f"{self.number} x {self.name} (--> {self.effect})"
+        return f"{self.number} x {self.name} (--> {self.catch_rate})"
 
     def __repr__(self):
         return str(self)
@@ -197,9 +205,9 @@ class PokemonCharacterClass:
             if is_crit:
                 print("critical hit!")
             if effectiveness == 0.5:
-                print(f"{move} is NOT MUCH EFFECTIVE on {opponent.name}!")
+                print(f"{move.name} is NOT MUCH EFFECTIVE on {opponent.name}!")
             elif effectiveness == 2.0:
-                print(f"{move} is SUPER EFFECTIVE on {opponent.name}!")
+                print(f"{move.name} is SUPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
             print(f"HP left of {opponent.name}: {opponent.currentHP}")
             return False, True
@@ -229,8 +237,8 @@ class PokemonCharacterClass:
         eff = 1.0
         for t in opponent.types:
             if move.type in PkT_db.TYPE_CHART:
-                if t in PkT_db.TYPE_CHART[move.type]:
-                    eff = eff * PkT_db.TYPE_CHART[move.type][t]
+                if t.lower() in PkT_db.TYPE_CHART[move.type]:
+                    eff = eff * PkT_db.TYPE_CHART[move.type][t.lower()]
                 else:
                     # print(f"Opponent type ({opponent.types}) in not registered for effectiveness evaluation")
                     eff *= 1
