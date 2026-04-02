@@ -1,4 +1,4 @@
-from Move import Move
+from BaseClasses import Move
 MovesList = {
     "razor wind": Move("razor wind", "normal", "special", 80, 1.0, 10, None),
     "cut": Move("cut", "normal", "physical", 50, 0.95, 30, None),

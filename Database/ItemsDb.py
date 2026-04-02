@@ -6,7 +6,7 @@ heals_dict = {
 
 
 pokeball_dict = {
-    "PokeBall" : 0.8,
-    "MegaBall" : 0.6,
-    "UltraBall": 0.4
+    "PokeBall" : 0.6,
+    "MegaBall" : 0.7,
+    "UltraBall": 0.8
 }

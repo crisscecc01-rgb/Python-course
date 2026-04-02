@@ -1,14 +1,11 @@
-from idlelib.debugger import Idb
-
 from bigtree import *
 import networkx as nx
-import matplotlib.pyplot as plt
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 from Database import MovesDatabase as Mdb
 from Database import ItemsDb as I_db
+from BaseClasses import *
 import random
-
 
 # Template of the State class for the FSM
 class State:

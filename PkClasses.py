@@ -1,7 +1,6 @@
 import random
 from Database import MovesDatabase as Mdb
 from Database import PkTypesDatabase as PkT_db
-from Database import ItemsDb as Item_db
 
 class PokemonTrainerClass:
     def __init__(self, name, pk_list, pk_active_index, items):
@@ -90,36 +89,14 @@ class PokemonTrainerClass:
 
     def use_pokeball(self, pokeball, enemy_pokemon):
         canusepk =  True
-        if random.random() > pokeball.catch_rate:
+        catch_rate_update = pokeball.catch_rate * (1 - enemy_pokemon.currentHP/self.pk_list[self.pk_active_index].currentHP)
+        if random.random() < catch_rate_update:
             print(f"{self.name} caught a wild {enemy_pokemon.name}")
             self.pk_list.append(enemy_pokemon)
             return True, canusepk
         else:
             print(f"Unlucky: Wild {enemy_pokemon.name} exit the pokeball")
             return False, canusepk
-
-class HealClass:
-    def __init__(self, name, number):
-        self.name = name
-        self.effect = Item_db.heals_dict[name]
-        self.number = number
-
-    def __str__(self):
-        return f"{self.number} x {self.name} (--> +{self.effect})"
-    def __repr__(self):
-        return str(self)
-
-class PokeBallClass:
-    def __init__(self, name, number):
-        self.name = name
-        self.catch_rate = Item_db.pokeball_dict[name]
-        self.number = number
-
-    def __str__(self):
-        return f"{self.number} x {self.name} (--> {self.catch_rate})"
-
-    def __repr__(self):
-        return str(self)
 
 class PokemonCharacterClass:
     def __init__(self, name, level, types, stats, modifiers, moves, currentHP):
@@ -266,7 +243,7 @@ class PokemonBase:
         self.base_stats = base_stats
         self.moves = moves
 
-#creates a playable pokémon
+    #creates a playable pokémon
     def create_playable_pokemon(self, level):
         stats_copy = dict(self.base_stats)
         current_hp = int(stats_copy["hp"])
@@ -285,4 +262,3 @@ class PokemonBase:
             },
             currentHP=current_hp
         )
-
