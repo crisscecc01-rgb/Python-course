@@ -62,7 +62,7 @@ class State:
                         break
                     else:
                         print("\nStill no pokemon in sight!")
-                        print("Do you want to keep exploring?")
+                        print("Do you want to keep exploring? (y/n)")
                         choice = (input("> ")).strip().lower()
                 self.outcome = outcome_explore
 
@@ -539,7 +539,7 @@ def Battle(trainer):
 def printMenu(node):
     print("0) BACK")
     for index,child in enumerate(node.children):
-        print(f"{index+1}) {child.name}\n")
+        print(f"{index+1}) {child.name} ")
     try:
         return int(input("> ").strip())
     except ValueError:

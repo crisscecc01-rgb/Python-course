@@ -66,9 +66,10 @@ class PokemonTrainerClass:
     def use_heal(self, pokemon, heal):
         for pk in self.pk_list:
             if pk.name == pokemon.name:
-                start_hp = pk.current_hp
-                pk.current_hp += heal.number
-                print(f"{self.name} use {heal.name} on {pk.name} healing {pk.current_hp-start_hp} HP")
+                start_hp = pk.currentHP
+                #limitare massimo
+                pk.currentHP += heal.effect
+                print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
 
 
     def use_pokeball(self, pokeball):

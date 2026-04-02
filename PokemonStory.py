@@ -11,6 +11,7 @@ def BeginStory():
     PokemonCenter = FSM.State("PokemonCenter")
     Explore = FSM.State("Explore")
     Battle = FSM.State("Battle")
+    Battle.outcome = True
 
     GameEngine.add_state(CreateCharacter)
     GameEngine.add_state(Story)
