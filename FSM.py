@@ -493,7 +493,7 @@ def wild_Battle(trainer):
 
         for move in enemy_pokemon.moves:
             Node(move.name,
-                 value={"function": lambda m=move: enemy_pokemon.use_move(m, active_pokemon),
+                 value={"function": lambda m=move: enemy_pokemon.use_move(m, trainer.pk_list[trainer.pk_active_index]),
                         "priority": enemy_pokemon.get_modified_stat("speed")},
                  parent=movesEnemyMenu)
 
