@@ -64,17 +64,24 @@ class PokemonTrainerClass:
             return list_index_alive[choice]
 
     def use_heal(self, pokemon, heal):
+        canheal = True
         for pk in self.pk_list:
             if pk.name == pokemon.name:
                 start_hp = pk.currentHP
-                #limitare massimo
-
-                pk.currentHP += heal.effect
-                print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
-
+                if start_hp == pk.stats["hp"]:
+                    print(f"You can't further heal that pokemon!")
+                    canheal =  False
+                else:
+                    pk.currentHP += heal.effect
+                    #chek if the healing goes above the maximum hp
+                    if pk.currentHP > pk.stats["hp"]:
+                        pk.currentHP = pk.stats["hp"]
+                    print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
+                    canheal = True
+        return False, canheal
 
     def use_pokeball(self, pokeball):
-        pass
+        return True
 
 
 class HealClass:
@@ -149,7 +156,7 @@ class PokemonCharacterClass:
                 # Accuracy check
                 if random.random() > move.accuracy:
                     print("\nBut it failed!")
-                    return
+                    return True
 
                 for stat in move.effect["target_stat"][1:]:
                     if opponent.modifiers[stat] > 5:
@@ -189,6 +196,7 @@ class PokemonCharacterClass:
                 print(f"{move} is SUPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
             print(f"HP left of {opponent.name}: {opponent.currentHP}")
+            return True
 
     # get the modified stats from the applied status to the Pk
     def get_modified_stat(self, stat):
@@ -260,7 +268,8 @@ class PokemonBase:
             "attack": 0,
             "defense": 0,
             "speed": 0,
-            "special": 0
+            "special": 0,
+            "accuracy": 0,
             },
             currentHP=current_hp
         )
