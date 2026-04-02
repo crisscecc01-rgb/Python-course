@@ -459,7 +459,7 @@ def wild_Battle(trainer):
                             parent=HealTrainerMenu)
 
             for pokemon in trainer.pk_list:
-                if 0 < pokemon.currentHP <= pokemon.stats["hp"]:
+                if 0 < pokemon.currentHP < pokemon.stats["hp"]:
                     Node(pokemon.name,
                          value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p, h),
                                 "priority": Heal_priority},
@@ -503,7 +503,6 @@ def wild_Battle(trainer):
                     print("Can't exit the Battle")
             else:
                 node_trainer = node_trainer.children[choice_trainer - 1]
-        print("---exited while---")
 
         node_enemy = rootEnemy
         while not node_enemy.is_leaf:
@@ -516,19 +515,30 @@ def wild_Battle(trainer):
             else:
                 node_enemy = node_enemy.children[choice_enemy - 1]
 
+
+
         print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
-            if node_trainer.value["function"]() and enemy_pokemon.currentHP > 0:
-                node_enemy.value["function"]()
+            end_battle = node_trainer.value["function"]()
+            if end_battle: return True
+            if enemy_pokemon.currentHP > 0:
+                end_battle = node_enemy.value["function"]()
+                if end_battle: return True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
-            node_enemy.value["function"]()
+            end_battle = node_enemy.value["function"]()
+            if end_battle: return True
             if active_pokemon.currentHP > 0:
-                node_trainer.value["function"]()
+                end_battle = node_trainer.value["function"]()
+                if end_battle: return True
+
         else:
             #in case equal priority i start (for now)
-            if node_trainer.value["function"]() and enemy_pokemon.currentHP > 0:
-                node_enemy.value["function"]()
+            end_battle = node_trainer.value["function"]()
+            if end_battle: return True
+            if enemy_pokemon.currentHP > 0:
+                end_battle = node_enemy.value["function"]()
+                if end_battle: return True
 
 def Battle(trainer):
     return False
