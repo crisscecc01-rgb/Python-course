@@ -1,9 +1,12 @@
+from idlelib.debugger import Idb
+
 from bigtree import *
 import networkx as nx
 import matplotlib.pyplot as plt
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 from Database import MovesDatabase as Mdb
+from Database import ItemsDb as I_db
 import random
 
 
@@ -131,7 +134,7 @@ class State:
         while True:
             choice_input = input("> ").strip()
             try:
-                if 0 < int(choice_input) < len(valid_choices):
+                if 0 < int(choice_input) <= len(valid_choices):
                     for index, state in enumerate(valid_choices):
                         if index + 1 == int(choice_input):
                             return valid_choices[index]
@@ -317,7 +320,6 @@ def DoSomething(function, trainer):
     return trainer_done
 
 def BuyItems(trainer):
-    print(f"Welcome to Market ! ")
     print(f"Your current inventory:\n{trainer.str_items()}")
     print("Do you want to buy something? (y/n)")
     choice = (input("> ")).strip().lower()
@@ -325,59 +327,75 @@ def BuyItems(trainer):
         print("What do you want to buy?")
         categories = list(trainer.items.keys())
         for items,cat in enumerate(categories):
-            print(f"{items+1}: {trainer.items[cat]}")
+            print(f"{items+1}: {cat}")
 
-        choice = input("> ")
+        choice = input("> ").strip()
         if not choice.isdigit() or int(choice) not in range(1, len(categories) + 1):
             print("We don't have that category here.")
             return trainer
 
         selected_category = categories[int(choice) - 1]
         if selected_category == "heals":
-            item_name = "Potion"  #to be updated in order to choose between the ones available in database
-            print(f"How many {item_name} do you want to buy?")
-            qty_input = input("> ")
+            print("Which heals do you want to buy?")
+            for ind,item in enumerate(I_db.heals_dict):
+                print(f"{ind+1}): {item} --> {I_db.heals_dict[item]}")
+            choice = input("> ").strip()
+            if choice.isdigit() and 0 < int(choice) <= len(I_db.heals_dict):
+                for ind,heal_name in enumerate(I_db.heals_dict):
+                    if int(choice) == ind+1:
+                        item_name = heal_name
+                        print(f"How many {heal_name} do you want to buy?")
+                        qty_input = input("> ")
 
-            if qty_input.isdigit() and int(qty_input) > 0:
-                qty = int(qty_input)
+                        if qty_input.isdigit() and int(qty_input) > 0:
+                            qty = int(qty_input)
+                            found = False
+                            for item in trainer.items["heals"]:
+                                if item.name == item_name:
+                                    item.number += qty
+                                    found = True
+                                    break
 
-                found = False
-                for item in trainer.items["heals"]:
-                    if item.name == item_name:
-                        item.number += qty
-                        found = True
-                        break
+                            if not found:
+                                new_item = HealClass(item_name, qty)
+                                trainer.items["heals"].append(new_item)
 
-                if not found:
-                    new_item = HealClass(item_name, qty)
-                    trainer.items["heals"].append(new_item)
-
-                print(f"You received {qty} {item_name}!")
+                            print(f"You received {qty} {item_name}!")
+                        else:
+                            print("Not a valid quantity.")
             else:
-                print("Not a valid quantity.")
+                print("Not available.")
 
         elif selected_category == "pokeballs":
-            item_name = "PokeBall" #to be updated in order to choose between the ones available in database
-            print(f"How many {item_name} do you want to buy?")
-            qty_input = input("> ")
+            print("Which pokeball do you want to buy?")
+            for ind, item in enumerate(I_db.pokeball_dict):
+                print(f"{ind + 1}): {item} --> {I_db.pokeball_dict[item]}")
+            choice = input("> ").strip()
+            if choice.isdigit() and 0 < int(choice) <= len(I_db.pokeball_dict):
+                for ind, poke_name in enumerate(I_db.pokeball_dict):
+                    if int(choice) == ind + 1:
+                        item_name = poke_name
+                        print(f"How many {poke_name} do you want to buy?")
+                        qty_input = input("> ")
 
-            if qty_input.isdigit() and int(qty_input) > 0:
-                qty = int(qty_input)
+                        if qty_input.isdigit() and int(qty_input) > 0:
+                            qty = int(qty_input)
+                            found = False
+                            for item in trainer.items["pokeballs"]:
+                                if item.name == item_name:
+                                    item.number += qty
+                                    found = True
+                                    break
 
-                found = False
-                for item in trainer.items["pokeballs"]:
-                    if item.name == item_name:
-                        item.number += qty
-                        found = True
-                        break
+                            if not found:
+                                new_item = PokeBallClass(item_name, qty)
+                                trainer.items["pokeballs"].append(new_item)
 
-                if not found:
-                    new_item = HealClass(item_name, qty)
-                    trainer.items["pokeballs"].append(new_item)
-
-                print(f"You received {qty} {item_name}!")
+                            print(f"You received {qty} {item_name}!")
+                        else:
+                            print("Not a valid quantity.")
             else:
-                print("Not a valid quantity.")
+                print("Not available.")
 
     print(f"\nYour current inventory:\n{trainer.str_items()}")
     return trainer
@@ -400,7 +418,7 @@ def ExploreJungle(prob):
     return prob >= enemy
 
 def wild_Battle(trainer):
-    enemy_number = random.randint(1, 151)
+    enemy_number = random.randint(1, len(Pk_db.PokemonList))
     enemy_pokemon = Pk_db.PokemonList[enemy_number - 1].create_playable_pokemon(5)
     #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Pk_db.PokemonList[enemy_number-1], 5)], 0,[])
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
@@ -560,7 +578,7 @@ def Battle(trainer):
 def printMenu(node):
     print("0) BACK")
     for index,child in enumerate(node.children):
-        print(f"{index+1}) {child.name} ")
+        print(f"{index+1}) {child.name}")
     try:
         return int(input("> ").strip())
     except ValueError:

@@ -209,7 +209,7 @@ class PokemonCharacterClass:
             elif effectiveness == 2.0:
                 print(f"{move.name} is SUPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
-            print(f"HP left of {opponent.name}: {opponent.currentHP}")
+            #print(f"HP left of {opponent.name}: {opponent.currentHP}")
             return False, True
     # get the modified stats from the applied status to the Pk
     def get_modified_stat(self, stat):
