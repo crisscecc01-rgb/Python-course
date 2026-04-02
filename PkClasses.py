@@ -64,6 +64,7 @@ class PokemonTrainerClass:
             return list_index_alive[choice]
 
     def use_heal(self, pokemon, heal):
+        canheal = True
         for pk in self.pk_list:
             if pk.name == pokemon.name:
                 start_hp = pk.currentHP
