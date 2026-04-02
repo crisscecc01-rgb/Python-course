@@ -68,6 +68,7 @@ class PokemonTrainerClass:
             if pk.name == pokemon.name:
                 start_hp = pk.currentHP
                 #limitare massimo
+
                 pk.currentHP += heal.effect
                 print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
 
