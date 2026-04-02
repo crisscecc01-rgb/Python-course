@@ -127,15 +127,24 @@ class State:
         print(f"You are currently in: {self.name}")
         print("Where do you want to go? (Possible destinations):")
 
-        for state in valid_choices:
-            print(f"--> {state.name}")
+        for index,state in enumerate(valid_choices):
+            print(f"{index+1})--> {state.name}")
 
         while True:
             choice_input = input("> ").strip()
-            for state in valid_choices:
-                if state.name == choice_input:
-                    return state
-            print("Can't go here! Chose from the list.")
+            try:
+                if 0 < int(choice_input) < len(valid_choices):
+                    for index,state in enumerate(valid_choices):
+                        if index+1 == int(choice_input):
+                            return valid_choices[index]
+                else:
+                    print("Can't go here! Chose from the list.")
+                    for index, state in enumerate(valid_choices):
+                        print(f"{index + 1})--> {state.name}")
+            except ValueError:
+                print("Can't go here! Chose from the list.")
+                for index, state in enumerate(valid_choices):
+                    print(f"{index + 1})--> {state.name}")
 
 class FiniteStateMachine:
     def __init__(self):
@@ -444,7 +453,7 @@ def wild_Battle(trainer):
         itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
         HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
         PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-        Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
+        Node("Escape", value={"function": lambda p = active_pokemon: use_escape_battle(p), "priority": Escape_priority}, parent=rootTrainer)
 
         for move in active_pokemon.moves:
             Node(move.name,
@@ -467,7 +476,7 @@ def wild_Battle(trainer):
 
         for pokeball in trainer.items["pokeballs"]:
             Node(pokeball.name,
-                 value={"function": lambda pb=pokeball: trainer.use_pokeball(pb),
+                 value={"function": lambda pb=pokeball, enemy_pk = enemy_pokemon: trainer.use_pokeball(pb,enemy_pk),
                         "priority": Pokeball_priority},
                  parent=PokeballTrainerMenu)
 
@@ -480,7 +489,7 @@ def wild_Battle(trainer):
         # WILD POKÉMON TREE
         rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
         movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
-        Node("Escape", value={"function": lambda: use_escape_battle(), "priority": Escape_priority}, parent=rootEnemy)
+        Node("Escape", value={"function": lambda p = enemy_pokemon: use_escape_battle(p), "priority": Escape_priority}, parent=rootEnemy)
 
         for move in enemy_pokemon.moves:
             Node(move.name,
@@ -519,19 +528,26 @@ def wild_Battle(trainer):
 
         print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
-            node_trainer.value["function"]()
+            end_battle = node_trainer.value["function"]()
+            if end_battle: return True
             if enemy_pokemon.currentHP > 0:
-                node_enemy.value["function"]()
+                end_battle = node_enemy.value["function"]()
+                if end_battle: return True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
-            node_enemy.value["function"]()
+            end_battle = node_enemy.value["function"]()
+            if end_battle: return True
             if active_pokemon.currentHP > 0:
-                node_trainer.value["function"]()
+                end_battle = node_trainer.value["function"]()
+                if end_battle: return True
+
         else:
             #in case equal priority i start (for now)
-            node_trainer.value["function"]()
+            end_battle = node_trainer.value["function"]()
+            if end_battle: return True
             if enemy_pokemon.currentHP > 0:
-                node_enemy.value["function"]()
+                end_battle = node_enemy.value["function"]()
+                if end_battle: return True
 
 def Battle(trainer):
     return False
@@ -548,10 +564,9 @@ def printMenu(node):
 def printMenu_ai(node):
     return random.randint(1,len(node.children))
 
-def use_escape_battle():
-    #for now alwasy escape
-    print("Escape Battle successfully")
-    return True
+def use_escape_battle(p):
+    print(f"{p.name} escaped battle successfully")
+    return False
 
 
 

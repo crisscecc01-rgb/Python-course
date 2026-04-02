@@ -34,6 +34,7 @@ class PokemonTrainerClass:
         for index, pk in enumerate(self.pk_list):
             if pk.name == pokemon.name:
                 self.pk_active_index = index
+        return False
 
     def ChoosePokemonAlive(self):
         list_index_alive = []
@@ -68,14 +69,19 @@ class PokemonTrainerClass:
             if pk.name == pokemon.name:
                 start_hp = pk.currentHP
                 #limitare massimo
-
                 pk.currentHP += heal.effect
+                if pk.currentHP > pk.stats["hp"]: pk.currentHP = pk.stats["hp"]
                 print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
+        return False
 
-
-    def use_pokeball(self, pokeball):
-        pass
-
+    def use_pokeball(self, pokeball, enemy_pokemon):
+        if random.random() > pokeball.accuracy:
+            print(f"{self.name} caught a wild {enemy_pokemon.name}")
+            self.pk_list.append(enemy_pokemon)
+            return True
+        else:
+            print(f"Unlucky: Wild {enemy_pokemon.name} exit the pokeball")
+            return False
 
 class HealClass:
     def __init__(self, name, number):
@@ -91,11 +97,11 @@ class HealClass:
 class PokeBallClass:
     def __init__(self, name, number):
         self.name = name
-        self.effect = Item_db.pokeball_dict[name]
+        self.accuracy = Item_db.pokeball_dict[name]
         self.number = number
 
     def __str__(self):
-        return f"{self.number} x {self.name} (--> {self.effect})"
+        return f"{self.number} x {self.name} (--> {self.accuracy})"
 
     def __repr__(self):
         return str(self)
