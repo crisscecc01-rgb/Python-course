@@ -196,6 +196,8 @@ class PokemonCharacterClass:
             # Messages
             if is_crit:
                 print("critical hit!")
+            if effectiveness == 0:
+                print(f"{move.name} is NOT EFFECTIVE on {opponent.name}!")
             if effectiveness == 0.5:
                 print(f"{move.name} is NOT MUCH EFFECTIVE on {opponent.name}!")
             elif effectiveness == 2.0:
