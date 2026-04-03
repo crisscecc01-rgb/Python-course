@@ -45,14 +45,14 @@ class State:
                         for pokemon in fsm.trainer.pk_list:
                             pokemon.currentHP = int(pokemon.stats["hp"])
                             for index, move in enumerate(pokemon.moves):
-                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name].pp
+                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name][5]
                 else:
                     if not battleState.outcome:
                         battleState.outcome = True
                         for pokemon in fsm.trainer.pk_list:
                             pokemon.currentHP = int(pokemon.stats["hp"])
                             for index, move in enumerate(pokemon.moves):
-                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name].pp
+                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name][5]
                         print("You've been defeated. Your Pokemons have now been healed!")
                     fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
@@ -121,11 +121,11 @@ class State:
             pk_active = fsm.trainer.pk_list[fsm.trainer.pk_active_index]
             if self.outcome:
                 fsm.trainer.random_stats["win_loss"].append(1)
-                fsm.trainer.random_stats["hp_loss"].append(pk_active.currentHP / Db.P_db.PokemonList[pk_active.name][3]["hp"])
+                fsm.trainer.random_stats["left_hp"].append(pk_active.currentHP / Db.P_db.PokemonList[pk_active.name][3]["hp"])
                 return Story_state
             else:
                 fsm.trainer.random_stats["win_loss"].append(1)
-                fsm.trainer.random_stats["hp_loss"].append(0)
+                fsm.trainer.random_stats["left_hp"].append(0)
                 return PokemonCenter_state
 
         valid_choices = []
@@ -445,7 +445,7 @@ def wild_Battle(trainer):
 
         if active_pokemon.currentHP <= 0:
             print(f"{active_pokemon.name} fainted!")
-            alive = [pk for pk in trainer.pk_list if pk.currentHP >= 0]
+            alive = [pk for pk in trainer.pk_list if pk.currentHP > 0]
             if not alive:
                 print("You have no more usable pokemon! You are dead!")
                 return False
@@ -608,7 +608,7 @@ def random_wild_Battle(trainer):
 
         if active_pokemon.currentHP <= 0:
             print(f"{active_pokemon.name} fainted!")
-            alive = [pk for pk in trainer.pk_list if pk.currentHP >= 0]
+            alive = [pk for pk in trainer.pk_list if pk.currentHP > 0]
             if not alive:
                 print("You have no more usable pokemon! You are dead!")
                 return False
