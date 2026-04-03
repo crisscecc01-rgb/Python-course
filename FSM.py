@@ -23,10 +23,11 @@ class State:
         fsm = kargs.get('fsm')
         match self.name:
             case "CreateCharacter":
-                fsm.trainer = createCharacter()
+                fsm.trainer = createCharacter(fsm)
                 print("You just created the trainer and selected your first pokemon!")
             case "Story":
                 print("You just entered the story!")
+                print(fsm.trainer)
             case "Exit":
                 print("You just exited the story. By!")
             case "PokemonStore":
@@ -119,13 +120,15 @@ class State:
                 elif s.name == "PokemonCenter":
                     PokemonCenter_state = s
             pk_active = fsm.trainer.pk_list[fsm.trainer.pk_active_index]
+            fsm.trainer.random_stats["total_num_turns"].append(fsm.trainer.random_stats["num_turns"])
+            fsm.trainer.random_stats["num_turns"] = 0
+            fsm.trainer.random_stats["left_hp"].append(round(pk_active.currentHP / Db.P_db.PokemonList[pk_active.name][3]["hp"]*100,3))
+
             if self.outcome:
                 fsm.trainer.random_stats["win_loss"].append(1)
-                fsm.trainer.random_stats["left_hp"].append(pk_active.currentHP / Db.P_db.PokemonList[pk_active.name][3]["hp"])
                 return Story_state
             else:
-                fsm.trainer.random_stats["win_loss"].append(1)
-                fsm.trainer.random_stats["left_hp"].append(0)
+                fsm.trainer.random_stats["win_loss"].append(0)
                 return PokemonCenter_state
 
         valid_choices = []
@@ -140,21 +143,28 @@ class State:
         for index, state in enumerate(valid_choices):
             print(f"{index + 1})--> {state.name}")
 
-        while True:
-            choice_input = input("> ").strip()
-            try:
-                if 0 < int(choice_input) <= len(valid_choices):
-                    for index, state in enumerate(valid_choices):
-                        if index + 1 == int(choice_input):
-                            return valid_choices[index]
-                else:
+        if fsm.randomize:
+            #going to EXPLORE by force
+            if len(fsm.trainer.random_stats["win_loss"]) < fsm.trainer.num_battles:
+                return valid_choices[1]
+            else:
+                return valid_choices[0]
+        else:
+            while True:
+                choice_input = input("> ").strip()
+                try:
+                    if 0 < int(choice_input) <= len(valid_choices):
+                        for index, state in enumerate(valid_choices):
+                            if index + 1 == int(choice_input):
+                                return valid_choices[index]
+                    else:
+                        print("Can't go here! Chose from the list.")
+                        for index, state in enumerate(valid_choices):
+                            print(f"{index + 1})--> {state.name}")
+                except ValueError:
                     print("Can't go here! Chose from the list.")
                     for index, state in enumerate(valid_choices):
                         print(f"{index + 1})--> {state.name}")
-            except ValueError:
-                print("Can't go here! Chose from the list.")
-                for index, state in enumerate(valid_choices):
-                    print(f"{index + 1})--> {state.name}")
 
 class FiniteStateMachine:
     def __init__(self):
@@ -292,16 +302,24 @@ class FiniteStateMachine:
                     connectionstyle='arc3, rad = 0.1', **kwds)
         plt.show()
 
-def createCharacter():
-    trainer_name = input("What's your name: ")
-    trainer = PokemonTrainerClass(trainer_name, [],0, [], None)
+def createCharacter(fsm):
+    if fsm.randomize:
+        trainer_name = "PEL"
+    else:
+        trainer_name = input("What's your name: ")
+
+    random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
+    trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
     print("Select your starter pokémon:")
     starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
                       create_playable_pokemon("Charmander", 5),
                       create_playable_pokemon("Squirtle", 5)]
     for pokemon, opt in enumerate(starterPokemon):
         print(pokemon + 1, ':', opt.name)
-    choice = (input("> "))
+    if fsm.randomize:
+        choice = fsm.starter
+    else:
+        choice = (input("> "))
 
     while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
         print("Select between 1 and " + str(len(starterPokemon)) + ":")
@@ -314,10 +332,7 @@ def createCharacter():
     trainer.items = {"heals": heals,
                      "pokeballs": pokeballs}
 
-    trainer.random_stats = {"wild_pokemons": [],
-                            "win_loss": [],
-                            "num_turns": [],
-                            "left_hp": []}
+
 
     print(f"you selected {trainer.pk_list[0].name}!")
     print(trainer)
@@ -437,7 +452,7 @@ def wild_Battle(trainer):
     Heal_priority = 800
     Pokeball_priority = 800
 
-    trainer.random_stats["wild_pokemons"].append(enemy_pokemon)
+    trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
 
     battle_ongoing = True
     while battle_ongoing:
@@ -602,6 +617,8 @@ def random_wild_Battle(trainer):
     Heal_priority = 800
     Pokeball_priority = 800
 
+    trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
+
     battle_ongoing = True
     while battle_ongoing:
         active_pokemon = trainer.pk_list[trainer.pk_active_index]
@@ -629,12 +646,12 @@ def random_wild_Battle(trainer):
 
         choice = None
         # TRAINER TREE
-        rootTrainer = Node("Menu", value={"function": printMenu, "choice": choice}, print_show = None)
-        movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
-        PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
+        rootTrainer = Node("Menu", value={"function": printMenu_ai, "choice": choice}, print_show = None)
+        movesTrainerMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
+        changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
+        itemTrainerMenu = Node("Items", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
+        HealTrainerMenu = Node("Heals", value={"function": printMenu_ai, "choice": choice}, parent=itemTrainerMenu, print_show = None)
+        PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu_ai, "choice": choice}, parent=itemTrainerMenu, print_show = None)
         Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer, print_show = None)
 
         for move in active_pokemon.moves:
@@ -742,6 +759,8 @@ def random_wild_Battle(trainer):
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: return True
+
+        trainer.random_stats["num_turns"] += 1
 
 def DoSomething(function, trainer):
     trainer_done = trainer

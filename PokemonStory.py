@@ -1,6 +1,7 @@
 import FSM
 
-def BeginStory():
+def BeginStory(starter,index,story):
+
     print("Welcome in Pokémon simulator!")
     GameEngine = FSM.FiniteStateMachine()
 
@@ -41,9 +42,11 @@ def BeginStory():
     GameEngine.initialize()
     GameEngine.wild = True
     GameEngine.randomize = False
+    GameEngine.stater = starter
 
     print("Want to randomize? (y/n)")
-    choice = input("> ").strip().lower()
+    #choice = input("> ").strip().lower()
+    choice = "y"
     if "y" == choice:
         GameEngine.randomize = True
     elif "n" == choice:
@@ -58,8 +61,17 @@ def BeginStory():
         else:
             print("No possible transition. Quitting.")
             break
-
     GameEngine.eval_current()
+
+    if index < 500:
+        story["Bulbasaur"].append(GameEngine.trainer.rand_stats)
+    if index < 1000:
+        story["Charmander"].append(GameEngine.trainer.rand_stats)
+    if index < 1500:
+        story["Squirtle"].append(GameEngine.trainer.rand_stats)
+    if index == 1500:
+        return story
+
 
 
 

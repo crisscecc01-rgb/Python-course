@@ -10,6 +10,7 @@ class PokemonTrainerClass:
         self.pk_active_index = pk_active_index
         self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
         self.random_stats = random_stats
+        self.num_battles = 150
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
         string = ", ".join(nomi)
@@ -22,9 +23,16 @@ class PokemonTrainerClass:
             string = string + str(self.items[items]) + "\n"
         return string
 
+    def str_stats(self):
+        string = ""
+        for stats, value in self.random_stats.items():
+            string = string + str(f"{stats}:{value}") + "\n"
+        return string
+
     def __str__(self):
          string = (f"{self.name} has {len(self.pk_list)} Pokemon: {self.str_pkList()} \n"
-                   f"{self.name} has the following items: \n{self.str_items()}\n ")
+                   f"{self.name} has the following items: \n{self.str_items()}"
+                   f"{self.name} has the following stats: \n{self.str_stats()}")
          return string
 
     def __repr__(self):
@@ -134,6 +142,7 @@ class PokemonCharacterClass:
             move.pp -= 1
         else:
             print(f"{move.name} can't use {move.name}!")
+            return False, False
 
         # check if the move is a status move or a damage move
         if move.category == "status":
@@ -195,6 +204,8 @@ class PokemonCharacterClass:
             # Messages
             if is_crit:
                 print("critical hit!")
+            if effectiveness == 0:
+                print(f"{move.name} has NO EFFECT on {opponent.name}!")
             if effectiveness == 0.5:
                 print(f"{move.name} is NOT MUCH EFFECTIVE on {opponent.name}!")
             elif effectiveness == 2.0:
