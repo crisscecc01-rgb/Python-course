@@ -213,6 +213,73 @@ class PokemonCharacterClass:
             print(f"{opponent.name} takes {damage} HP damage.")
             #print(f"HP left of {opponent.name}: {opponent.currentHP}")
             return False, True
+
+    def use_move_random(self, move, opponent):
+        # reduces the pp of the move
+        if move.pp > 0:
+            move.pp -= 1
+        else:
+            return False, False
+
+        # check if the move is a status move or a damage move
+        if move.category == "status":
+            modifierIndex = 0
+            # check the target of the status move
+            if move.effect["target_stat"][0] == "self":
+                # modification of the modifiers attribute
+                for stat in move.effect["target_stat"][1:]:
+                    # check the boundaries
+                    if self.modifiers[stat] > 5:
+                        pass
+                    elif self.modifiers[stat] < -5:
+                        pass
+                    else:
+                        # apply the status
+                        self.modifiers[stat] = self.modifiers[stat] + move.effect["change"][modifierIndex]
+
+                        if move.effect["change"][modifierIndex] > 0:
+                            pass
+                        else:
+                            pass
+                        modifierIndex = modifierIndex + 1
+            # same procedure in case the target is the opponent
+            else:
+                # Accuracy check
+                if random.random() > move.accuracy:
+                    pass
+                    return False, True
+
+                for stat in move.effect["target_stat"][1:]:
+                    if opponent.modifiers[stat] > 5:
+                        pass
+                    elif opponent.modifiers[stat] < -5:
+                        pass
+                    else:
+                        opponent.modifiers[stat] = opponent.modifiers[stat] + move.effect["change"][modifierIndex]
+                        if move.effect["change"][modifierIndex] > 0:
+                            pass
+                        else:
+                            pass
+                        modifierIndex = modifierIndex + 1
+
+        else:
+            # Choose correct attack/defense stat
+            if move.category == "physical":
+                attack = self.get_modified_stat("attack")
+                defense = opponent.get_modified_stat("defense")
+            else:
+                attack = self.get_modified_stat("special")
+                defense = opponent.get_modified_stat("special")
+            modifier, is_crit, effectiveness = self.calc_modifier(move, opponent)
+            # Damage formula
+            base = ((2 * self.level + 10) / 250) * (attack / defense) * move.power + 2
+            damage = int(base * modifier)
+
+            # Apply damage
+            opponent.currentHP = max(0, opponent.currentHP - damage)
+
+
+            return False, True
     # get the modified stats from the applied status to the Pk
     def get_modified_stat(self, stat):
         if self.modifiers[stat] >= 0:

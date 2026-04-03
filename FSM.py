@@ -24,18 +24,22 @@ class State:
         match self.name:
             case "CreateCharacter":
                 fsm.trainer = createCharacter(fsm)
-                print("You just created the trainer and selected your first pokemon!")
+                if not fsm.randomize:
+                    print("You just created the trainer and selected your first pokemon!")
             case "Story":
-                print("You just entered the story!")
-                print(fsm.trainer)
+                if not fsm.randomize:
+                    print("You just entered the story!")
+                    print(fsm.trainer)
             case "Exit":
-                print("You just exited the story. By!")
+                if not fsm.randomize:
+                    print("You just exited the story. By!")
             case "PokemonStore":
-                print("You just entered the pokemon store!")
+                if not fsm.randomize:
+                    print("You just entered the pokemon store!")
                 fsm.trainer = DoSomething(BuyItems,fsm.trainer)
             case "PokemonCenter":
-
-                print("You just entered the pokemon center!")
+                if not fsm.randomize:
+                    print("You just entered the pokemon center!")
                 battleState = None
                 for state in fsm.G.nodes():
                     if state.name == "Battle":
@@ -54,10 +58,12 @@ class State:
                             pokemon.currentHP = int(pokemon.stats["hp"])
                             for index, move in enumerate(pokemon.moves):
                                 pokemon.moves[index].pp = Db.M_db.MovesList[move.name][5]
-                        print("You've been defeated. Your Pokemons have now been healed!")
+                        if not fsm.randomize:
+                            print("You've been defeated. Your Pokemons have now been healed!")
                     fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
             case "Explore":
-                print("You just entered the JUNGLE!")
+                if not fsm.randomize:
+                    print("You just entered the JUNGLE!")
                 prob = 0
                 transitions = list(fsm.G.out_edges(self, data=True))
                 for s, n_state, attr in transitions:
@@ -68,24 +74,28 @@ class State:
                 while choice != "n":
                     outcome_explore = ExploreJungle(prob,fsm)
                     if outcome_explore:
-                        print("\nA wild Pokemon has appeared")
+                        if not fsm.randomize:
+                            print("\nA wild Pokemon has appeared")
                         break
                     else:
-                        print("\nStill no pokemon in sight!")
-                        print("Do you want to keep exploring? (y/n)")
+                        if not fsm.randomize:
+                            print("\nStill no pokemon in sight!")
+                            print("Do you want to keep exploring? (y/n)")
                         choice = (input("> ")).strip().lower()
                 self.outcome = outcome_explore
 
 
             case "Battle":
-                print("You just entered the Battle!")
+                if not fsm.randomize:
+                    print("You just entered the Battle!")
                 if fsm.wild and fsm.randomize:
-                    self.outcome = random_wild_Battle(fsm.trainer)
+                    self.outcome = random_wild_Battle(fsm.trainer,fsm.randomize)
                 elif fsm.wild and not fsm.randomize:
                     self.outcome = wild_Battle(fsm.trainer)
                 pass
             case _:
-                print("Not possible")
+                if not fsm.randomize:
+                    print("Not possible")
                 pass
 
     # Method to select the next state of the FSM
@@ -93,7 +103,8 @@ class State:
     def update(self, choices, *args, **kargs):
         fsm = kargs.get('fsm')
         if not choices:
-            print("No transition possible, machine halting.")
+            if not fsm.randomize:
+                print("No transition possible, machine halting.")
             return None
 
         if fsm.state.name == "Explore":
@@ -136,12 +147,13 @@ class State:
             edge_data = fsm.G[fsm.state][state][0]
             if edge_data.get('type') == 'choice':
                 valid_choices.append(state)
-
-        print(f"You are currently in: {self.name}")
-        print("Where do you want to go? (Possible destinations):")
+        if not fsm.randomize:
+            print(f"You are currently in: {self.name}")
+            print("Where do you want to go? (Possible destinations):")
 
         for index, state in enumerate(valid_choices):
-            print(f"{index + 1})--> {state.name}")
+            if not fsm.randomize:
+                print(f"{index + 1})--> {state.name}")
 
         if fsm.randomize:
             #going to EXPLORE by force
@@ -158,13 +170,16 @@ class State:
                             if index + 1 == int(choice_input):
                                 return valid_choices[index]
                     else:
-                        print("Can't go here! Chose from the list.")
+                        if not fsm.randomize:
+                            print("Can't go here! Chose from the list.")
                         for index, state in enumerate(valid_choices):
                             print(f"{index + 1})--> {state.name}")
                 except ValueError:
-                    print("Can't go here! Chose from the list.")
+                    if not fsm.randomize:
+                        print("Can't go here! Chose from the list.")
                     for index, state in enumerate(valid_choices):
-                        print(f"{index + 1})--> {state.name}")
+                        if not fsm.randomize:
+                            print(f"{index + 1})--> {state.name}")
 
 class FiniteStateMachine:
     def __init__(self):
@@ -311,20 +326,24 @@ def createCharacter(fsm):
 
     random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
     trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
-    print("Select your starter pokémon:")
+    if not fsm.randomize:
+        print("Select your starter pokémon:")
     starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
                       create_playable_pokemon("Charmander", 5),
                       create_playable_pokemon("Squirtle", 5)]
     for pokemon, opt in enumerate(starterPokemon):
-        print(pokemon + 1, ':', opt.name)
+        if not fsm.randomize:
+            print(pokemon + 1, ':', opt.name)
     if fsm.randomize:
         choice = fsm.starter
     else:
         choice = (input("> "))
         while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
-            print("Select between 1 and " + str(len(starterPokemon)) + ":")
+            if not fsm.randomize:
+                print("Select between 1 and " + str(len(starterPokemon)) + ":")
             for pokemon, opt in enumerate(starterPokemon):
-                print(pokemon + 1, ':', opt.name)
+                if not fsm.randomize:
+                    print(pokemon + 1, ':', opt.name)
             choice = (input("> "))
 
     trainer.pk_list.append(starterPokemon[int(choice) - 1])
@@ -333,10 +352,9 @@ def createCharacter(fsm):
     trainer.items = {"heals": heals,
                      "pokeballs": pokeballs}
 
-
-
-    print(f"you selected {trainer.pk_list[0].name}!")
-    print(trainer)
+    if not fsm.randomize:
+        print(f"you selected {trainer.pk_list[0].name}!")
+        print(trainer)
     return trainer
 
 def BuyItems(trainer):
@@ -598,18 +616,17 @@ def wild_Battle(trainer):
 
         trainer.random_stats["num_turns"] += 1
 
-def random_wild_Battle(trainer):
+def random_wild_Battle(trainer,randomize):
     rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
     enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,5)
-    #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Db.P_db.PokemonList[enemy_number-1], 5)], 0,[])
-    print(f"Battle starts against a wild {enemy_pokemon.name}!")
-    #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
+    if not randomize:
+        print(f"Battle starts against a wild {enemy_pokemon.name}!")
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
             trainer.pk_active_index = index
             break
-
-    print("Go " + trainer.pk_list[trainer.pk_active_index].name + "!")
+    if not randomize:
+        print("Go " + trainer.pk_list[trainer.pk_active_index].name + "!")
 
     # TREE INITIALIZATION
 
@@ -625,25 +642,30 @@ def random_wild_Battle(trainer):
         active_pokemon = trainer.pk_list[trainer.pk_active_index]
 
         if active_pokemon.currentHP <= 0:
-            print(f"{active_pokemon.name} fainted!")
+            if not randomize:
+                print(f"{active_pokemon.name} fainted!")
             alive = [pk for pk in trainer.pk_list if pk.currentHP > 0]
             if not alive:
-                print("You have no more usable pokemon! You are dead!")
+                if not randomize:
+                    print("You have no more usable pokemon! You are dead!")
                 return False
 
             new_index = trainer.ChoosePokemonAlive()
             trainer.pk_active_index = new_index
             active_pokemon = trainer.pk_list[trainer.pk_active_index]
-            print(f"Go {active_pokemon.name}!")
+            if not randomize:
+                print(f"Go {active_pokemon.name}!")
 
         if enemy_pokemon.currentHP <= 0:
-            print(f"Wild {enemy_pokemon.name} fainted| You won|")
+            if not randomize:
+                print(f"Wild {enemy_pokemon.name} fainted| You won|")
             return True
 
-        print(f"\n==========================================")
-        print(f"Wild {enemy_pokemon.name} HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
-        print(f"Your {active_pokemon.name} HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
-        print(f"==========================================")
+        if not randomize:
+            print(f"\n==========================================")
+            print(f"Wild {enemy_pokemon.name} HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
+            print(f"Your {active_pokemon.name} HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
+            print(f"==========================================")
 
         choice = None
         # TRAINER TREE
@@ -657,7 +679,7 @@ def random_wild_Battle(trainer):
 
         for move in active_pokemon.moves:
             Node(move.name,
-                 value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
+                 value={"function": lambda m=move: active_pokemon.use_move_random(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
                  print_show = f"{move.pp}/{Db.M_db.MovesList[move.name][5]}")
@@ -698,7 +720,7 @@ def random_wild_Battle(trainer):
 
         for move in enemy_pokemon.moves:
             Node(move.name,
-                 value={"function": lambda m=move: enemy_pokemon.use_move(m, trainer.pk_list[trainer.pk_active_index]),
+                 value={"function": lambda m=move: enemy_pokemon.use_move_random(m, trainer.pk_list[trainer.pk_active_index]),
                         "priority": enemy_pokemon.get_modified_stat("speed")},
                  parent=movesEnemyMenu,
                  print_show = None)
@@ -730,9 +752,8 @@ def random_wild_Battle(trainer):
             else:
                 node_enemy = node_enemy.children[choice_enemy - 1]
 
-
-
-        print("---Turn result---")
+        if not randomize:
+            print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
