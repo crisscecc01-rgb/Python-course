@@ -66,7 +66,7 @@ class State:
                 choice = "y"
                 outcome_explore = False
                 while choice != "n":
-                    outcome_explore = ExploreJungle(prob)
+                    outcome_explore = ExploreJungle(prob,fsm)
                     if outcome_explore:
                         print("\nA wild Pokemon has appeared")
                         break
@@ -175,6 +175,7 @@ class FiniteStateMachine:
         self.trainer = None
         self.randomize = False
         self.wild = True
+        self.starter = "1"
     # Method to initialize the FSM to the start state
     def initialize(self):
         self.state = self.start_state
@@ -320,12 +321,12 @@ def createCharacter(fsm):
         choice = fsm.starter
     else:
         choice = (input("> "))
+        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
+            print("Select between 1 and " + str(len(starterPokemon)) + ":")
+            for pokemon, opt in enumerate(starterPokemon):
+                print(pokemon + 1, ':', opt.name)
+            choice = (input("> "))
 
-    while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
-        print("Select between 1 and " + str(len(starterPokemon)) + ":")
-        for pokemon, opt in enumerate(starterPokemon):
-            print(pokemon + 1, ':', opt.name)
-        choice = (input("> "))
     trainer.pk_list.append(starterPokemon[int(choice) - 1])
     heals = [HealClass("Potion", 10)]
     pokeballs = [PokeBallClass("PokeBall", 10)]
@@ -772,8 +773,11 @@ def DoSomething(function, trainer):
 
     return trainer_done
 
-def ExploreJungle(prob):
-    enemy = random.uniform(0, 1.0)
+def ExploreJungle(prob,fsm):
+    if fsm.randomize:
+        enemy = 0
+    else:
+        enemy = random.uniform(0, 1.0)
     return prob >= enemy
 
 def printMenu(node):

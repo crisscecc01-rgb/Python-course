@@ -39,10 +39,12 @@ def BeginStory(starter,index,story):
     GameEngine.add_transition(Story, PokemonStore, type = "choice")
     GameEngine.add_transition(PokemonStore, Story, type = "choice")
 
-    GameEngine.initialize()
     GameEngine.wild = True
     GameEngine.randomize = False
     GameEngine.stater = starter
+
+    GameEngine.initialize()
+
 
     print("Want to randomize? (y/n)")
     #choice = input("> ").strip().lower()
@@ -64,11 +66,11 @@ def BeginStory(starter,index,story):
     GameEngine.eval_current()
 
     if index < 500:
-        story["Bulbasaur"].append(GameEngine.trainer.rand_stats)
+        story["Bulbasaur"].append(GameEngine.trainer.random_stats)
     if index < 1000:
-        story["Charmander"].append(GameEngine.trainer.rand_stats)
+        story["Charmander"].append(GameEngine.trainer.random_stats)
     if index < 1500:
-        story["Squirtle"].append(GameEngine.trainer.rand_stats)
+        story["Squirtle"].append(GameEngine.trainer.random_stats)
     if index == 1500:
         return story
 
