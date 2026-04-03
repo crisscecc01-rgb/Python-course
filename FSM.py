@@ -431,15 +431,14 @@ def wild_Battle(trainer):
                 print("You have no more usable pokemon! You are dead!")
                 return False
 
-            if enemy_pokemon.currentHP <= 0:
-                print(f"Wild {enemy_pokemon.name} fainted| You won|")
-                return True
-
             new_index = trainer.ChoosePokemonAlive()
             trainer.pk_active_index = new_index
             active_pokemon = trainer.pk_list[trainer.pk_active_index]
             print(f"Go {active_pokemon.name}!")
 
+        if enemy_pokemon.currentHP <= 0:
+            print(f"Wild {enemy_pokemon.name} fainted| You won|")
+            return True
 
 
         print(f"\n==========================================")
@@ -527,7 +526,6 @@ def wild_Battle(trainer):
                 node_enemy = node_enemy.children[choice_enemy - 1]
 
 
-
         print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
             end_battle, keep_turn = node_trainer.value["function"]()
@@ -537,6 +535,8 @@ def wild_Battle(trainer):
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: return True
+                else:
+                    return
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             end_battle, keep_turn = node_enemy.value["function"]()
@@ -556,9 +556,6 @@ def wild_Battle(trainer):
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: return True
-
-
-
 
 
 def DoSomething(function, trainer):
