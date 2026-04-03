@@ -1,11 +1,11 @@
 import json
 import random
-import MovesDatabase
+from . import MovesDatabase
 import os
 
 dir_js = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(dir_js, "pokemons.json"), "r") as f:
+with open(os.path.join(dir_js, "pokemons.json"), "r", encoding="utf-8") as f:
     pokemons_data = json.load(f)
 
 def pick_moves(pokemon_types, n=2):
