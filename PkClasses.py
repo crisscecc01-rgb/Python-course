@@ -4,12 +4,12 @@ import BaseClasses
 
 
 class PokemonTrainerClass:
-    def __init__(self, name, pk_list, pk_active_index, items):
+    def __init__(self, name, pk_list, pk_active_index, items, random_stats):
         self.name = name
         self.pk_list = pk_list
         self.pk_active_index = pk_active_index
         self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
-
+        self.random_stats = random_stats
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
         string = ", ".join(nomi)

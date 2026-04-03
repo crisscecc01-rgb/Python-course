@@ -39,6 +39,15 @@ def BeginStory():
     GameEngine.add_transition(PokemonStore, Story, type = "choice")
 
     GameEngine.initialize()
+    GameEngine.wild = True
+    GameEngine.randomize = False
+
+    print("Want to randomize? (y/n)")
+    choice = input("> ").strip().lower()
+    if "y" == choice:
+        GameEngine.randomize = True
+    elif "n" == choice:
+        GameEngine.randomize = False
 
     while GameEngine.state not in GameEngine.final_states:
 
