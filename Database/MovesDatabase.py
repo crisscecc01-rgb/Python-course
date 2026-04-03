@@ -1,26 +1,9 @@
-from BaseClasses import Move
-MovesList = {
-    "razor wind": Move("razor wind", "normal", "special", 80, 1.0, 10, None),
-    "cut": Move("cut", "normal", "physical", 50, 0.95, 30, None),
-    "bind": Move("bind", "normal", "physical", 15, 0.85, 20, None),
-    "vine whip": Move("vine whip", "grass", "physical", 45, 1.0, 25, None),
-    "headbutt": Move("headbutt", "normal", "physical", 70, 1.0, 15, None),
-    "mega punch": Move("mega punch", "normal", "physical", 80, 0.85, 20, None),
-    "fire punch": Move("fire punch", "fire", "physical", 75, 1.0, 15, None),
-    "thunder punch": Move("thunder punch", "electric", "physical", 75, 1.0, 15, None),
-    "scratch": Move("scratch", "normal", "physical", 40, 1.0, 35, None),
-    "ice punch": Move("ice punch", "ice", "physical", 75, 1.0, 15, None),
-    "mega kick": Move("mega kick", "normal", "physical", 120, 0.75, 5, None),
-    "tackle": Move("tackle", "normal", "physical", 40, 1.0, 35, None),
-    "snore": Move("snore", "normal", "special", 50, 1.0, 15, None),
-    "bug bite": Move("bug bite", "bug", "physical", 60, 1.0, 20, None),
-    "electroweb": Move("electroweb", "electric", "special", 55, 0.95, 15, {"target_stat": ["opponent", "speed"], "change": [-1]}),
-    "gust": Move("gust", "flying", "special", 40, 1.0, 35, None),
-    "poison sting": Move("poison sting", "poison", "physical", 15, 1.0, 35, None),
-    "fury attack": Move("fury attack", "normal", "physical", 15, 0.85, 20, None),
-    "take down": Move("take down", "normal", "physical", 90, 0.85, 20, None),
-    "wing attack": Move("wing attack", "flying", "physical", 60, 1.0, 35, None),
-    "fly": Move("fly", "flying", "physical", 90, 0.95, 15, None),
-    "body slam": Move("body slam", "normal", "physical", 85, 1.0, 15, None),
-    "slam": Move("slam", "normal", "physical", 80, 0.75, 20, None),
-}
+import json
+import os
+
+dir_js = os.path.dirname(os.path.abspath(__file__))
+
+with open(os.path.join(dir_js, "moves.json"), "r") as f:
+    data = json.load(f)
+
+MovesList = {name: list(move.values()) for name, move in data.items()}

@@ -1,9 +1,9 @@
-from Database import ItemsDb as Item_db
+import Database as Db
 
 class HealClass:
     def __init__(self, name, number):
         self.name = name
-        self.effect = Item_db.heals_dict[name]
+        self.effect = Db.I_db.heals_dict[name]
         self.number = number
 
     def __str__(self):
@@ -14,7 +14,7 @@ class HealClass:
 class PokeBallClass:
     def __init__(self, name, number):
         self.name = name
-        self.catch_rate = Item_db.pokeball_dict[name]
+        self.catch_rate = Db.I_db.pokeball_dict[name]
         self.number = number
 
     def __str__(self):
@@ -33,13 +33,17 @@ class Move:
         self.pp = pp
         self.effect = effect
 
-    def move_copy(self):
-        return Move(
-            self.name,
-            self.type,
-            self.category,
-            self.power,
-            self.accuracy,
-            self.pp,
-            effect=self.effect.copy() if self.effect else None
-        )
+def move_copy(move_list):
+    return Move(move_list[0],
+                move_list[1],
+                move_list[2],
+                move_list[3],
+                move_list[4],
+                move_list[5],
+                move_list[6].copy() if move_list[6] else None
+            )
+
+
+
+
+

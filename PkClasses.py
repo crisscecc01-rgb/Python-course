@@ -1,6 +1,6 @@
 import random
-from Database import MovesDatabase as Mdb
-from Database import PkTypesDatabase as PkT_db
+import Database as Db
+import BaseClasses
 
 
 class PokemonTrainerClass:
@@ -227,9 +227,9 @@ class PokemonCharacterClass:
     def calc_effectiveness(move, opponent):
         eff = 1.0
         for t in opponent.types:
-            if move.type in PkT_db.TYPE_CHART:
-                if t.lower() in PkT_db.TYPE_CHART[move.type]:
-                    eff = eff * PkT_db.TYPE_CHART[move.type][t.lower()]
+            if move.type in Db.Pt_db.TYPE_CHART:
+                if t.lower() in Db.Pt_db.TYPE_CHART[move.type]:
+                    eff = eff * Db.Pt_db.TYPE_CHART[move.type][t.lower()]
                 else:
                     # print(f"Opponent type ({opponent.types}) in not registered for effectiveness evaluation")
                     eff *= 1
@@ -249,30 +249,19 @@ class PokemonCharacterClass:
     def calc_luck():
         return random.uniform(0.85, 1.0)
 
-class PokemonBase:
-    def __init__(self,pokedex_number, name, types, base_stats,moves):
-        self.pokedex_number = pokedex_number
-        self.name = name
-        self.types = types
-        self.base_stats = base_stats
-        self.moves = moves
 
-    #creates a playable pokémon
-    def create_playable_pokemon(self, level):
-        stats_copy = dict(self.base_stats)
-        current_hp = int(stats_copy["hp"])
-        move_objects = [Mdb.MovesList[name].move_copy() for name in self.moves]
-        return PokemonCharacterClass(
-            name= self.name,
-            level=level,
-            types=self.types,
-            stats=stats_copy,
-            moves=move_objects,
-            modifiers={
-            "attack": 0,
-            "defense": 0,
-            "speed": 0,
-            "special": 0
-            },
-            currentHP=current_hp
-        )
+def create_playable_pokemon(name_pokemon, level):
+    move_objects = [BaseClasses.move_copy(Db.M_db.MovesList[name]) for name in Db.P_db.PokemonList[name_pokemon][4]]
+    return PokemonCharacterClass(Db.P_db.PokemonList[name_pokemon][1],
+                                 level,
+                                 Db.P_db.PokemonList[name_pokemon][2],
+                                 Db.P_db.PokemonList[name_pokemon][3],
+                                 {"attack": 0,"defense": 0,"speed": 0,"special": 0},
+                                 move_objects,
+                                 Db.P_db.PokemonList[name_pokemon][3]["hp"],
+                                 )
+
+
+
+
+
