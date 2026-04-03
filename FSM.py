@@ -433,7 +433,7 @@ def wild_Battle(trainer):
 
             if enemy_pokemon.currentHP <= 0:
                 print(f"Wild {enemy_pokemon.name} fainted| You won|")
-                return False
+                return True
 
             new_index = trainer.ChoosePokemonAlive()
             trainer.pk_active_index = new_index
