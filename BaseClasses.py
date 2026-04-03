@@ -40,7 +40,7 @@ def move_copy(move_list):
                 move_list[3],
                 move_list[4],
                 move_list[5],
-                move_list[6].copy() if move_list[6] else None
+                None
             )
 
 

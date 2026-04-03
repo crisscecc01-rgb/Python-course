@@ -10,7 +10,7 @@ with open(os.path.join(dir_js, "pokemons.json"), "r", encoding="utf-8") as f:
 
 def pick_moves(pokemon_types, n=2):
     allowed_types = set(t for t in pokemon_types) | {"normal"}
-    pool = [name for name, move in MovesDatabase.MovesList.items() if move[1] in allowed_types]
+    pool = [name for name, move in MovesDatabase.MovesList.items() if move[1] in allowed_types and move[3] is not None]
     return tuple(random.sample(pool, min(n, len(pool))))
 
 

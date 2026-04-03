@@ -1,0 +1,2183 @@
+{
+    "Abra": [
+        63,
+        "Abra",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 25,
+            "attack": 20,
+            "defense": 15,
+            "speed": 90,
+            "special": 105
+        }
+    ],
+    "Aerodactyl": [
+        142,
+        "Aerodactyl",
+        [
+            "rock",
+            "flying"
+        ],
+        {
+            "hp": 80,
+            "attack": 105,
+            "defense": 65,
+            "speed": 130,
+            "special": 60
+        }
+    ],
+    "Alakazam": [
+        65,
+        "Alakazam",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 55,
+            "attack": 50,
+            "defense": 45,
+            "speed": 120,
+            "special": 135
+        }
+    ],
+    "Arbok": [
+        24,
+        "Arbok",
+        [
+            "poison"
+        ],
+        {
+            "hp": 60,
+            "attack": 85,
+            "defense": 69,
+            "speed": 80,
+            "special": 65
+        }
+    ],
+    "Arcanine": [
+        59,
+        "Arcanine",
+        [
+            "fire"
+        ],
+        {
+            "hp": 90,
+            "attack": 110,
+            "defense": 80,
+            "speed": 95,
+            "special": 80
+        }
+    ],
+    "Articuno": [
+        144,
+        "Articuno",
+        [
+            "ice",
+            "flying"
+        ],
+        {
+            "hp": 90,
+            "attack": 85,
+            "defense": 100,
+            "speed": 85,
+            "special": 125
+        }
+    ],
+    "Beedrill": [
+        15,
+        "Beedrill",
+        [
+            "bug",
+            "poison"
+        ],
+        {
+            "hp": 65,
+            "attack": 80,
+            "defense": 40,
+            "speed": 75,
+            "special": 45
+        }
+    ],
+    "Bellsprout": [
+        69,
+        "Bellsprout",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 50,
+            "attack": 75,
+            "defense": 35,
+            "speed": 40,
+            "special": 70
+        }
+    ],
+    "Blastoise": [
+        9,
+        "Blastoise",
+        [
+            "water"
+        ],
+        {
+            "hp": 79,
+            "attack": 83,
+            "defense": 100,
+            "speed": 78,
+            "special": 85
+        }
+    ],
+    "Bulbasaur": [
+        1,
+        "Bulbasaur",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 45,
+            "attack": 49,
+            "defense": 49,
+            "speed": 45,
+            "special": 65
+        }
+    ],
+    "Butterfree": [
+        12,
+        "Butterfree",
+        [
+            "bug",
+            "flying"
+        ],
+        {
+            "hp": 60,
+            "attack": 45,
+            "defense": 50,
+            "speed": 70,
+            "special": 80
+        }
+    ],
+    "Caterpie": [
+        10,
+        "Caterpie",
+        [
+            "bug"
+        ],
+        {
+            "hp": 45,
+            "attack": 30,
+            "defense": 35,
+            "speed": 45,
+            "special": 20
+        }
+    ],
+    "Chansey": [
+        113,
+        "Chansey",
+        [
+            "normal"
+        ],
+        {
+            "hp": 250,
+            "attack": 5,
+            "defense": 5,
+            "speed": 50,
+            "special": 105
+        }
+    ],
+    "Charizard": [
+        6,
+        "Charizard",
+        [
+            "fire",
+            "flying"
+        ],
+        {
+            "hp": 78,
+            "attack": 84,
+            "defense": 78,
+            "speed": 100,
+            "special": 85
+        }
+    ],
+    "Charmander": [
+        4,
+        "Charmander",
+        [
+            "fire"
+        ],
+        {
+            "hp": 39,
+            "attack": 52,
+            "defense": 43,
+            "speed": 65,
+            "special": 50
+        }
+    ],
+    "Charmeleon": [
+        5,
+        "Charmeleon",
+        [
+            "fire"
+        ],
+        {
+            "hp": 58,
+            "attack": 64,
+            "defense": 58,
+            "speed": 80,
+            "special": 65
+        }
+    ],
+    "Clefable": [
+        36,
+        "Clefable",
+        [
+            "fairy"
+        ],
+        {
+            "hp": 95,
+            "attack": 70,
+            "defense": 73,
+            "speed": 60,
+            "special": 85
+        }
+    ],
+    "Clefairy": [
+        35,
+        "Clefairy",
+        [
+            "fairy"
+        ],
+        {
+            "hp": 70,
+            "attack": 45,
+            "defense": 48,
+            "speed": 35,
+            "special": 60
+        }
+    ],
+    "Cloyster": [
+        91,
+        "Cloyster",
+        [
+            "water",
+            "ice"
+        ],
+        {
+            "hp": 50,
+            "attack": 95,
+            "defense": 180,
+            "speed": 70,
+            "special": 85
+        }
+    ],
+    "Cubone": [
+        104,
+        "Cubone",
+        [
+            "ground"
+        ],
+        {
+            "hp": 50,
+            "attack": 50,
+            "defense": 95,
+            "speed": 35,
+            "special": 40
+        }
+    ],
+    "Dewgong": [
+        87,
+        "Dewgong",
+        [
+            "water",
+            "ice"
+        ],
+        {
+            "hp": 90,
+            "attack": 70,
+            "defense": 80,
+            "speed": 70,
+            "special": 95
+        }
+    ],
+    "Diglett": [
+        50,
+        "Diglett",
+        [
+            "ground"
+        ],
+        {
+            "hp": 10,
+            "attack": 55,
+            "defense": 25,
+            "speed": 95,
+            "special": 45
+        }
+    ],
+    "Ditto": [
+        132,
+        "Ditto",
+        [
+            "normal"
+        ],
+        {
+            "hp": 48,
+            "attack": 48,
+            "defense": 48,
+            "speed": 48,
+            "special": 48
+        }
+    ],
+    "Dodrio": [
+        85,
+        "Dodrio",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 60,
+            "attack": 110,
+            "defense": 70,
+            "speed": 100,
+            "special": 60
+        }
+    ],
+    "Doduo": [
+        84,
+        "Doduo",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 35,
+            "attack": 85,
+            "defense": 45,
+            "speed": 75,
+            "special": 35
+        }
+    ],
+    "Dragonair": [
+        148,
+        "Dragonair",
+        [
+            "dragon"
+        ],
+        {
+            "hp": 61,
+            "attack": 84,
+            "defense": 65,
+            "speed": 70,
+            "special": 70
+        }
+    ],
+    "Dragonite": [
+        149,
+        "Dragonite",
+        [
+            "dragon",
+            "flying"
+        ],
+        {
+            "hp": 91,
+            "attack": 134,
+            "defense": 95,
+            "speed": 80,
+            "special": 100
+        }
+    ],
+    "Dratini": [
+        147,
+        "Dratini",
+        [
+            "dragon"
+        ],
+        {
+            "hp": 41,
+            "attack": 64,
+            "defense": 45,
+            "speed": 50,
+            "special": 50
+        }
+    ],
+    "Drowzee": [
+        96,
+        "Drowzee",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 60,
+            "attack": 48,
+            "defense": 45,
+            "speed": 42,
+            "special": 90
+        }
+    ],
+    "Dugtrio": [
+        51,
+        "Dugtrio",
+        [
+            "ground"
+        ],
+        {
+            "hp": 35,
+            "attack": 80,
+            "defense": 50,
+            "speed": 120,
+            "special": 70
+        }
+    ],
+    "Eevee": [
+        133,
+        "Eevee",
+        [
+            "normal"
+        ],
+        {
+            "hp": 55,
+            "attack": 55,
+            "defense": 50,
+            "speed": 55,
+            "special": 65
+        }
+    ],
+    "Ekans": [
+        23,
+        "Ekans",
+        [
+            "poison"
+        ],
+        {
+            "hp": 35,
+            "attack": 60,
+            "defense": 44,
+            "speed": 55,
+            "special": 40
+        }
+    ],
+    "Electabuzz": [
+        125,
+        "Electabuzz",
+        [
+            "electric"
+        ],
+        {
+            "hp": 65,
+            "attack": 83,
+            "defense": 57,
+            "speed": 105,
+            "special": 85
+        }
+    ],
+    "Electrode": [
+        101,
+        "Electrode",
+        [
+            "electric"
+        ],
+        {
+            "hp": 60,
+            "attack": 50,
+            "defense": 70,
+            "speed": 140,
+            "special": 80
+        }
+    ],
+    "Exeggcute": [
+        102,
+        "Exeggcute",
+        [
+            "grass",
+            "psychic"
+        ],
+        {
+            "hp": 60,
+            "attack": 40,
+            "defense": 80,
+            "speed": 40,
+            "special": 60
+        }
+    ],
+    "Exeggutor": [
+        103,
+        "Exeggutor",
+        [
+            "grass",
+            "psychic"
+        ],
+        {
+            "hp": 95,
+            "attack": 95,
+            "defense": 85,
+            "speed": 55,
+            "special": 125
+        }
+    ],
+    "Farfetch'd": [
+        83,
+        "Farfetch'd",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 52,
+            "attack": 65,
+            "defense": 55,
+            "speed": 60,
+            "special": 58
+        }
+    ],
+    "Fearow": [
+        22,
+        "Fearow",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 65,
+            "attack": 90,
+            "defense": 65,
+            "speed": 100,
+            "special": 61
+        }
+    ],
+    "Flareon": [
+        136,
+        "Flareon",
+        [
+            "fire"
+        ],
+        {
+            "hp": 65,
+            "attack": 130,
+            "defense": 60,
+            "speed": 65,
+            "special": 110
+        }
+    ],
+    "Gastly": [
+        92,
+        "Gastly",
+        [
+            "ghost",
+            "poison"
+        ],
+        {
+            "hp": 30,
+            "attack": 35,
+            "defense": 30,
+            "speed": 80,
+            "special": 100
+        }
+    ],
+    "Gengar": [
+        94,
+        "Gengar",
+        [
+            "ghost",
+            "poison"
+        ],
+        {
+            "hp": 60,
+            "attack": 65,
+            "defense": 60,
+            "speed": 110,
+            "special": 130
+        }
+    ],
+    "Geodude": [
+        74,
+        "Geodude",
+        [
+            "rock",
+            "ground"
+        ],
+        {
+            "hp": 40,
+            "attack": 80,
+            "defense": 100,
+            "speed": 20,
+            "special": 30
+        }
+    ],
+    "Gloom": [
+        44,
+        "Gloom",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 60,
+            "attack": 65,
+            "defense": 70,
+            "speed": 40,
+            "special": 85
+        }
+    ],
+    "Golbat": [
+        42,
+        "Golbat",
+        [
+            "poison",
+            "flying"
+        ],
+        {
+            "hp": 75,
+            "attack": 80,
+            "defense": 70,
+            "speed": 90,
+            "special": 75
+        }
+    ],
+    "Goldeen": [
+        118,
+        "Goldeen",
+        [
+            "water"
+        ],
+        {
+            "hp": 45,
+            "attack": 67,
+            "defense": 60,
+            "speed": 63,
+            "special": 50
+        }
+    ],
+    "Golduck": [
+        55,
+        "Golduck",
+        [
+            "water"
+        ],
+        {
+            "hp": 80,
+            "attack": 82,
+            "defense": 78,
+            "speed": 85,
+            "special": 80
+        }
+    ],
+    "Golem": [
+        76,
+        "Golem",
+        [
+            "rock",
+            "ground"
+        ],
+        {
+            "hp": 80,
+            "attack": 110,
+            "defense": 130,
+            "speed": 45,
+            "special": 55
+        }
+    ],
+    "Graveler": [
+        75,
+        "Graveler",
+        [
+            "rock",
+            "ground"
+        ],
+        {
+            "hp": 55,
+            "attack": 95,
+            "defense": 115,
+            "speed": 35,
+            "special": 45
+        }
+    ],
+    "Grimer": [
+        88,
+        "Grimer",
+        [
+            "poison"
+        ],
+        {
+            "hp": 80,
+            "attack": 80,
+            "defense": 50,
+            "speed": 25,
+            "special": 40
+        }
+    ],
+    "Growlithe": [
+        58,
+        "Growlithe",
+        [
+            "fire"
+        ],
+        {
+            "hp": 55,
+            "attack": 70,
+            "defense": 45,
+            "speed": 60,
+            "special": 50
+        }
+    ],
+    "Gyarados": [
+        130,
+        "Gyarados",
+        [
+            "water",
+            "flying"
+        ],
+        {
+            "hp": 95,
+            "attack": 125,
+            "defense": 79,
+            "speed": 81,
+            "special": 100
+        }
+    ],
+    "Haunter": [
+        93,
+        "Haunter",
+        [
+            "ghost",
+            "poison"
+        ],
+        {
+            "hp": 45,
+            "attack": 50,
+            "defense": 45,
+            "speed": 95,
+            "special": 115
+        }
+    ],
+    "Hitmonchan": [
+        107,
+        "Hitmonchan",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 50,
+            "attack": 105,
+            "defense": 79,
+            "speed": 76,
+            "special": 35
+        }
+    ],
+    "Hitmonlee": [
+        106,
+        "Hitmonlee",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 50,
+            "attack": 120,
+            "defense": 53,
+            "speed": 87,
+            "special": 35
+        }
+    ],
+    "Horsea": [
+        116,
+        "Horsea",
+        [
+            "water"
+        ],
+        {
+            "hp": 30,
+            "attack": 40,
+            "defense": 70,
+            "speed": 60,
+            "special": 70
+        }
+    ],
+    "Hypno": [
+        97,
+        "Hypno",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 85,
+            "attack": 73,
+            "defense": 70,
+            "speed": 67,
+            "special": 115
+        }
+    ],
+    "Ivysaur": [
+        2,
+        "Ivysaur",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 60,
+            "attack": 62,
+            "defense": 63,
+            "speed": 60,
+            "special": 80
+        }
+    ],
+    "Jigglypuff": [
+        39,
+        "Jigglypuff",
+        [
+            "normal",
+            "fairy"
+        ],
+        {
+            "hp": 115,
+            "attack": 45,
+            "defense": 20,
+            "speed": 20,
+            "special": 25
+        }
+    ],
+    "Jolteon": [
+        135,
+        "Jolteon",
+        [
+            "electric"
+        ],
+        {
+            "hp": 65,
+            "attack": 65,
+            "defense": 60,
+            "speed": 130,
+            "special": 110
+        }
+    ],
+    "Jynx": [
+        124,
+        "Jynx",
+        [
+            "ice",
+            "psychic"
+        ],
+        {
+            "hp": 65,
+            "attack": 50,
+            "defense": 35,
+            "speed": 95,
+            "special": 95
+        }
+    ],
+    "Kabuto": [
+        140,
+        "Kabuto",
+        [
+            "rock",
+            "water"
+        ],
+        {
+            "hp": 30,
+            "attack": 80,
+            "defense": 90,
+            "speed": 55,
+            "special": 45
+        }
+    ],
+    "Kabutops": [
+        141,
+        "Kabutops",
+        [
+            "rock",
+            "water"
+        ],
+        {
+            "hp": 60,
+            "attack": 115,
+            "defense": 105,
+            "speed": 80,
+            "special": 70
+        }
+    ],
+    "Kadabra": [
+        64,
+        "Kadabra",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 40,
+            "attack": 35,
+            "defense": 30,
+            "speed": 105,
+            "special": 120
+        }
+    ],
+    "Kakuna": [
+        14,
+        "Kakuna",
+        [
+            "bug",
+            "poison"
+        ],
+        {
+            "hp": 45,
+            "attack": 25,
+            "defense": 50,
+            "speed": 35,
+            "special": 25
+        }
+    ],
+    "Kangaskhan": [
+        115,
+        "Kangaskhan",
+        [
+            "normal"
+        ],
+        {
+            "hp": 105,
+            "attack": 95,
+            "defense": 80,
+            "speed": 90,
+            "special": 40
+        }
+    ],
+    "Kingler": [
+        99,
+        "Kingler",
+        [
+            "water"
+        ],
+        {
+            "hp": 55,
+            "attack": 130,
+            "defense": 115,
+            "speed": 75,
+            "special": 50
+        }
+    ],
+    "Koffing": [
+        109,
+        "Koffing",
+        [
+            "poison"
+        ],
+        {
+            "hp": 40,
+            "attack": 65,
+            "defense": 95,
+            "speed": 35,
+            "special": 60
+        }
+    ],
+    "Krabby": [
+        98,
+        "Krabby",
+        [
+            "water"
+        ],
+        {
+            "hp": 30,
+            "attack": 105,
+            "defense": 90,
+            "speed": 50,
+            "special": 25
+        }
+    ],
+    "Lapras": [
+        131,
+        "Lapras",
+        [
+            "water",
+            "ice"
+        ],
+        {
+            "hp": 130,
+            "attack": 85,
+            "defense": 80,
+            "speed": 60,
+            "special": 95
+        }
+    ],
+    "Lickitung": [
+        108,
+        "Lickitung",
+        [
+            "normal"
+        ],
+        {
+            "hp": 90,
+            "attack": 55,
+            "defense": 75,
+            "speed": 30,
+            "special": 60
+        }
+    ],
+    "Machamp": [
+        68,
+        "Machamp",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 90,
+            "attack": 130,
+            "defense": 80,
+            "speed": 55,
+            "special": 65
+        }
+    ],
+    "Machoke": [
+        67,
+        "Machoke",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 80,
+            "attack": 100,
+            "defense": 70,
+            "speed": 45,
+            "special": 50
+        }
+    ],
+    "Machop": [
+        66,
+        "Machop",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 70,
+            "attack": 80,
+            "defense": 50,
+            "speed": 35,
+            "special": 35
+        }
+    ],
+    "Magikarp": [
+        129,
+        "Magikarp",
+        [
+            "water"
+        ],
+        {
+            "hp": 20,
+            "attack": 10,
+            "defense": 55,
+            "speed": 80,
+            "special": 20
+        }
+    ],
+    "Magmar": [
+        126,
+        "Magmar",
+        [
+            "fire"
+        ],
+        {
+            "hp": 65,
+            "attack": 95,
+            "defense": 57,
+            "speed": 93,
+            "special": 85
+        }
+    ],
+    "Magnemite": [
+        81,
+        "Magnemite",
+        [
+            "electric",
+            "steel"
+        ],
+        {
+            "hp": 25,
+            "attack": 35,
+            "defense": 70,
+            "speed": 45,
+            "special": 95
+        }
+    ],
+    "Magneton": [
+        82,
+        "Magneton",
+        [
+            "electric",
+            "steel"
+        ],
+        {
+            "hp": 50,
+            "attack": 60,
+            "defense": 95,
+            "speed": 70,
+            "special": 120
+        }
+    ],
+    "Mankey": [
+        56,
+        "Mankey",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 40,
+            "attack": 80,
+            "defense": 35,
+            "speed": 70,
+            "special": 35
+        }
+    ],
+    "Marowak": [
+        105,
+        "Marowak",
+        [
+            "ground"
+        ],
+        {
+            "hp": 60,
+            "attack": 80,
+            "defense": 110,
+            "speed": 45,
+            "special": 50
+        }
+    ],
+    "Meowth": [
+        52,
+        "Meowth",
+        [
+            "normal"
+        ],
+        {
+            "hp": 40,
+            "attack": 45,
+            "defense": 35,
+            "speed": 90,
+            "special": 40
+        }
+    ],
+    "Metapod": [
+        11,
+        "Metapod",
+        [
+            "bug"
+        ],
+        {
+            "hp": 50,
+            "attack": 20,
+            "defense": 55,
+            "speed": 30,
+            "special": 25
+        }
+    ],
+    "Mew": [
+        151,
+        "Mew",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 100,
+            "attack": 100,
+            "defense": 100,
+            "speed": 100,
+            "special": 100
+        }
+    ],
+    "Mewtwo": [
+        150,
+        "Mewtwo",
+        [
+            "psychic"
+        ],
+        {
+            "hp": 106,
+            "attack": 110,
+            "defense": 90,
+            "speed": 130,
+            "special": 154
+        }
+    ],
+    "Moltres": [
+        146,
+        "Moltres",
+        [
+            "fire",
+            "flying"
+        ],
+        {
+            "hp": 90,
+            "attack": 100,
+            "defense": 90,
+            "speed": 90,
+            "special": 125
+        }
+    ],
+    "Mr. mime": [
+        122,
+        "Mr. mime",
+        [
+            "psychic",
+            "fairy"
+        ],
+        {
+            "hp": 40,
+            "attack": 45,
+            "defense": 65,
+            "speed": 90,
+            "special": 100
+        }
+    ],
+    "Muk": [
+        89,
+        "Muk",
+        [
+            "poison"
+        ],
+        {
+            "hp": 105,
+            "attack": 105,
+            "defense": 75,
+            "speed": 50,
+            "special": 65
+        }
+    ],
+    "Nidoking": [
+        34,
+        "Nidoking",
+        [
+            "poison",
+            "ground"
+        ],
+        {
+            "hp": 81,
+            "attack": 92,
+            "defense": 77,
+            "speed": 85,
+            "special": 75
+        }
+    ],
+    "Nidoqueen": [
+        31,
+        "Nidoqueen",
+        [
+            "poison",
+            "ground"
+        ],
+        {
+            "hp": 90,
+            "attack": 82,
+            "defense": 87,
+            "speed": 76,
+            "special": 75
+        }
+    ],
+    "Nidoran♀": [
+        29,
+        "Nidoran♀",
+        [
+            "poison"
+        ],
+        {
+            "hp": 55,
+            "attack": 47,
+            "defense": 52,
+            "speed": 41,
+            "special": 40
+        }
+    ],
+    "Nidoran♂": [
+        32,
+        "Nidoran♂",
+        [
+            "poison"
+        ],
+        {
+            "hp": 46,
+            "attack": 57,
+            "defense": 40,
+            "speed": 50,
+            "special": 40
+        }
+    ],
+    "Nidorina": [
+        30,
+        "Nidorina",
+        [
+            "poison"
+        ],
+        {
+            "hp": 70,
+            "attack": 62,
+            "defense": 67,
+            "speed": 56,
+            "special": 55
+        }
+    ],
+    "Nidorino": [
+        33,
+        "Nidorino",
+        [
+            "poison"
+        ],
+        {
+            "hp": 61,
+            "attack": 72,
+            "defense": 57,
+            "speed": 65,
+            "special": 55
+        }
+    ],
+    "Ninetales": [
+        38,
+        "Ninetales",
+        [
+            "fire"
+        ],
+        {
+            "hp": 73,
+            "attack": 76,
+            "defense": 75,
+            "speed": 100,
+            "special": 100
+        }
+    ],
+    "Oddish": [
+        43,
+        "Oddish",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 45,
+            "attack": 50,
+            "defense": 55,
+            "speed": 30,
+            "special": 75
+        }
+    ],
+    "Omanyte": [
+        138,
+        "Omanyte",
+        [
+            "rock",
+            "water"
+        ],
+        {
+            "hp": 35,
+            "attack": 40,
+            "defense": 100,
+            "speed": 35,
+            "special": 90
+        }
+    ],
+    "Omastar": [
+        139,
+        "Omastar",
+        [
+            "rock",
+            "water"
+        ],
+        {
+            "hp": 70,
+            "attack": 60,
+            "defense": 125,
+            "speed": 55,
+            "special": 115
+        }
+    ],
+    "Onix": [
+        95,
+        "Onix",
+        [
+            "rock",
+            "ground"
+        ],
+        {
+            "hp": 35,
+            "attack": 45,
+            "defense": 160,
+            "speed": 70,
+            "special": 30
+        }
+    ],
+    "Paras": [
+        46,
+        "Paras",
+        [
+            "bug",
+            "grass"
+        ],
+        {
+            "hp": 35,
+            "attack": 70,
+            "defense": 55,
+            "speed": 25,
+            "special": 55
+        }
+    ],
+    "Parasect": [
+        47,
+        "Parasect",
+        [
+            "bug",
+            "grass"
+        ],
+        {
+            "hp": 60,
+            "attack": 95,
+            "defense": 80,
+            "speed": 30,
+            "special": 80
+        }
+    ],
+    "Persian": [
+        53,
+        "Persian",
+        [
+            "normal"
+        ],
+        {
+            "hp": 65,
+            "attack": 70,
+            "defense": 60,
+            "speed": 115,
+            "special": 65
+        }
+    ],
+    "Pidgeot": [
+        18,
+        "Pidgeot",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 83,
+            "attack": 80,
+            "defense": 75,
+            "speed": 91,
+            "special": 70
+        }
+    ],
+    "Pidgeotto": [
+        17,
+        "Pidgeotto",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 63,
+            "attack": 60,
+            "defense": 55,
+            "speed": 71,
+            "special": 50
+        }
+    ],
+    "Pidgey": [
+        16,
+        "Pidgey",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 40,
+            "attack": 45,
+            "defense": 40,
+            "speed": 56,
+            "special": 35
+        }
+    ],
+    "Pikachu": [
+        25,
+        "Pikachu",
+        [
+            "electric"
+        ],
+        {
+            "hp": 35,
+            "attack": 55,
+            "defense": 30,
+            "speed": 90,
+            "special": 50
+        }
+    ],
+    "Pinsir": [
+        127,
+        "Pinsir",
+        [
+            "bug"
+        ],
+        {
+            "hp": 65,
+            "attack": 125,
+            "defense": 100,
+            "speed": 85,
+            "special": 55
+        }
+    ],
+    "Poliwag": [
+        60,
+        "Poliwag",
+        [
+            "water"
+        ],
+        {
+            "hp": 40,
+            "attack": 50,
+            "defense": 40,
+            "speed": 90,
+            "special": 40
+        }
+    ],
+    "Poliwhirl": [
+        61,
+        "Poliwhirl",
+        [
+            "water"
+        ],
+        {
+            "hp": 65,
+            "attack": 65,
+            "defense": 65,
+            "speed": 90,
+            "special": 50
+        }
+    ],
+    "Poliwrath": [
+        62,
+        "Poliwrath",
+        [
+            "water",
+            "fighting"
+        ],
+        {
+            "hp": 90,
+            "attack": 85,
+            "defense": 95,
+            "speed": 70,
+            "special": 70
+        }
+    ],
+    "Ponyta": [
+        77,
+        "Ponyta",
+        [
+            "fire"
+        ],
+        {
+            "hp": 50,
+            "attack": 85,
+            "defense": 55,
+            "speed": 90,
+            "special": 65
+        }
+    ],
+    "Porygon": [
+        137,
+        "Porygon",
+        [
+            "normal"
+        ],
+        {
+            "hp": 65,
+            "attack": 60,
+            "defense": 70,
+            "speed": 40,
+            "special": 75
+        }
+    ],
+    "Primeape": [
+        57,
+        "Primeape",
+        [
+            "fighting"
+        ],
+        {
+            "hp": 65,
+            "attack": 105,
+            "defense": 60,
+            "speed": 95,
+            "special": 60
+        }
+    ],
+    "Psyduck": [
+        54,
+        "Psyduck",
+        [
+            "water"
+        ],
+        {
+            "hp": 50,
+            "attack": 52,
+            "defense": 48,
+            "speed": 55,
+            "special": 50
+        }
+    ],
+    "Raichu": [
+        26,
+        "Raichu",
+        [
+            "electric"
+        ],
+        {
+            "hp": 60,
+            "attack": 90,
+            "defense": 55,
+            "speed": 100,
+            "special": 90
+        }
+    ],
+    "Rapidash": [
+        78,
+        "Rapidash",
+        [
+            "fire"
+        ],
+        {
+            "hp": 65,
+            "attack": 100,
+            "defense": 70,
+            "speed": 105,
+            "special": 80
+        }
+    ],
+    "Raticate": [
+        20,
+        "Raticate",
+        [
+            "normal"
+        ],
+        {
+            "hp": 55,
+            "attack": 81,
+            "defense": 60,
+            "speed": 97,
+            "special": 50
+        }
+    ],
+    "Rattata": [
+        19,
+        "Rattata",
+        [
+            "normal"
+        ],
+        {
+            "hp": 30,
+            "attack": 56,
+            "defense": 35,
+            "speed": 72,
+            "special": 25
+        }
+    ],
+    "Rhydon": [
+        112,
+        "Rhydon",
+        [
+            "ground",
+            "rock"
+        ],
+        {
+            "hp": 105,
+            "attack": 130,
+            "defense": 120,
+            "speed": 40,
+            "special": 45
+        }
+    ],
+    "Rhyhorn": [
+        111,
+        "Rhyhorn",
+        [
+            "ground",
+            "rock"
+        ],
+        {
+            "hp": 80,
+            "attack": 85,
+            "defense": 95,
+            "speed": 25,
+            "special": 30
+        }
+    ],
+    "Sandshrew": [
+        27,
+        "Sandshrew",
+        [
+            "ground"
+        ],
+        {
+            "hp": 50,
+            "attack": 75,
+            "defense": 85,
+            "speed": 40,
+            "special": 30
+        }
+    ],
+    "Sandslash": [
+        28,
+        "Sandslash",
+        [
+            "ground"
+        ],
+        {
+            "hp": 75,
+            "attack": 100,
+            "defense": 110,
+            "speed": 65,
+            "special": 55
+        }
+    ],
+    "Scyther": [
+        123,
+        "Scyther",
+        [
+            "bug",
+            "flying"
+        ],
+        {
+            "hp": 70,
+            "attack": 110,
+            "defense": 80,
+            "speed": 105,
+            "special": 55
+        }
+    ],
+    "Seadra": [
+        117,
+        "Seadra",
+        [
+            "water"
+        ],
+        {
+            "hp": 55,
+            "attack": 65,
+            "defense": 95,
+            "speed": 85,
+            "special": 95
+        }
+    ],
+    "Seaking": [
+        119,
+        "Seaking",
+        [
+            "water"
+        ],
+        {
+            "hp": 80,
+            "attack": 92,
+            "defense": 65,
+            "speed": 68,
+            "special": 80
+        }
+    ],
+    "Seel": [
+        86,
+        "Seel",
+        [
+            "water"
+        ],
+        {
+            "hp": 65,
+            "attack": 45,
+            "defense": 55,
+            "speed": 45,
+            "special": 70
+        }
+    ],
+    "Shellder": [
+        90,
+        "Shellder",
+        [
+            "water"
+        ],
+        {
+            "hp": 30,
+            "attack": 65,
+            "defense": 100,
+            "speed": 40,
+            "special": 45
+        }
+    ],
+    "Slowbro": [
+        80,
+        "Slowbro",
+        [
+            "water",
+            "psychic"
+        ],
+        {
+            "hp": 95,
+            "attack": 75,
+            "defense": 110,
+            "speed": 30,
+            "special": 80
+        }
+    ],
+    "Slowpoke": [
+        79,
+        "Slowpoke",
+        [
+            "water",
+            "psychic"
+        ],
+        {
+            "hp": 90,
+            "attack": 65,
+            "defense": 65,
+            "speed": 15,
+            "special": 40
+        }
+    ],
+    "Snorlax": [
+        143,
+        "Snorlax",
+        [
+            "normal"
+        ],
+        {
+            "hp": 160,
+            "attack": 110,
+            "defense": 65,
+            "speed": 30,
+            "special": 65
+        }
+    ],
+    "Spearow": [
+        21,
+        "Spearow",
+        [
+            "normal",
+            "flying"
+        ],
+        {
+            "hp": 40,
+            "attack": 60,
+            "defense": 30,
+            "speed": 70,
+            "special": 31
+        }
+    ],
+    "Squirtle": [
+        7,
+        "Squirtle",
+        [
+            "water"
+        ],
+        {
+            "hp": 44,
+            "attack": 48,
+            "defense": 65,
+            "speed": 43,
+            "special": 50
+        }
+    ],
+    "Starmie": [
+        121,
+        "Starmie",
+        [
+            "water",
+            "psychic"
+        ],
+        {
+            "hp": 60,
+            "attack": 75,
+            "defense": 85,
+            "speed": 115,
+            "special": 100
+        }
+    ],
+    "Staryu": [
+        120,
+        "Staryu",
+        [
+            "water"
+        ],
+        {
+            "hp": 30,
+            "attack": 45,
+            "defense": 55,
+            "speed": 85,
+            "special": 70
+        }
+    ],
+    "Tangela": [
+        114,
+        "Tangela",
+        [
+            "grass"
+        ],
+        {
+            "hp": 65,
+            "attack": 55,
+            "defense": 115,
+            "speed": 60,
+            "special": 100
+        }
+    ],
+    "Tauros": [
+        128,
+        "Tauros",
+        [
+            "normal"
+        ],
+        {
+            "hp": 75,
+            "attack": 100,
+            "defense": 95,
+            "speed": 110,
+            "special": 70
+        }
+    ],
+    "Tentacool": [
+        72,
+        "Tentacool",
+        [
+            "water",
+            "poison"
+        ],
+        {
+            "hp": 40,
+            "attack": 40,
+            "defense": 35,
+            "speed": 70,
+            "special": 100
+        }
+    ],
+    "Tentacruel": [
+        73,
+        "Tentacruel",
+        [
+            "water",
+            "poison"
+        ],
+        {
+            "hp": 80,
+            "attack": 70,
+            "defense": 65,
+            "speed": 100,
+            "special": 120
+        }
+    ],
+    "Vaporeon": [
+        134,
+        "Vaporeon",
+        [
+            "water"
+        ],
+        {
+            "hp": 130,
+            "attack": 65,
+            "defense": 60,
+            "speed": 65,
+            "special": 110
+        }
+    ],
+    "Venomoth": [
+        49,
+        "Venomoth",
+        [
+            "bug",
+            "poison"
+        ],
+        {
+            "hp": 70,
+            "attack": 65,
+            "defense": 60,
+            "speed": 90,
+            "special": 90
+        }
+    ],
+    "Venonat": [
+        48,
+        "Venonat",
+        [
+            "bug",
+            "poison"
+        ],
+        {
+            "hp": 60,
+            "attack": 55,
+            "defense": 50,
+            "speed": 45,
+            "special": 40
+        }
+    ],
+    "Venusaur": [
+        3,
+        "Venusaur",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 80,
+            "attack": 82,
+            "defense": 83,
+            "speed": 80,
+            "special": 100
+        }
+    ],
+    "Victreebel": [
+        71,
+        "Victreebel",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 80,
+            "attack": 105,
+            "defense": 65,
+            "speed": 70,
+            "special": 100
+        }
+    ],
+    "Vileplume": [
+        45,
+        "Vileplume",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 75,
+            "attack": 80,
+            "defense": 85,
+            "speed": 50,
+            "special": 100
+        }
+    ],
+    "Voltorb": [
+        100,
+        "Voltorb",
+        [
+            "electric"
+        ],
+        {
+            "hp": 40,
+            "attack": 30,
+            "defense": 50,
+            "speed": 100,
+            "special": 55
+        }
+    ],
+    "Vulpix": [
+        37,
+        "Vulpix",
+        [
+            "fire"
+        ],
+        {
+            "hp": 38,
+            "attack": 41,
+            "defense": 40,
+            "speed": 65,
+            "special": 65
+        }
+    ],
+    "Wartortle": [
+        8,
+        "Wartortle",
+        [
+            "water"
+        ],
+        {
+            "hp": 59,
+            "attack": 63,
+            "defense": 80,
+            "speed": 58,
+            "special": 65
+        }
+    ],
+    "Weedle": [
+        13,
+        "Weedle",
+        [
+            "bug",
+            "poison"
+        ],
+        {
+            "hp": 40,
+            "attack": 35,
+            "defense": 30,
+            "speed": 50,
+            "special": 20
+        }
+    ],
+    "Weepinbell": [
+        70,
+        "Weepinbell",
+        [
+            "grass",
+            "poison"
+        ],
+        {
+            "hp": 65,
+            "attack": 90,
+            "defense": 50,
+            "speed": 55,
+            "special": 85
+        }
+    ],
+    "Weezing": [
+        110,
+        "Weezing",
+        [
+            "poison"
+        ],
+        {
+            "hp": 65,
+            "attack": 90,
+            "defense": 120,
+            "speed": 60,
+            "special": 85
+        }
+    ],
+    "Wigglytuff": [
+        40,
+        "Wigglytuff",
+        [
+            "normal",
+            "fairy"
+        ],
+        {
+            "hp": 140,
+            "attack": 70,
+            "defense": 45,
+            "speed": 45,
+            "special": 50
+        }
+    ],
+    "Zapdos": [
+        145,
+        "Zapdos",
+        [
+            "electric",
+            "flying"
+        ],
+        {
+            "hp": 90,
+            "attack": 90,
+            "defense": 85,
+            "speed": 100,
+            "special": 125
+        }
+    ],
+    "Zubat": [
+        41,
+        "Zubat",
+        [
+            "poison",
+            "flying"
+        ],
+        {
+            "hp": 40,
+            "attack": 45,
+            "defense": 35,
+            "speed": 55,
+            "special": 40
+        }
+    ]
+}

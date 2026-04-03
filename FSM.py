@@ -281,9 +281,9 @@ def createCharacter():
     trainer_name = input("What's your name: ")
     trainer = PokemonTrainerClass(trainer_name, [],0, [])
     print("Select your starter pokémon:")
-    starterPokemon = [Db.P_db.PokemonList[0].create_playable_pokemon(5),
-                      Db.P_db.PokemonList[3].create_playable_pokemon(5),
-                      Db.P_db.PokemonList[6].create_playable_pokemon(5)]
+    starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
+                      create_playable_pokemon("Charmander", 5),
+                      create_playable_pokemon("Squirtle", 5)]
     for pokemon, opt in enumerate(starterPokemon):
         print(pokemon + 1, ':', opt.name)
     choice = (input("> "))
@@ -392,14 +392,14 @@ def HealPokemons(trainer):
         for pokemon in trainer.pk_list:
             pokemon.currentHP = int(pokemon.stats["hp"])
             for index,move in enumerate(pokemon.moves):
-                pokemon.moves[index].pp = Db.M_db.MovesList[move.name].pp
+                pokemon.moves[index].pp = Db.M_db.MovesList[pokemon.moves[index].name][4]
         print("Your Pokemons have now been healed!")
 
     return trainer
 
 def wild_Battle(trainer):
-    enemy_number = random.randint(1, len(Db.P_db.PokemonList))
-    enemy_pokemon = Db.P_db.PokemonList[enemy_number - 1].create_playable_pokemon(5)
+    rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,5)
     #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Db.P_db.PokemonList[enemy_number-1], 5)], 0,[])
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
