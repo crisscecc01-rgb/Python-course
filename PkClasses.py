@@ -2,12 +2,13 @@ import random
 from Database import MovesDatabase as Mdb
 from Database import PkTypesDatabase as PkT_db
 
+
 class PokemonTrainerClass:
     def __init__(self, name, pk_list, pk_active_index, items):
         self.name = name
         self.pk_list = pk_list
         self.pk_active_index = pk_active_index
-        self.items = items
+        self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
 
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
@@ -40,8 +41,6 @@ class PokemonTrainerClass:
                     print(f"Go {self.pk_list[index].name}!")
                     return False, True
 
-
-
     def ChoosePokemonAlive(self):
         list_index_alive = []
         for index, pokemon in enumerate(self.pk_list):
@@ -71,32 +70,47 @@ class PokemonTrainerClass:
             return list_index_alive[choice]
 
     def use_heal(self, pokemon, heal):
-        canheal = True
+        can_heal = True
         for pk in self.pk_list:
             if pk.name == pokemon.name:
                 start_hp = pk.currentHP
                 if start_hp == pk.stats["hp"]:
                     print(f"You can't further heal that pokemon!")
-                    canheal =  False
+                    can_heal =  False
                 else:
                     pk.currentHP += heal.effect
                     #chek if the healing goes above the maximum hp
                     if pk.currentHP > pk.stats["hp"]:
                         pk.currentHP = pk.stats["hp"]
-                    print(f"{self.name} use {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
-                    canheal = True
-        return False, canheal
+                    print(f"{self.name} use 1 {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
+                    if heal.number > 1:
+                        heal.number -= 1
+                    else:
+                        print(f"No more {heal.name} available")
+                        self.items["heals"].remove(heal)
+                    can_heal = True
+        return False, can_heal
 
     def use_pokeball(self, pokeball, enemy_pokemon):
-        canusepk =  True
+        can_use_pk =  True
         catch_rate_update = pokeball.catch_rate * (1 - enemy_pokemon.currentHP/self.pk_list[self.pk_active_index].currentHP)
         if random.random() < catch_rate_update:
             print(f"{self.name} caught a wild {enemy_pokemon.name}")
             self.pk_list.append(enemy_pokemon)
-            return True, canusepk
+            if pokeball.number > 1:
+                pokeball.number -= 1
+            else:
+                print(f"No more {pokeball.name} available")
+                self.items["pokeballs"].remove(pokeball)
+            return True, can_use_pk
         else:
             print(f"Unlucky: Wild {enemy_pokemon.name} exit the pokeball")
-            return False, canusepk
+            if pokeball.number > 1:
+                pokeball.number -= 1
+            else:
+                print(f"No more {pokeball.name} available")
+                self.items["pokeballs"].remove(pokeball)
+            return False, can_use_pk
 
 class PokemonCharacterClass:
     def __init__(self, name, level, types, stats, modifiers, moves, currentHP):

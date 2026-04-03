@@ -1,11 +1,14 @@
 from bigtree import *
 import networkx as nx
+from matplotlib import pyplot as plt
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 from Database import MovesDatabase as Mdb
 from Database import ItemsDb as I_db
 from BaseClasses import *
 import random
+
+
 
 # Template of the State class for the FSM
 class State:
@@ -72,8 +75,6 @@ class State:
                 wild = True
                 if wild:
                     self.outcome = wild_Battle(fsm.trainer)
-                else:
-                    self.outcome = Battle(fsm.trainer)
 
                 pass
             case _:
@@ -143,7 +144,6 @@ class State:
                 print("Can't go here! Chose from the list.")
                 for index, state in enumerate(valid_choices):
                     print(f"{index + 1})--> {state.name}")
-
 
 class FiniteStateMachine:
     def __init__(self):
@@ -306,16 +306,6 @@ def createCharacter():
     print(trainer)
     return trainer
 
-def DoSomething(function, trainer):
-    trainer_done = trainer
-    choice = "y"
-    while choice != "n":
-        trainer_done = function(trainer_done)
-        print("Do you want to do something else? (y/n)")
-        choice = (input("> ")).strip().lower()
-
-    return trainer_done
-
 def BuyItems(trainer):
     print(f"Your current inventory:\n{trainer.str_items()}")
     print("Do you want to buy something? (y/n)")
@@ -409,10 +399,6 @@ def HealPokemons(trainer):
         print("Your Pokemons have now been healed!")
 
     return trainer
-
-def ExploreJungle(prob):
-    enemy = random.uniform(0, 1.0)
-    return prob >= enemy
 
 def wild_Battle(trainer):
     enemy_number = random.randint(1, len(Pk_db.PokemonList))
@@ -569,8 +555,19 @@ def wild_Battle(trainer):
                     if keep_turn:
                         if end_battle: return True
 
-def Battle(trainer):
-    return False
+def DoSomething(function, trainer):
+    trainer_done = trainer
+    choice = "y"
+    while choice != "n":
+        trainer_done = function(trainer_done)
+        print("Do you want to do something else? (y/n)")
+        choice = (input("> ")).strip().lower()
+
+    return trainer_done
+
+def ExploreJungle(prob):
+    enemy = random.uniform(0, 1.0)
+    return prob >= enemy
 
 def printMenu(node):
     print("0) BACK")
@@ -597,8 +594,6 @@ def use_escape_battle():
         print("You cannot escape battle")
         return False, True
 
-   # def use_escape_battle_wild():
-      # return False, False
 
 
 
