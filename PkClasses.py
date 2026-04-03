@@ -134,6 +134,7 @@ class PokemonCharacterClass:
             move.pp -= 1
         else:
             print(f"{move.name} can't use {move.name}!")
+            return False, False
 
         # check if the move is a status move or a damage move
         if move.category == "status":
