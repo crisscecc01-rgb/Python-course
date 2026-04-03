@@ -1,6 +1,5 @@
 import FSM
 
-
 def BeginStory():
     print("Welcome in Pokémon simulator!")
     GameEngine = FSM.FiniteStateMachine()
