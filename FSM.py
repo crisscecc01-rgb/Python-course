@@ -520,7 +520,7 @@ def wild_Battle(trainer):
                             value={"function": printMenu,
                                    "choice": choice},
                             parent=HealTrainerMenu,
-                            print_show = heal.effect)
+                            print_show =  heal.number)
 
             for pokemon in trainer.pk_list:
                 if 0 < pokemon.currentHP <= pokemon.stats["hp"]:

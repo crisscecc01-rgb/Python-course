@@ -48,7 +48,7 @@ def BeginStory(starter,index,story):
 
     #print("Want to randomize? (y/n)")
     #choice = input("> ").strip().lower()
-    choice = "y"
+    choice = "n"
     if "y" == choice:
         GameEngine.randomize = True
     elif "n" == choice:

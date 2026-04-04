@@ -1,6 +1,5 @@
 import PokemonStory
-
-
+import numpy
 
 if __name__ == "__main__":
     number_cycles = 151
@@ -19,3 +18,4 @@ if __name__ == "__main__":
         if i == 150:
             story = PokemonStory.BeginStory("1",i,story)
 
+    

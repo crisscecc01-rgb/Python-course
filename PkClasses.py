@@ -44,6 +44,9 @@ class PokemonTrainerClass:
                 if self.pk_active_index == index:
                     print(f"The pokemon is already on the field!")
                     return False, False
+                elif self.pk_list[index].currentHP == 0:
+                    print(f"The pokemon is exhausted!")
+                    return False, False
                 else:
                     self.pk_active_index = index
                     print(f"Go {self.pk_list[index].name}!")
@@ -91,7 +94,7 @@ class PokemonTrainerClass:
                     if pk.currentHP > pk.stats["hp"]:
                         pk.currentHP = pk.stats["hp"]
                     print(f"{self.name} use 1 {heal.name} on {pk.name} healing {pk.currentHP-start_hp} HP")
-                    if heal.number > 1:
+                    if heal.number >= 1:
                         heal.number -= 1
                     else:
                         print(f"No more {heal.name} available")
