@@ -1,5 +1,6 @@
 import FSM
 
+
 def BeginStory(starter,index,story,choice, number_cycles):
 
     #print("Welcome in Pokémon simulator!")
@@ -63,14 +64,13 @@ def BeginStory(starter,index,story,choice, number_cycles):
             break
     GameEngine.eval_current()
 
-    if index <  round((number_cycles-1)/3)*1:
+    if starter == "1":
         story["Bulbasaur"].append(GameEngine.trainer.random_stats)
-    if index <  round((number_cycles-1)/3)*2:
+    elif starter == "2":
         story["Charmander"].append(GameEngine.trainer.random_stats)
-    if index <  round((number_cycles-1)/3)*3:
+    elif starter == "3":
         story["Squirtle"].append(GameEngine.trainer.random_stats)
-    if index ==  (number_cycles-1):
-        return story
+
 
 
 
