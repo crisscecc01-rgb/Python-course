@@ -535,8 +535,6 @@ def wild_Battle(trainer):
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: return True
-                else:
-                    return
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             end_battle, keep_turn = node_enemy.value["function"]()
