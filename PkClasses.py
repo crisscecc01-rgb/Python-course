@@ -36,6 +36,9 @@ class PokemonTrainerClass:
                 if self.pk_active_index == index:
                     print(f"The pokemon is already on the field!")
                     return False, False
+                elif self.pk_list[index].currentHP == 0:
+                    print(f"The pokemon is exhausted!")
+                    return False, False
                 else:
                     self.pk_active_index = index
                     print(f"Go {self.pk_list[index].name}!")
