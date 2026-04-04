@@ -453,6 +453,7 @@ def HealPokemons(trainer):
 
 def wild_Battle(trainer):
     rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
+    #rand_wild_pk_name = "Bulbasaur"
     enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,5)
     #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Db.P_db.PokemonList[enemy_number-1], 5)], 0,[])
     print(f"Battle starts against a wild {enemy_pokemon.name}!")

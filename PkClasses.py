@@ -141,8 +141,8 @@ class PokemonCharacterClass:
     def use_move(self, move, opponent):
         # reduces the pp of the move
         if move.pp > 0:
-            print(f"{self.name} uses {move.name} against {opponent.name}!")
             move.pp -= 1
+            print(f"{self.name} uses {move.name} against {opponent.name}!")
         else:
             print(f"{move.name} can't use {move.name}!")
             return False, False
