@@ -46,7 +46,7 @@ if __name__ == "__main__":
         for index, stats in enumerate(simulazioni):
             # Mostriamo solo le prime 2 simulazioni per starter (puoi aumentare questo numero)
             if index >= 5:
-                print(f"  ... e altre {len(simulazioni) - 2} simulazioni omesse per brevità ...")
+                print(f"  ... and other {len(simulazioni) - 2} simulations omitted ...")
                 break
 
             # Calcoliamo qualche statistica rapida per la singola simulazione
