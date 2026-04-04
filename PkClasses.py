@@ -38,10 +38,6 @@ class PokemonCharacterClass:
             else:
                 print(f"{self.name} can't use {move.name}!")
 
-        # Accuracy check
-        if random.random() > move.accuracy:
-            print("\nBut it failed!")
-            return
         #check if the move is a status move or a damage move
         if move.category == "status":
             modifierIndex = 0
@@ -80,6 +76,10 @@ class PokemonCharacterClass:
                         modifierIndex = modifierIndex + 1
 
         else:
+            # Accuracy check
+            if random.random() > move.accuracy:
+                print("\nBut it failed!")
+                return
             # Choose correct attack/defense stat
             if move.category == "physical":
                 attack = self.get_modified_stat("attack")
