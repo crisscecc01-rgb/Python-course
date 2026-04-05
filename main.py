@@ -4,7 +4,7 @@ import pprint
 import json
 
 if __name__ == "__main__":
-    number_cycles = 29
+    number_cycles = 151
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -15,15 +15,15 @@ if __name__ == "__main__":
     if choice == "y":
         for i in range(number_cycles):
             print(f"{i}")
-            if i <= round((number_cycles-1)/3)*1:
-                PokemonStory.BeginStory("1",i,story,choice, number_cycles)
-            if round((number_cycles - 1) / 3)*1+1 <= i <= round((number_cycles - 1) / 3)*2:
-                PokemonStory.BeginStory("2",i,story,choice, number_cycles)
-            if round((number_cycles - 1) / 3)*2+1 <= i <= round((number_cycles - 1) / 3)*3:
-                PokemonStory.BeginStory("3",i,story,choice, number_cycles)
+            if i < round((number_cycles-1)/3)*1:
+                PokemonStory.BeginStory("1",story,choice)
+            elif i < round((number_cycles - 1) / 3)*2:
+                PokemonStory.BeginStory("2",story,choice)
+            elif i < round((number_cycles - 1) / 3)*3:
+                PokemonStory.BeginStory("3",story,choice)
     elif choice == "n":
         i=1
-        PokemonStory.BeginStory("1", i, story, choice, number_cycles)
+        PokemonStory.BeginStory("1", story, choice)
 
     print("\n--- Simulation result (story) ---")
     #pprint.pprint(story, indent=4)
@@ -67,3 +67,34 @@ if __name__ == "__main__":
                 print(f"    % HP remaining in the first 5 turns: {primi_hp}")
                 print(f"    Name of the battled pokémons in the first 5 turns: {primi_pk} ")
             print("")
+
+    print("\n\n" + "=" * 50)
+    print(" SIMULATION REPORT ".center(50, "="))
+    print("=" * 50)
+
+    for starter, simulazioni in story.items():
+        print(f"\n🌟 STARTER: {starter} (simulations total number: {len(simulazioni)})")
+        print("-" * 50)
+
+        if not simulazioni:
+            print("  No simulation registered.")
+            continue
+
+        vittorie_totali = 0
+        sconfitte_totali = 0
+
+        # Aggreghiamo i dati di tutte le simulazioni per questo starter
+        for stats in simulazioni:
+            vittorie_totali += stats["win_loss"].count(1)
+            sconfitte_totali += stats["win_loss"].count(0)
+
+        incontri_totali = vittorie_totali + sconfitte_totali
+        win_rate = (vittorie_totali / incontri_totali * 100) if incontri_totali > 0 else 0
+
+        # Stampiamo solo il riepilogo finale richiesto
+        if incontri_totali == 0:
+            print("  No battles registered.")
+        else:
+            print(f"  Total Victories : {vittorie_totali}")
+            print(f"  Total Losses    : {sconfitte_totali}")
+            print(f"  Global Win Rate : {win_rate:.2f}%")

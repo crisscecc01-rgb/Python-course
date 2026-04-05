@@ -1,7 +1,7 @@
 import FSM
 
 
-def BeginStory(starter,index,story,choice, number_cycles):
+def BeginStory(starter,story,choice):
 
     #print("Welcome in Pokémon simulator!")
     GameEngine = FSM.FiniteStateMachine()
