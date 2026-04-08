@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 from PkClasses import *
 from BaseClasses import *
 import random
-
+import pickle
 
 
 # Template of the State class for the FSM
@@ -23,8 +23,10 @@ class State:
         fsm = kargs.get('fsm')
         match self.name:
             case "CreateCharacter":
-                fsm.trainer = createCharacter(fsm)
-                if not fsm.randomize:
+                if fsm.randomize:
+                    fsm.trainer = createCharacterRandomize(fsm)
+                else:
+                    fsm.trainer = createCharacter(fsm)
                     print("You just created the trainer and selected your first pokemon!")
             case "Story":
                 if not fsm.randomize:
@@ -32,7 +34,10 @@ class State:
                     print(fsm.trainer)
             case "Exit":
                 if not fsm.randomize:
-                    print("You just exited the story. By!")
+                    pickle_out = open("trainer.pickle","wb")
+                    pickle.dump(fsm.trainer,pickle_out)
+                    pickle_out.close()
+                    print("You just SAVED and exited the story. By!")
             case "PokemonStore":
                 if not fsm.randomize:
                     print("You just entered the pokemon store!")
@@ -319,43 +324,63 @@ class FiniteStateMachine:
         plt.show()
 
 def createCharacter(fsm):
-    if fsm.randomize:
-        trainer_name = "PEL"
-    else:
+    print("Do you want to load a previous save or do you want to start a new one?(New/Load)")
+    choice = input("> ").strip().lower()
+    while (choice != "new") and (choice != "load"):
+        print("Write 'new' or 'load' ")
+        choice = input("> ").strip().lower()
+    trainer = None
+    if choice == "load":
+        try:
+            pickle_in = open("trainer.pickle", "rb")
+            trainer_loaded = pickle.load(pickle_in)
+            pickle_in.close()
+            trainer = trainer_loaded
+        except FileNotFoundError:
+            print("No story saved")
+            choice = "new"
+    if choice == "new":
         trainer_name = input("What's your name: ")
-
-    random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
-    trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
-    if not fsm.randomize:
+        random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
+        trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-    starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
-                      create_playable_pokemon("Charmander", 5),
-                      create_playable_pokemon("Squirtle", 5)]
-    for pokemon, opt in enumerate(starterPokemon):
-        if not fsm.randomize:
+        starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
+                          create_playable_pokemon("Charmander", 5),
+                          create_playable_pokemon("Squirtle", 5)]
+        for pokemon, opt in enumerate(starterPokemon):
             print(pokemon + 1, ':', opt.name)
-    if fsm.randomize:
-        choice = fsm.starter
-    else:
         choice = (input("> "))
         while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
-            if not fsm.randomize:
-                print("Select between 1 and " + str(len(starterPokemon)) + ":")
+            print("Select between 1 and " + str(len(starterPokemon)) + ":")
             for pokemon, opt in enumerate(starterPokemon):
-                if not fsm.randomize:
-                    print(pokemon + 1, ':', opt.name)
+                print(pokemon + 1, ':', opt.name)
             choice = (input("> "))
 
-    trainer.pk_list.append(starterPokemon[int(choice) - 1])
+        trainer.pk_list.append(starterPokemon[int(choice) - 1])
+        heals = [HealClass("Potion", 10)]
+        pokeballs = [PokeBallClass("PokeBall", 10)]
+        trainer.items = {"heals": heals,
+                         "pokeballs": pokeballs}
+
+        print(f"you selected {trainer.pk_list[0].name}!")
+        print(trainer)
+
+    return trainer
+
+
+def createCharacterRandomize(fsm):
+    trainer_name = "PEL"
+    random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
+    trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
+    starterPokemon = create_playable_pokemon(fsm.starter, 5)
+    trainer.pk_list.append(starterPokemon)
     heals = [HealClass("Potion", 10)]
     pokeballs = [PokeBallClass("PokeBall", 10)]
     trainer.items = {"heals": heals,
                      "pokeballs": pokeballs}
 
-    if not fsm.randomize:
-        print(f"you selected {trainer.pk_list[0].name}!")
-        print(trainer)
     return trainer
+
 
 def BuyItems(trainer):
     print(f"Your current inventory:\n{trainer.str_items()}")

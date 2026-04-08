@@ -42,7 +42,7 @@ def BeginStory(starter,story,choice):
 
     GameEngine.wild = True
     GameEngine.randomize = False
-    GameEngine.stater = starter
+    GameEngine.starter = starter
 
     GameEngine.initialize()
 
@@ -52,6 +52,8 @@ def BeginStory(starter,story,choice):
         GameEngine.randomize = True
     elif "n" == choice:
         GameEngine.randomize = False
+
+
 
     while GameEngine.state not in GameEngine.final_states:
 
@@ -64,11 +66,11 @@ def BeginStory(starter,story,choice):
             break
     GameEngine.eval_current()
 
-    if starter == "1":
+    if starter == "Bulbasaur":
         story["Bulbasaur"].append(GameEngine.trainer.random_stats)
-    elif starter == "2":
+    elif starter == "Charmander":
         story["Charmander"].append(GameEngine.trainer.random_stats)
-    elif starter == "3":
+    elif starter == "Squirtle":
         story["Squirtle"].append(GameEngine.trainer.random_stats)
 
 

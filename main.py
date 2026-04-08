@@ -1,10 +1,11 @@
 import PokemonStory
 import numpy
-import pprint
-import json
+import pandas as pd
+
+
 
 if __name__ == "__main__":
-    number_cycles = 151
+    number_cycles = 16
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -16,14 +17,38 @@ if __name__ == "__main__":
         for i in range(number_cycles):
             print(f"{i}")
             if i < round((number_cycles-1)/3)*1:
-                PokemonStory.BeginStory("1",story,choice)
+                PokemonStory.BeginStory(list(story.keys())[0],story,choice)
             elif i < round((number_cycles - 1) / 3)*2:
-                PokemonStory.BeginStory("2",story,choice)
+                PokemonStory.BeginStory(list(story.keys())[1],story,choice)
             elif i < round((number_cycles - 1) / 3)*3:
-                PokemonStory.BeginStory("3",story,choice)
+                PokemonStory.BeginStory(list(story.keys())[2],story,choice)
     elif choice == "n":
         i=1
         PokemonStory.BeginStory("1", story, choice)
+
+
+    df_story = {}
+
+    for starter, simulations in story.items():
+        matrix_win_loss = [sim["win_loss"] for sim in simulations]
+        df = pd.DataFrame(matrix_win_loss)
+        df.index = [f"Game_{i+1}" for i in range(len(df))]
+        df.columns = [f"Battle_{j+1}" for j in range(len(df.columns))]
+        df_story[starter] = df
+
+    print("DataFrame di Charmander:")
+    print(df_story["Charmander"])
+
+
+
+
+
+
+
+
+
+
+
 
     print("\n--- Simulation result (story) ---")
     #pprint.pprint(story, indent=4)

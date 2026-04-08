@@ -10,7 +10,7 @@ class PokemonTrainerClass:
         self.pk_active_index = pk_active_index
         self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
         self.random_stats = random_stats
-        self.num_battles = 150
+        self.num_battles = 10
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
         string = ", ".join(nomi)
@@ -218,12 +218,6 @@ class PokemonCharacterClass:
             return False, True
 
     def use_move_random(self, move, opponent):
-        # reduces the pp of the move
-        if move.pp > 0:
-            move.pp -= 1
-        else:
-            return False, False
-
         # check if the move is a status move or a damage move
         if move.category == "status":
             modifierIndex = 0
@@ -329,7 +323,6 @@ class PokemonCharacterClass:
     @staticmethod
     def calc_luck():
         return random.uniform(0.85, 1.0)
-
 
 def create_playable_pokemon(name_pokemon, level):
     move_objects = [BaseClasses.move_copy(Db.M_db.MovesList[name]) for name in Db.P_db.PokemonList[name_pokemon][4]]
