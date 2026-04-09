@@ -199,10 +199,7 @@ if __name__ == "__main__":
         for i, starter in enumerate(index_starter):
             ax = axes3[i]
 
-            df_filtered = df_grouped[
-                (df_grouped["Starter"] == starter) &
-                (novice_mask | skilled_mask)
-                ]
+            df_filtered = df_grouped[ (df_grouped["Starter"] == starter) & (novice_mask | skilled_mask) ]
             colors = []
             for idx, row in df_filtered.iterrows():
                 if novice_mask.loc[idx]:
