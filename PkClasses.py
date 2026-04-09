@@ -1,4 +1,6 @@
 import random
+from math import floor
+
 import Database as Db
 import BaseClasses
 
@@ -140,11 +142,13 @@ class PokemonCharacterClass:
     # function used to apply status or damage from a move
     def use_move(self, move, opponent):
         # reduces the pp of the move
-        if move.pp > 0:
+        if move.name == "struggle":
+            print(f"{self.name} uses {move.name} against {opponent.name}!")
+        elif move.pp > 0:
             move.pp -= 1
             print(f"{self.name} uses {move.name} against {opponent.name}!")
         else:
-            print(f"{move.name} can't use {move.name}!")
+            print(f"{self.name} can't use {move.name}!")
             return False, False
 
         # check if the move is a status move or a damage move
@@ -325,15 +329,35 @@ class PokemonCharacterClass:
         return random.uniform(0.85, 1.0)
 
 def create_playable_pokemon(name_pokemon, level):
-    move_objects = [BaseClasses.move_copy(Db.M_db.MovesList[name]) for name in Db.P_db.PokemonList[name_pokemon][4]]
-    return PokemonCharacterClass(Db.P_db.PokemonList[name_pokemon][1],
-                                 level,
-                                 Db.P_db.PokemonList[name_pokemon][2],
-                                 Db.P_db.PokemonList[name_pokemon][3],
-                                 {"attack": 0,"defense": 0,"speed": 0,"special": 0},
-                                 move_objects,
-                                 Db.P_db.PokemonList[name_pokemon][3]["hp"],
-                                 )
+    # i'm selecting the raw from the dataframe
+    row = Db.P_db.Pokemon_df.loc[Db.P_db.Pokemon_df["display_name"] == name_pokemon].iloc[0]
+    # creating the Move objects
+    move_objects = [
+        BaseClasses.move_copy(Db.M_db.MoveList_df.loc[move_name])
+        for move_name in row["moves"]
+    ]
+
+    scaled_stats = scale_stats(row["base_stats"], level)
+
+    return PokemonCharacterClass(
+        row["display_name"],      # name
+        level,                    # level
+        row["types"],             # types
+        scaled_stats,        # base stats
+        {"attack": 0, "defense": 0, "speed": 0, "special": 0},  # in battle modifiers
+        move_objects,             # Moves
+        scaled_stats["hp"]  # Hp init
+    )
+def scale_stats(base_stats, level):
+    scaled_stats= {}
+
+    for stat, value in base_stats.items():
+        if stat == "hp":
+            scaled_stats[stat] = floor(value*2*level/100)+5
+        else:
+            scaled_stats[stat] = floor(value*2*level/100)+level+10
+    return scaled_stats
+
 
 
 

@@ -33,15 +33,17 @@ class Move:
         self.pp = pp
         self.effect = effect
 
-def move_copy(move_list):
-    return Move(move_list[0],
-                move_list[1],
-                move_list[2],
-                move_list[3],
-                move_list[4],
-                move_list[5],
-                None
-            )
+def move_copy(row):
+    return Move(
+        name=row["name"],
+        move_type=row["type"],
+        category=row["category"],
+        power=row["power"],
+        accuracy=row["accuracy"],
+        pp=row["pp"],
+        effect=None
+    )
+
 
 
 

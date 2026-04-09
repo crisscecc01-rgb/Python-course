@@ -55,14 +55,16 @@ class State:
                         for pokemon in fsm.trainer.pk_list:
                             pokemon.currentHP = int(pokemon.stats["hp"])
                             for index, move in enumerate(pokemon.moves):
-                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name][5]
+                                pokemon.moves[index].pp = Db.M_db.MoveList_df.loc[move.name]["pp"]
+
                 else:
                     if not battleState.outcome:
                         battleState.outcome = True
                         for pokemon in fsm.trainer.pk_list:
                             pokemon.currentHP = int(pokemon.stats["hp"])
                             for index, move in enumerate(pokemon.moves):
-                                pokemon.moves[index].pp = Db.M_db.MovesList[move.name][5]
+                                pokemon.moves[index].pp = Db.M_db.MoveList_df.loc[move.name]["pp"]
+
                         if not fsm.randomize:
                             print("You've been defeated. Your Pokemons have now been healed!")
                     fsm.trainer = DoSomething(HealPokemons,fsm.trainer)
@@ -138,7 +140,7 @@ class State:
             pk_active = fsm.trainer.pk_list[fsm.trainer.pk_active_index]
             fsm.trainer.random_stats["total_num_turns"].append(fsm.trainer.random_stats["num_turns"])
             fsm.trainer.random_stats["num_turns"] = 0
-            fsm.trainer.random_stats["left_hp"].append(round(pk_active.currentHP / Db.P_db.PokemonList[pk_active.name][3]["hp"]*100,3))
+            fsm.trainer.random_stats["left_hp"].append(round(pk_active.currentHP / pk_active.stats["hp"]*100,3))
 
             if self.outcome:
                 fsm.trainer.random_stats["win_loss"].append(1)
@@ -344,9 +346,10 @@ def createCharacter(fsm):
         random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterPokemon = [create_playable_pokemon("Bulbasaur", 5),
-                          create_playable_pokemon("Charmander", 5),
-                          create_playable_pokemon("Squirtle", 5)]
+        starterLevel = random.randint(1, 20)
+        starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
+                          create_playable_pokemon("Charmander", starterLevel),
+                          create_playable_pokemon("Squirtle", starterLevel)]
         for pokemon, opt in enumerate(starterPokemon):
             print(pokemon + 1, ':', opt.name)
         choice = (input("> "))
@@ -372,7 +375,7 @@ def createCharacterRandomize(fsm):
     trainer_name = "PEL"
     random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
     trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
-    starterPokemon = create_playable_pokemon(fsm.starter, 5)
+    starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
     trainer.pk_list.append(starterPokemon)
     heals = [HealClass("Potion", 10)]
     pokeballs = [PokeBallClass("PokeBall", 10)]
@@ -471,18 +474,15 @@ def HealPokemons(trainer):
         for pokemon in trainer.pk_list:
             pokemon.currentHP = int(pokemon.stats["hp"])
             for index,move in enumerate(pokemon.moves):
-                pokemon.moves[index].pp = Db.M_db.MovesList[pokemon.moves[index].name][5]
+                pokemon.moves[index].pp = Db.M_db.MoveList_df.loc[move.name]["pp"]
         print("Your Pokemons have now been healed!")
 
     return trainer
 
 def wild_Battle(trainer):
-    rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
-    #rand_wild_pk_name = "Bulbasaur"
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,5)
-    #enemy_trainer = PokemonTrainerClass("Gennaro Bullo", [create_playable_pokemon(Db.P_db.PokemonList[enemy_number-1], 5)], 0,[])
+    rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
-    #print(enemy.name + " sends on the field " + enemy.pk_list[EnemyPkIndex].name)
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
             trainer.pk_active_index = index
@@ -539,7 +539,8 @@ def wild_Battle(trainer):
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
-                 print_show = f"{move.pp}/{Db.M_db.MovesList[move.name][5]}")
+                 print_show = f"{int(move.pp)}/{int(Db.M_db.MoveList_df.loc[move.name]['pp'])}")
+
 
         for heal in trainer.items["heals"]:
             healNode = Node(heal.name,
@@ -643,8 +644,8 @@ def wild_Battle(trainer):
         trainer.random_stats["num_turns"] += 1
 
 def random_wild_Battle(trainer,randomize):
-    rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,5)
+    rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name, random.randint(1, 20))
     if not randomize:
         print(f"Battle starts against a wild {enemy_pokemon.name}!")
     for index,pokemon in enumerate(trainer.pk_list):
@@ -697,26 +698,27 @@ def random_wild_Battle(trainer,randomize):
         # TRAINER TREE
         rootTrainer = Node("Menu", value={"function": printMenu_ai, "choice": choice}, print_show = None)
         movesTrainerMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
+        """
         changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
         itemTrainerMenu = Node("Items", value={"function": printMenu_ai, "choice": choice}, parent=rootTrainer, print_show = None)
         HealTrainerMenu = Node("Heals", value={"function": printMenu_ai, "choice": choice}, parent=itemTrainerMenu, print_show = None)
         PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu_ai, "choice": choice}, parent=itemTrainerMenu, print_show = None)
         Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer, print_show = None)
-
+        """
         for move in active_pokemon.moves:
             Node(move.name,
                  value={"function": lambda m=move: active_pokemon.use_move_random(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
-                 print_show = f"{move.pp}/{Db.M_db.MovesList[move.name][5]}")
-
+                 print_show = f"{move.pp}/{Db.M_db.MoveList_df.loc[move.name]['pp']}")
+        """
         for heal in trainer.items["heals"]:
             healNode = Node(heal.name,
                             value={"function": printMenu,
                                    "choice": choice},
                             parent=HealTrainerMenu,
                             print_show = heal.effect)
-
+        
             for pokemon in trainer.pk_list:
                 if 0 < pokemon.currentHP <= pokemon.stats["hp"]:
                     Node(pokemon.name,
@@ -738,7 +740,7 @@ def random_wild_Battle(trainer,randomize):
                         "priority": Pokemon_priority},
                  parent=changeTrainerPokemonMenu,
                  print_show = f"{pokemon.currentHP}/{pokemon.stats['hp']}")
-
+        """
         # WILD POKÉMON TREE
         rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
         movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
