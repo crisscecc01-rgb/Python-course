@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 31
+    number_cycles = 1501
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -239,73 +239,6 @@ if __name__ == "__main__":
         else:
             ax.set_ylabel("")
 
-    """
-    novice_dict = {}
-    skilled_dict = {}
-
-    for starter in df_master_described_turns.index:
-        df_s = df_grouped[df_grouped["Starter"] == starter]
-
-        novice_mask = (
-                df_s["Mean_Win"].between(0.7, 0.9) &
-                (df_s["Mean_Left_HP"] > 50)
-        )
-        skilled_mask = (
-                df_grouped["Mean_Win"].between(0.5, 0.7) &
-                (df_grouped["Mean_Turns"] > df_grouped["Median_Turns"])
-        )
-
-        novice_dict[starter] = df_s[novice_mask]["Enemy_Pokemon"].tolist()
-        skilled_dict[starter] = df_s[skilled_mask]["Enemy_Pokemon"].tolist()
-        
-    for i, starter in enumerate(["Bulbasaur", "Charmander", "Squirtle"]):
-        ax = axes[i]
-        df_s = df_master[df_master["Starter"] == starter]
-
-        # Pokémon da includere
-        selected_pokemons = set(novice_dict[starter] + skilled_dict[starter])
-
-        # Se non ci sono Pokémon adatti, pannello vuoto
-        if len(selected_pokemons) == 0:
-            ax.set_title(f"{starter}\n(no suitable Pokémon)", fontsize=12)
-            ax.axis("off")
-            continue
-
-        df_filtered = df_s[df_s["Enemy_Pokemon"].isin(selected_pokemons)]
-
-        wins_per_enemy = df_filtered.groupby("Enemy_Pokemon")["Win"].mean() * 100
-        enemies = wins_per_enemy.index
-
-        # colors: green = novice, blue = skilled
-        colors = []
-        for enemy in enemies:
-            if enemy in novice_dict[starter]:
-                colors.append("limegreen")
-            else:
-                colors.append("dodgerblue")
-
-        sns.barplot(
-            x=enemies,
-            y=wins_per_enemy.values,
-            hue=enemies,
-            palette=colors,
-            dodge=False,
-            legend=False,
-            ax=ax,
-            errorbar=None
-        )
-
-        for idx, value in enumerate(wins_per_enemy.values):
-            ax.text(idx, value + 1, enemies[idx], ha='center', fontsize=8)
-
-        ax.set_title(starter, fontsize=14, fontweight='bold')
-        ax.set_xlabel("Enemy Pokémon")
-        ax.tick_params(axis='x', rotation=45)
-        ax.grid(True, linestyle='--', alpha=0.5, axis='y')
-
-        if i == 0:
-            ax.set_ylabel("Win Rate (%)")
-    """
     plt.tight_layout()
     plt.show()
 
