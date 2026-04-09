@@ -207,9 +207,28 @@ if __name__ == "__main__":
     for i, starter in enumerate(["Bulbasaur", "Charmander", "Squirtle"]):
         ax = axes3[i]
 
-        sns.barplot(data=df_grouped[novice_mask & (df_grouped["Starter"] == starter)], x="Enemy_Pokemon", y="Mean_Win",
-                color="limegreen", errorbar=None, capsize=0.1, ax=ax)
+        df_filtered = df_grouped[
+            (df_grouped["Starter"] == starter) &
+            (novice_mask | skilled_mask)
+            ]
+        colors = []
+        for idx, row in df_filtered.iterrows():
+            if novice_mask.loc[idx]:
+                colors.append("limegreen")
+            elif skilled_mask.loc[idx]:
+                colors.append("dodgerblue")
 
+        sns.barplot(
+            data=df_filtered,
+            x="Enemy_Pokemon",
+            y="Mean_Win",
+            hue="Enemy_Pokemon",
+            palette=colors,
+            dodge=False,
+            legend=False,
+            errorbar=None,
+            ax=ax
+        )
         ax.set_title(starter, fontsize=14, fontweight='bold', color=colors_starter.get(starter, "black"))
         ax.set_xlabel("Enemy Pokemon")
         ax.tick_params(axis='x', rotation=45)
