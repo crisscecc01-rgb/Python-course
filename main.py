@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 1501
+    number_cycles = 31
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -77,8 +77,11 @@ if __name__ == "__main__":
     axes[0].set_title("Battle Lengths (Number of Turns)", fontweight='bold')
 
     df_master_described_turns = df_master.groupby('Starter')['Turns'].describe()
+
+    index_starter = df_master_described_turns.index
+
     testo = ""
-    for starter in df_master_described_turns.index:
+    for starter in index_starter:
         testo += (
             f"{starter} : Mean: {df_master_described_turns.loc[starter, 'mean']:.2f} | Median: {df_master_described_turns.loc[starter, '50%']:.2f} | 25%:"
             f" {df_master_described_turns.loc[starter, '25%']:.2f} | 75%: {df_master_described_turns.loc[starter, '75%']:.2f}\n")
@@ -91,7 +94,7 @@ if __name__ == "__main__":
 
     df_master_described_hp = df_master.groupby('Starter')['Left_HP'].describe()
     testo = ""
-    for starter in df_master_described_hp.index:
+    for starter in index_starter:
         testo += (
             f"{starter} : Mean: {df_master_described_hp.loc[starter, 'mean']:.2f} | Median: {df_master_described_hp.loc[starter, '50%']:.2f} | 25%:"
             f" {df_master_described_hp.loc[starter, '25%']:.2f} | 75%: {df_master_described_hp.loc[starter, '75%']:.2f}\n")
@@ -112,7 +115,7 @@ if __name__ == "__main__":
     fig1, axes1 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
     fig1.suptitle("Win Percentage per Enemy Pokemon", fontsize=16, fontweight='bold')
 
-    for i, starter in enumerate(["Bulbasaur", "Charmander", "Squirtle"]):
+    for i, starter in enumerate(index_starter):
         ax = axes1[i]
         df_starter = df_master[df_master['Starter'] == starter]
 
@@ -138,7 +141,7 @@ if __name__ == "__main__":
     fig2, axes2 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
     fig2.suptitle("Mean and Standard Deviation of Residual HP per Enemy", fontsize=16, fontweight='bold')
 
-    for i, starter in enumerate(["Bulbasaur", "Charmander", "Squirtle"]):
+    for i, starter in enumerate(index_starter):
         ax = axes2[i]
 
         df_starter = df_master[df_master['Starter'] == starter]
@@ -160,11 +163,6 @@ if __name__ == "__main__":
         else:
             ax.set_ylabel("")
 
-
-
-
-
-
     df_grouped = df_master.groupby(["Starter", "Enemy_Pokemon"]).agg({
         "Win": "mean",
         "Left_HP": "mean",
@@ -182,9 +180,6 @@ if __name__ == "__main__":
         on="Starter"
     )
 
-    print(df_grouped)
-
-
     novice_mask = (
             df_grouped["Mean_Win"].between(0.7, 0.9) &
             (df_grouped["Mean_Left_HP"] > 50)
@@ -194,17 +189,13 @@ if __name__ == "__main__":
             (df_grouped["Mean_Turns"] > df_grouped["Median_Turns"])
     )
 
-
-
     df_grouped["Mean_Win"] *= 100
-    print(df_grouped[novice_mask])
-    print(df_grouped[skilled_mask])
 
     fig5, axes3 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
     fig5.suptitle("Pokémon Suitable for Novice and Skilled Users", fontsize=16, fontweight='bold')
 
 
-    for i, starter in enumerate(["Bulbasaur", "Charmander", "Squirtle"]):
+    for i, starter in enumerate(index_starter):
         ax = axes3[i]
 
         df_filtered = df_grouped[
