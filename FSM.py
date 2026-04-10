@@ -346,7 +346,7 @@ def createCharacter(fsm):
         random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterLevel = random.randint(1, 20)
+        starterLevel = 5
         starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
                           create_playable_pokemon("Charmander", starterLevel),
                           create_playable_pokemon("Squirtle", starterLevel)]
@@ -481,7 +481,7 @@ def HealPokemons(trainer):
 
 def wild_Battle(trainer):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, trainer.pk_list[trainer.pk_active_index].level + 1))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
@@ -520,8 +520,8 @@ def wild_Battle(trainer):
             return True
 
         print(f"\n==========================================")
-        print(f"Wild {enemy_pokemon.name} HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
-        print(f"Your {active_pokemon.name} HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
+        print(f"Wild {enemy_pokemon.name} | Level: {enemy_pokemon.level} | HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
+        print(f"Your {active_pokemon.name} | Level: {active_pokemon.level} | HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
         print(f"==========================================")
 
         choice = None
