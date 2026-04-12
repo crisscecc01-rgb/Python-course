@@ -40,6 +40,91 @@ class PokemonTrainerClass:
     def __repr__(self):
         return str(self)
 
+    def use_move(self, move, opponent):
+        # reduces the pp of the move
+        if move.name == "struggle":
+            print(f"{self.pk_list[self.pk_active_index].name} uses {move.name} against {opponent.name}!")
+        elif move.pp > 0:
+            move.pp -= 1
+            print(f"{self.pk_list[self.pk_active_index].name} uses {move.name} against {opponent.name}!")
+        else:
+            print(f"{self.pk_list[self.pk_active_index].name} can't use {move.name}!")
+            return False, False
+
+        # check if the move is a status move or a damage move
+        if move.category == "status":
+            modifierIndex = 0
+            # check the target of the status move
+            if move.effect["target_stat"][0] == "self":
+                # modification of the modifiers attribute
+                for stat in move.effect["target_stat"][1:]:
+                    # check the boundaries
+                    if self.pk_list[self.pk_active_index].modifiers[stat] > 5:
+                        print(f"{stat} of {self.pk_list[self.pk_active_index].name} can't increase any further!")
+                    elif self.pk_list[self.pk_active_index].modifiers[stat] < -5:
+                        print(f"{stat} of {self.pk_list[self.pk_active_index].name} can't decrease any further!")
+                    else:
+                        # apply the status
+                        self.pk_list[self.pk_active_index].modifiers[stat] = self.pk_list[self.pk_active_index].modifiers[stat] + move.effect["change"][modifierIndex]
+
+                        if move.effect["change"][modifierIndex] > 0:
+                            print(f"{stat} of {self.pk_list[self.pk_active_index].name} increased!")
+                        else:
+                            print(f"{stat} of {self.pk_list[self.pk_active_index].name} decreased!")
+                        modifierIndex = modifierIndex + 1
+            # same procedure in case the target is the opponent
+            else:
+                # Accuracy check
+                if random.random() > move.accuracy:
+                    print("\nBut it failed!")
+                    return False, True
+
+                for stat in move.effect["target_stat"][1:]:
+                    if opponent.modifiers[stat] > 5:
+                        print(f"{stat} of {opponent.name} can't increase any further!")
+                    elif opponent.modifiers[stat] < -5:
+                        print(f"{stat} of {opponent.name} can't decrease any further!")
+                    else:
+                        opponent.modifiers[stat] = opponent.modifiers[stat] + move.effect["change"][modifierIndex]
+                        if move.effect["change"][modifierIndex] > 0:
+                            print(f"{stat} of {opponent.name} increased!")
+                        else:
+                            print(f"{stat} of {opponent.name} decreased!")
+                        modifierIndex = modifierIndex + 1
+
+        else:
+            # Choose correct attack/defense stat
+            if move.category == "physical":
+                attack = self.pk_list[self.pk_active_index].get_modified_stat("attack")
+                defense = opponent.get_modified_stat("defense")
+            else:
+                attack = self.pk_list[self.pk_active_index].get_modified_stat("special")
+                defense = opponent.get_modified_stat("special")
+            modifier, is_crit, effectiveness = self.pk_list[self.pk_active_index].calc_modifier(move, opponent)
+            # Damage formula
+            base = ((2 * self.pk_list[self.pk_active_index].level + 10) / 250) * (attack / defense) * move.power + 2
+            damage = int(base * modifier)
+
+            self.random_stats["single_turn_details"]["pk_trainer_move"] = move.name
+            self.random_stats["single_turn_details"]["pk_trainer_damage"] = damage
+
+            # Apply damage
+            opponent.currentHP = max(0, opponent.currentHP - damage)
+
+            # Messages
+            if is_crit:
+                print("critical hit!")
+            if effectiveness == 0:
+                print(f"{move.name} has NO EFFECT on {opponent.name}!")
+            if effectiveness == 0.5:
+                print(f"{move.name} is NOT MUCH EFFECTIVE on {opponent.name}!")
+            elif effectiveness == 2.0:
+                print(f"{move.name} is SUPER EFFECTIVE on {opponent.name}!")
+            print(f"{opponent.name} takes {damage} HP damage.")
+            #print(f"HP left of {opponent.name}: {opponent.currentHP}")
+            return False, True
+
+
     def use_change_pokemon(self, pokemon):
         for index, pk in enumerate(self.pk_list):
             if pk.name == pokemon.name:
@@ -205,6 +290,7 @@ class PokemonCharacterClass:
             base = ((2 * self.level + 10) / 250) * (attack / defense) * move.power + 2
             damage = int(base * modifier)
 
+
             # Apply damage
             opponent.currentHP = max(0, opponent.currentHP - damage)
 
@@ -336,7 +422,7 @@ def create_playable_pokemon(name_pokemon, level):
         BaseClasses.move_copy(Db.M_db.MoveList_df.loc[move_name])
         for move_name in row["moves"]
     ]
-
+    #this way the stats are adjusted only when the pokemon is created (if the pokemon level increment is added this should be modified)
     scaled_stats = scale_stats(row["base_stats"], level)
 
     return PokemonCharacterClass(

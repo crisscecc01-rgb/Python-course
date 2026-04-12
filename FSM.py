@@ -141,6 +141,7 @@ class State:
             fsm.trainer.random_stats["total_num_turns"].append(fsm.trainer.random_stats["num_turns"])
             fsm.trainer.random_stats["num_turns"] = 0
             fsm.trainer.random_stats["left_hp"].append(round(pk_active.currentHP / pk_active.stats["hp"]*100,3))
+            fsm.trainer.random_stats["battle_turn_details"].append(list(fsm.trainer.random_stats["turn_details"]))
 
             if self.outcome:
                 fsm.trainer.random_stats["win_loss"].append(1)
@@ -343,10 +344,22 @@ def createCharacter(fsm):
             choice = "new"
     if choice == "new":
         trainer_name = input("What's your name: ")
-        random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
+        random_stats = {"wild_pokemons": [],
+                        "win_loss": [],
+                        "num_turns": 0,
+                        "total_num_turns": [],
+                        "left_hp": [],
+                        "single_turn_details": {"pk_trainer_HP":0,
+                                                "pk_trainer_move":"",
+                                                "pk_trainer_damage":0,
+                                                "pk_enemy_HP":0,
+                                                "pk_enemy_move":"",
+                                                "pk_enemy_damage":0},
+                        "turn_details":[],
+                        "battle_turn_details": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterLevel = 5
+        starterLevel = random.randint(19,20)
         starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
                           create_playable_pokemon("Charmander", starterLevel),
                           create_playable_pokemon("Squirtle", starterLevel)]
@@ -370,10 +383,20 @@ def createCharacter(fsm):
 
     return trainer
 
-
 def createCharacterRandomize(fsm):
     trainer_name = "PEL"
-    random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
+    random_stats = {"wild_pokemons": [],
+                    "win_loss": [],
+                    "num_turns": 0,
+                    "total_num_turns": [],
+                    "left_hp": [],
+                    "turn_details": {"turn": 0,
+                                     "pk_trainer_HP": 0,
+                                     "pk_trainer_move": "",
+                                     "pk_trainer_damage": 0,
+                                     "pk_enemy_HP": 0,
+                                     "pk_enemy_move": "",
+                                     "pk_enemy_damage": 0}}
     trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
     starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
     trainer.pk_list.append(starterPokemon)
@@ -383,7 +406,6 @@ def createCharacterRandomize(fsm):
                      "pokeballs": pokeballs}
 
     return trainer
-
 
 def BuyItems(trainer):
     print(f"Your current inventory:\n{trainer.str_items()}")
@@ -481,7 +503,7 @@ def HealPokemons(trainer):
 
 def wild_Battle(trainer):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, trainer.pk_list[trainer.pk_active_index].level + 1))
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
@@ -498,6 +520,7 @@ def wild_Battle(trainer):
     Pokeball_priority = 800
 
     trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
+    trainer.random_stats["turn_details"] = []
 
     battle_ongoing = True
     while battle_ongoing:
@@ -523,6 +546,9 @@ def wild_Battle(trainer):
         print(f"Wild {enemy_pokemon.name} | Level: {enemy_pokemon.level} | HP: {enemy_pokemon.currentHP}/{enemy_pokemon.stats['hp']}")
         print(f"Your {active_pokemon.name} | Level: {active_pokemon.level} | HP: {active_pokemon.currentHP}/{active_pokemon.stats['hp']}")
         print(f"==========================================")
+        trainer.random_stats["num_turns"] += 1
+        trainer.random_stats["single_turn_details"]["pk_trainer_HP"] = active_pokemon.currentHP
+        trainer.random_stats["single_turn_details"]["pk_enemy_HP"] = enemy_pokemon.currentHP
 
         choice = None
         # TRAINER TREE
@@ -534,9 +560,11 @@ def wild_Battle(trainer):
         PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
         Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer, print_show = None)
 
+
+
         for move in active_pokemon.moves:
             Node(move.name,
-                 value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
+                 value={"function": lambda m=move: trainer.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
                  print_show = f"{int(move.pp)}/{int(Db.M_db.MoveList_df.loc[move.name]['pp'])}")
@@ -641,7 +669,7 @@ def wild_Battle(trainer):
                     if keep_turn:
                         if end_battle: return True
 
-        trainer.random_stats["num_turns"] += 1
+        trainer.random_stats["turn_details"].append(dict(trainer.random_stats["single_turn_details"]))
 
 def random_wild_Battle(trainer,randomize):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
