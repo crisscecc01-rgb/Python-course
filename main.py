@@ -44,6 +44,7 @@ if __name__ == "__main__":
                             "Game": game_idx + 1,
                             "Battle_Number": i + 1,
                             "Enemy_Pokemon": sim["wild_pokemons"][i],
+                            "Enemy_Pokemon_Types": sim["wild_pokemon_type"][i],
                             "Win": sim["win_loss"][i],
                             "Win_Percentage": sim["win_loss"][i]*100,
                             "Left_HP": sim["left_hp"][i],
