@@ -624,35 +624,38 @@ def wild_Battle(trainer):
 
 
         print("---Turn result---")
+        outcome = False
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             end_battle, keep_turn = node_enemy.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if active_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_trainer.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         else:
             #in case equal priority i start (for now)
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         trainer.random_stats["num_turns"] += 1
+        if outcome:
+            return True
 
 def random_wild_Battle(trainer,randomize):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
