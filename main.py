@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 31
+    number_cycles = 10
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -45,12 +45,14 @@ if __name__ == "__main__":
                         "Enemy_Pokemon": sim["wild_pokemons"][i],
                         "Win": sim["win_loss"][i],
                         "Left_HP": sim["left_hp"][i],
-                        "Turns": sim["total_num_turns"][i]
+                        "Turns": sim["total_num_turns"][i],
+                        "Turns_details": sim["battle_turn_details"][i]
                     })
 
         df_master = pd.DataFrame(records)
         print(df_master)
 
+        '''
         sns.set_theme()
         colors_starter = {"Bulbasaur": "green", "Charmander": "red", "Squirtle": "blue"}
 
@@ -230,6 +232,7 @@ if __name__ == "__main__":
 
         plt.tight_layout()
         plt.show()
+        '''
 
 
 
