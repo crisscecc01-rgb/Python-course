@@ -12,7 +12,7 @@ class PokemonTrainerClass:
         self.pk_active_index = pk_active_index
         self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
         self.random_stats = random_stats
-        self.num_battles = 5
+        self.num_battles = 150
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
         string = ", ".join(nomi)
@@ -351,7 +351,7 @@ def create_playable_pokemon(name_pokemon, level):
     #this way the stats are adjusted only when the pokemon is created (if the pokemon level increment is added this should be modified)
     scaled_stats = scale_stats(row["base_stats"], level)
 
-    analytics_pk = {"pk_HP": 0,
+    analytics_pk = {"pk_hp": 0,
                     "pk_move": "",
                     "pk_damage": 0}
     return PokemonCharacterClass(

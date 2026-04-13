@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 10
+    number_cycles = 31
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -38,29 +38,38 @@ if __name__ == "__main__":
                 num_battles = len(sim["wild_pokemons"])
 
                 for i in range(num_battles):
-                    records.append({
-                        "Starter": starter,
-                        "Game": game_idx + 1,
-                        "Battle_Number": i + 1,
-                        "Enemy_Pokemon": sim["wild_pokemons"][i],
-                        "Win": sim["win_loss"][i],
-                        "Left_HP": sim["left_hp"][i],
-                        "Turns": sim["total_num_turns"][i],
-                        "Turns_details": sim["battle_turn_details"][i]
-                    })
+                    for t in range(sim["total_num_turns"][i]):
+                        records.append({
+                            "Starter": starter,
+                            "Game": game_idx + 1,
+                            "Battle_Number": i + 1,
+                            "Enemy_Pokemon": sim["wild_pokemons"][i],
+                            "Win": sim["win_loss"][i],
+                            "Win_Percentage": sim["win_loss"][i]*100,
+                            "Left_HP": sim["left_hp"][i],
+                            "Turns": sim["total_num_turns"][i],
+                            "Actual_turn": t+1,
+                            "pk_HP": sim["battle_turn_details"][i]["my_pk"][t]["pk_hp"],
+                            "pk_Move": sim["battle_turn_details"][i]["my_pk"][t]["pk_move"],
+                            "pk_Damage": sim["battle_turn_details"][i]["my_pk"][t]["pk_damage"],
+                            "Enemy_HP": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_hp"],
+                            "Enemy_Move": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_move"],
+                            "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
+                        })
+        df_master_complete = pd.DataFrame(records)
+        df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
+        print(df_master_battles)
 
-        df_master = pd.DataFrame(records)
-        print(df_master)
 
-        '''
         sns.set_theme()
         colors_starter = {"Bulbasaur": "green", "Charmander": "red", "Squirtle": "blue"}
 
         # =========================================================
         # SIMPLE PLOT
         # =========================================================
+    
         plt.figure(1, figsize=(10, 5))
-        cumulative_wins = df_master.groupby(['Starter', 'Battle_Number'])['Win'].mean().groupby(
+        cumulative_wins = df_master_battles.groupby(['Starter', 'Battle_Number'])['Win'].mean().groupby(
             'Starter').cumsum().reset_index()
         sns.lineplot(data=cumulative_wins, x="Battle_Number", y="Win", hue="Starter",
                      palette=colors_starter, marker='o', linewidth=2)
@@ -76,31 +85,31 @@ if __name__ == "__main__":
         # =========================================================
         fig, axes = plt.subplots(1, 2, figsize=(15, 6))
 
-        sns.boxplot(data=df_master, x="Starter", y="Turns", hue="Starter", palette=colors_starter, ax=axes[0])
+        sns.boxplot(data=df_master_battles, x="Starter", y="Turns", hue="Starter", palette=colors_starter, ax=axes[0])
         axes[0].set_title("Battle Lengths (Number of Turns)", fontweight='bold')
 
-        df_master_described_turns = df_master.groupby('Starter')['Turns'].describe()
+        df_master_battles_described_turns = df_master_battles.groupby('Starter')['Turns'].describe()
 
-        index_starter = df_master_described_turns.index
+        index_starter = df_master_battles_described_turns.index
 
         testo = ""
         for starter in index_starter:
             testo += (
-                f"{starter} : Mean: {df_master_described_turns.loc[starter, 'mean']:.2f} | Median: {df_master_described_turns.loc[starter, '50%']:.2f} | 25%:"
-                f" {df_master_described_turns.loc[starter, '25%']:.2f} | 75%: {df_master_described_turns.loc[starter, '75%']:.2f}\n")
+                f"{starter} : Mean: {df_master_battles_described_turns.loc[starter, 'mean']:.2f} | Median: {df_master_battles_described_turns.loc[starter, '50%']:.2f} | 25%:"
+                f" {df_master_battles_described_turns.loc[starter, '25%']:.2f} | 75%: {df_master_battles_described_turns.loc[starter, '75%']:.2f}\n")
         axes[0].text(0.95, 0.95, testo, transform=axes[0].transAxes, fontsize=10,
                  verticalalignment='top', horizontalalignment='right',
                  bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-        sns.boxplot(data=df_master, x="Starter", y="Left_HP", hue="Starter", palette=colors_starter, ax=axes[1])
+        sns.boxplot(data=df_master_battles, x="Starter", y="Left_HP", hue="Starter", palette=colors_starter, ax=axes[1])
         axes[1].set_title("Remaining HP at End of Battle", fontweight='bold')
 
-        df_master_described_hp = df_master.groupby('Starter')['Left_HP'].describe()
+        df_master_battles_described_hp = df_master_battles.groupby('Starter')['Left_HP'].describe()
         testo = ""
         for starter in index_starter:
             testo += (
-                f"{starter} : Mean: {df_master_described_hp.loc[starter, 'mean']:.2f} | Median: {df_master_described_hp.loc[starter, '50%']:.2f} | 25%:"
-                f" {df_master_described_hp.loc[starter, '25%']:.2f} | 75%: {df_master_described_hp.loc[starter, '75%']:.2f}\n")
+                f"{starter} : Mean: {df_master_battles_described_hp.loc[starter, 'mean']:.2f} | Median: {df_master_battles_described_hp.loc[starter, '50%']:.2f} | 25%:"
+                f" {df_master_battles_described_hp.loc[starter, '25%']:.2f} | 75%: {df_master_battles_described_hp.loc[starter, '75%']:.2f}\n")
         axes[1].text(0.95, 0.95, testo, transform=axes[1].transAxes, fontsize=10,
                  verticalalignment='top', horizontalalignment='right',
                  bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
@@ -111,21 +120,19 @@ if __name__ == "__main__":
         # BARPLOT
         # =========================================================
 
-        df_master['Win_Percentage'] = df_master['Win'] * 100
 
-        print(df_master)
+
 
         fig1, axes1 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
         fig1.suptitle("Win Percentage per Enemy Pokemon", fontsize=16, fontweight='bold')
 
         for i, starter in enumerate(index_starter):
             ax = axes1[i]
-            df_starter = df_master[df_master['Starter'] == starter]
+            df_starter = df_master_battles[df_master_battles['Starter'] == starter]
 
             wins_per_enemy = df_starter.groupby('Enemy_Pokemon')['Win'].sum()
             enemies_with_wins = wins_per_enemy[wins_per_enemy > 0].index
             df_starter_filtered = df_starter[df_starter['Enemy_Pokemon'].isin(enemies_with_wins)]
-
             sns.barplot(data=df_starter_filtered, x="Enemy_Pokemon", y="Win_Percentage",
                         color=colors_starter.get(starter, "black"), errorbar=None, ax=ax)
 
@@ -147,7 +154,7 @@ if __name__ == "__main__":
         for i, starter in enumerate(index_starter):
             ax = axes2[i]
 
-            df_starter = df_master[df_master['Starter'] == starter]
+            df_starter = df_master_battles[df_master_battles['Starter'] == starter]
 
             wins_per_enemy = df_starter.groupby('Enemy_Pokemon')['Win'].sum()
             enemies_with_wins = wins_per_enemy[wins_per_enemy > 0].index
@@ -166,7 +173,7 @@ if __name__ == "__main__":
             else:
                 ax.set_ylabel("")
 
-        df_grouped = df_master.groupby(["Starter", "Enemy_Pokemon"]).agg({
+        df_grouped = df_master_battles.groupby(["Starter", "Enemy_Pokemon"]).agg({
             "Win": "mean",
             "Left_HP": "mean",
             "Turns": "mean"
@@ -179,7 +186,7 @@ if __name__ == "__main__":
         })
 
         df_grouped = df_grouped.merge(
-            df_master_described_turns["50%"].rename("Median_Turns"),
+            df_master_battles_described_turns["50%"].rename("Median_Turns"),
             on="Starter"
         )
 
@@ -208,7 +215,6 @@ if __name__ == "__main__":
                     colors.append("limegreen")
                 elif skilled_mask.loc[idx]:
                     colors.append("dodgerblue")
-
             sns.barplot(
                 data=df_filtered,
                 x="Enemy_Pokemon",
@@ -232,7 +238,7 @@ if __name__ == "__main__":
 
         plt.tight_layout()
         plt.show()
-        '''
+
 
 
 

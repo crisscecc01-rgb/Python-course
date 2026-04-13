@@ -725,8 +725,8 @@ def random_wild_Battle(trainer,randomize):
 
         node_trainer = rootTrainer
 
-        active_pokemon.analytics_pk["pk_HP"] = active_pokemon.currentHP
-        enemy_pokemon.analytics_pk["pk_HP"] = enemy_pokemon.currentHP
+        active_pokemon.analytics_pk["pk_hp"] = active_pokemon.currentHP
+        enemy_pokemon.analytics_pk["pk_hp"] = enemy_pokemon.currentHP
 
         while not node_trainer.is_leaf:
             node_trainer.value["choice"] = node_trainer.value["function"](node_trainer)
