@@ -367,7 +367,6 @@ def createCharacter(fsm):
 
     return trainer
 
-
 def createCharacterRandomize(fsm):
     trainer_name = "PEL"
     random_stats = {"wild_pokemons": [], "win_loss": [], "num_turns": 0, "total_num_turns": [], "left_hp": []}
@@ -380,7 +379,6 @@ def createCharacterRandomize(fsm):
                      "pokeballs": pokeballs}
 
     return trainer
-
 
 def BuyItems(trainer):
     print(f"Your current inventory:\n{trainer.str_items()}")
@@ -612,35 +610,38 @@ def wild_Battle(trainer):
 
 
         print("---Turn result---")
+        outcome = False
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             end_battle, keep_turn = node_enemy.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if active_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_trainer.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         else:
             #in case equal priority i start (for now)
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         trainer.random_stats["num_turns"] += 1
+        if outcome:
+            return True
 
 def random_wild_Battle(trainer,randomize):
     rand_wild_pk_name = random.sample(sorted(Db.P_db.PokemonList), 1)[0]
@@ -778,37 +779,40 @@ def random_wild_Battle(trainer,randomize):
             else:
                 node_enemy = node_enemy.children[choice_enemy - 1]
 
+        outcome = False
         if not randomize:
             print("---Turn result---")
         if node_trainer.value["priority"] > node_enemy.value["priority"]:
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         elif node_trainer.value["priority"] < node_enemy.value["priority"]:
             end_battle, keep_turn = node_enemy.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if active_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_trainer.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         else:
             #in case equal priority i start (for now)
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
-                if end_battle: return True
+                if end_battle: outcome = True
                 if enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
-                        if end_battle: return True
+                        if end_battle: outcome = True
 
         trainer.random_stats["num_turns"] += 1
+        if outcome:
+            return True
 
 def DoSomething(function, trainer):
     trainer_done = trainer
