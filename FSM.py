@@ -379,6 +379,7 @@ def createCharacterRandomize(fsm):
     trainer_name = "PEL"
     random_stats = {"wild_pokemons": [],
                     "wild_pokemon_type": [],
+                    "wild_pokemon_level": [],
                     "win_loss": [],
                     "num_turns": 0,
                     "total_num_turns": [],
@@ -676,6 +677,7 @@ def random_wild_Battle(trainer,randomize):
 
     trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
     trainer.random_stats["wild_pokemon_type"].append(enemy_pokemon.types)
+    trainer.random_stats["wild_pokemon_level"].append(enemy_pokemon.level)
     battle_details = {"my_pk": [],
                       "enemy_pk": []}
 
