@@ -59,13 +59,65 @@ if __name__ == "__main__":
                             "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
                         })
         df_master_complete = pd.DataFrame(records)
+        print(df_master_complete)
         df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
-        print(df_master_battles)
+
 
 
         sns.set_theme()
         colors_starter = {"Bulbasaur": "green", "Charmander": "red", "Squirtle": "blue"}
 
+        # =========================================================
+        # SIMPLE PLOT
+        # =========================================================
+        df_master_complete['max_hp_battle'] = df_master_complete.groupby(['Starter', 'Game', 'Battle_Number'])['pk_HP'].transform('first')
+        df_master_complete['pk_HP_perc'] = (df_master_complete['pk_HP'] / df_master_complete['max_hp_battle']) * 100
+        df_master_complete['next_pk_HP_perc'] = df_master_complete.groupby(['Starter', 'Game', 'Battle_Number'])['pk_HP_perc'].shift(-1)
+        df_master_complete['HP_reduction'] = df_master_complete['pk_HP_perc'] - df_master_complete['next_pk_HP_perc']
+        df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 1), 'HP_reduction'] = 0
+        df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 0), 'HP_reduction'] = df_master_complete['pk_HP_perc']
+
+        print(df_master_complete)
+        plt.figure(1, figsize=(10, 5))
+        sns.lineplot(data=df_master_complete, x="Actual_turn", y="HP_reduction", hue="Starter",
+                     palette=colors_starter,errorbar='sd', marker='o', linewidth=2)
+        plt.title("Percentage Reduction of trainer Pokémon HP per Starter", fontsize=14, fontweight='bold')
+        plt.xlabel("Number of Turns", fontsize=12)
+        plt.ylabel("Percentage Reduction of HP", fontsize=12)
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.tight_layout()
+
+        # =========================================================
+        # PIE PLOT
+        # =========================================================
+        df_master_moves = df_master_complete[df_master_complete['pk_Move'].str.strip()!= ""]
+        move_usage = df_master_moves.groupby(['Starter'])['pk_Move'].value_counts().reset_index()
+        print(move_usage)
+        damage_df = df_master_moves.groupby(['Starter','pk_Move'])['pk_Damage'].sum().reset_index()
+        move_usage = pd.merge(move_usage, damage_df, on=['Starter','pk_Move'], how='right')
+
+        print(move_usage)
+
+        fig, axes = plt.subplots(2, 3, figsize=(15, 6))
+        index_starter = df_master_complete['Starter'].unique()
+        print(index_starter)
+
+        for col, pokemon in enumerate(index_starter):
+            df_filtered = move_usage[move_usage['Starter'] == pokemon]
+
+            ax_usage = axes[0, col]  # Riga 0, colonna 'col'
+            ax_usage.pie(df_filtered['count'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
+            ax_usage.set_title(f"{pokemon} - Usage", fontsize=14, fontweight='bold')
+
+            ax_damage = axes[1, col]  # Riga 1, colonna 'col'
+            ax_damage.pie(df_filtered['pk_Damage'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
+            ax_damage.set_title(f"{pokemon} - Damage", fontsize=14, fontweight='bold')
+
+        plt.tight_layout()
+        plt.show()
+
+
+        '''
         # =========================================================
         # SIMPLE PLOT
         # =========================================================
@@ -237,7 +289,7 @@ if __name__ == "__main__":
                 ax.set_ylabel("Win Rate %")
             else:
                 ax.set_ylabel("")
-
+        '''
         plt.tight_layout()
         plt.show()
 
