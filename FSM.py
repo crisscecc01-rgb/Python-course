@@ -371,7 +371,7 @@ def createCharacter(fsm):
                          "pokeballs": pokeballs}
 
         print(f"you selected {trainer.pk_list[0].name}!")
-        print(trainer)
+        #print(trainer)
 
     return trainer
 
@@ -552,7 +552,7 @@ def wild_Battle(trainer):
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
-                 print_show = f"{int(move.pp)}/{int(Db.M_db.MoveList_df.loc[move.name]['pp'])}")
+                 print_show = f"{move.pp}/{Db.M_db.MoveList_df.loc[move.name]['pp']}")
 
 
         for heal in trainer.items["heals"]:

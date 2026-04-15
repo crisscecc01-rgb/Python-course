@@ -26,4 +26,4 @@ for name, data in pokemons_data.items():
         "moves": pick_moves(data[2])
     })
 Pokemon_df = pd.DataFrame(pokemon_records).set_index("name")
-print(Pokemon_df)
+#print(Pokemon_df)
