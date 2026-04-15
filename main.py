@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
+import Database as Db
 
 
 if __name__ == "__main__":
@@ -59,7 +60,7 @@ if __name__ == "__main__":
                             "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
                         })
         df_master_complete = pd.DataFrame(records)
-        print(df_master_complete)
+        #print(df_master_complete)
         df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
 
 
@@ -77,7 +78,7 @@ if __name__ == "__main__":
         df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 1), 'HP_reduction'] = 0
         df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 0), 'HP_reduction'] = df_master_complete['pk_HP_perc']
 
-        print(df_master_complete)
+        #print(df_master_complete)
         plt.figure(1, figsize=(10, 5))
         sns.lineplot(data=df_master_complete, x="Actual_turn", y="HP_reduction", hue="Starter",
                      palette=colors_starter,errorbar='sd', marker='o', linewidth=2)
@@ -94,19 +95,19 @@ if __name__ == "__main__":
         move_usage = df_master_moves.groupby(['Starter'])['pk_Move'].value_counts().reset_index()
         damage_df = df_master_moves.groupby(['Starter','pk_Move'])['pk_Damage'].sum().reset_index()
         move_usage = pd.merge(move_usage, damage_df, on=['Starter','pk_Move'], how='right')
-        print(move_usage)
+        #print(move_usage)
 
-        fig, axes = plt.subplots(2, 3, figsize=(15, 6))
+        fig1, axes = plt.subplots(2, 3, figsize=(15, 6))
         index_starter = df_master_complete['Starter'].unique()
 
         for col, pokemon in enumerate(index_starter):
             df_filtered = move_usage[move_usage['Starter'] == pokemon]
 
-            ax_usage = axes[0, col]  # Riga 0, colonna 'col'
+            ax_usage = axes[0, col]
             ax_usage.pie(df_filtered['count'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
             ax_usage.set_title(f"{pokemon} - Usage", fontsize=14, fontweight='bold')
 
-            ax_damage = axes[1, col]  # Riga 1, colonna 'col'
+            ax_damage = axes[1, col]
             ax_damage.pie(df_filtered['pk_Damage'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
             ax_damage.set_title(f"{pokemon} - Damage", fontsize=14, fontweight='bold')
 
@@ -115,21 +116,33 @@ if __name__ == "__main__":
 
         # ==================================================
 
-        enemy_types_found = df_master_complete.groupby(['Starter'])['Enemy_Pokemon_Types'].value_counts().reset_index()
-        print(enemy_types_found)
+        enemy_types_found = df_master_complete['Enemy_Pokemon_Types'].value_counts().reset_index()
+        database_types = Db.P_db.Pokemon_df['types'].value_counts().reset_index()
+        database_types['types'] = database_types['types'].astype(str)
+        enemy_types_found['Enemy_Pokemon_Types'] = enemy_types_found['Enemy_Pokemon_Types'].astype(str)
+        #print(database_types)
+        #print(enemy_types_found)
 
-        fig, axes = plt.subplots(1, 3, figsize=(15, 6))
-        index_starter = df_master_complete['Starter'].unique()
-
-        for col, pokemon in enumerate(index_starter):
-            df_filtered = enemy_types_found[enemy_types_found['Starter'] == pokemon]
-
-            ax_usage = axes[col]  # Riga 0, colonna 'col'
-            ax_usage.pie(df_filtered['count'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
-            ax_usage.set_title(f"{pokemon} - Usage", fontsize=14, fontweight='bold')
-
-
+        fig2, axes = plt.subplots(1, 2, figsize=(15, 6))
+        ax_usage = axes[0]
+        ax_usage.pie(database_types['count'], labels=database_types['types'], autopct='%1.1f%%', startangle=90)
+        ax_usage.set_title(f"Database Pokemon types", fontsize=14, fontweight='bold')
+        ax_usage = axes[1]
+        ax_usage.pie(enemy_types_found['count'], labels=enemy_types_found['Enemy_Pokemon_Types'], autopct='%1.1f%%', startangle=90)
+        ax_usage.set_title(f"Enemy Pokemon Types found", fontsize=14, fontweight='bold')
         plt.tight_layout()
+
+        fig3, axes = plt.subplots(1, 2, figsize=(15, 6))
+        sns.barplot(data = database_types, x= 'types', y= 'count', ax=axes[0], hue= 'types',legend=False)
+        axes[0].set_title(f"Database Pokemon types", fontsize=14, fontweight='bold')
+        axes[0].tick_params(axis='x',rotation=90)
+        sns.barplot(data=enemy_types_found, x='Enemy_Pokemon_Types', y='count', ax=axes[1], hue='Enemy_Pokemon_Types')
+        axes[1].set_title(f"Enemy Pokemon Types found", fontsize=14, fontweight='bold')
+        axes[1].tick_params(axis='x',rotation=90)
+        plt.tight_layout()
+
+
+
         plt.show()
 
 
