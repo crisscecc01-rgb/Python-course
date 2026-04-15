@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 31
+    number_cycles = 4
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -92,15 +92,12 @@ if __name__ == "__main__":
         # =========================================================
         df_master_moves = df_master_complete[df_master_complete['pk_Move'].str.strip()!= ""]
         move_usage = df_master_moves.groupby(['Starter'])['pk_Move'].value_counts().reset_index()
-        print(move_usage)
         damage_df = df_master_moves.groupby(['Starter','pk_Move'])['pk_Damage'].sum().reset_index()
         move_usage = pd.merge(move_usage, damage_df, on=['Starter','pk_Move'], how='right')
-
         print(move_usage)
 
         fig, axes = plt.subplots(2, 3, figsize=(15, 6))
         index_starter = df_master_complete['Starter'].unique()
-        print(index_starter)
 
         for col, pokemon in enumerate(index_starter):
             df_filtered = move_usage[move_usage['Starter'] == pokemon]
@@ -114,8 +111,26 @@ if __name__ == "__main__":
             ax_damage.set_title(f"{pokemon} - Damage", fontsize=14, fontweight='bold')
 
         plt.tight_layout()
-        plt.show()
 
+
+        # ==================================================
+
+        enemy_types_found = df_master_complete.groupby(['Starter'])['Enemy_Pokemon_Types'].value_counts().reset_index()
+        print(enemy_types_found)
+
+        fig, axes = plt.subplots(1, 3, figsize=(15, 6))
+        index_starter = df_master_complete['Starter'].unique()
+
+        for col, pokemon in enumerate(index_starter):
+            df_filtered = enemy_types_found[enemy_types_found['Starter'] == pokemon]
+
+            ax_usage = axes[col]  # Riga 0, colonna 'col'
+            ax_usage.pie(df_filtered['count'], labels=df_filtered['pk_Move'], autopct='%1.1f%%', startangle=90)
+            ax_usage.set_title(f"{pokemon} - Usage", fontsize=14, fontweight='bold')
+
+
+        plt.tight_layout()
+        plt.show()
 
         '''
         # =========================================================

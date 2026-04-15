@@ -12,7 +12,7 @@ class PokemonTrainerClass:
         self.pk_active_index = pk_active_index
         self.items = items  # dictionary of list of items {"heal": list_of_heals, "pokeballs": list_of_pokeballs}
         self.random_stats = random_stats
-        self.num_battles = 100
+        self.num_battles = 10
     def str_pkList(self):
         nomi = [item.name for item in self.pk_list]
         string = ", ".join(nomi)
