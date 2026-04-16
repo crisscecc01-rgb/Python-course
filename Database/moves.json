@@ -1563,7 +1563,7 @@
     "category": "physical",
     "power": 50,
     "accuracy": 1.0,
-    "pp": null,
+    "pp": 0,
     "effects": [
       "Only usable when all PP are gone. Hurts the user."
     ]

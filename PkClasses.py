@@ -59,7 +59,7 @@ class PokemonTrainerClass:
         list_index_alive = []
         for index, pokemon in enumerate(self.pk_list):
             if pokemon.currentHP > 0:
-                print(f"{index + 1} Pokemon available: {self.pk_list[index]}")
+                print(f"{index + 1}) --> Pokemon available: {self.pk_list[index]}")
                 list_index_alive.append(index + 1)
         if not list_index_alive:
             print("You have no pokemon alive!")
