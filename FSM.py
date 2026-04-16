@@ -554,7 +554,7 @@ def wild_Battle(trainer):
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
-                 print_show = f"{move.pp}/{Db.M_db.MoveList_df.loc[move.name]['pp']}")
+                 print_show = f"{int(move.pp)}/{int(Db.M_db.MoveList_df.loc[move.name]['pp'])}")
 
 
         for heal in trainer.items["heals"]:
@@ -633,7 +633,7 @@ def wild_Battle(trainer):
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if enemy_pokemon.currentHP > 0:
+                elif enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True
@@ -642,7 +642,7 @@ def wild_Battle(trainer):
             end_battle, keep_turn = node_enemy.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if active_pokemon.currentHP > 0:
+                elif active_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_trainer.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True
@@ -652,7 +652,7 @@ def wild_Battle(trainer):
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if enemy_pokemon.currentHP > 0:
+                elif enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True
@@ -713,7 +713,7 @@ def random_wild_Battle(trainer,randomize):
                  value={"function": lambda m=move: active_pokemon.use_move_random(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
-                 print_show = f"{move.pp}/{Db.M_db.MoveList_df.loc[move.name]['pp']}")
+                 print_show = f"{int(move.pp)}/{int(Db.M_db.MoveList_df.loc[move.name]['pp'])}")
 
         # WILD POKÉMON TREE
         rootEnemy = Node("Menu", value={"function": printMenu_ai, "choice": choice})
@@ -763,7 +763,7 @@ def random_wild_Battle(trainer,randomize):
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if enemy_pokemon.currentHP > 0:
+                elif enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True
@@ -772,7 +772,7 @@ def random_wild_Battle(trainer,randomize):
             end_battle, keep_turn = node_enemy.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if active_pokemon.currentHP > 0:
+                elif active_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_trainer.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True
@@ -782,7 +782,7 @@ def random_wild_Battle(trainer,randomize):
             end_battle, keep_turn = node_trainer.value["function"]()
             if keep_turn:
                 if end_battle: outcome = True
-                if enemy_pokemon.currentHP > 0:
+                elif enemy_pokemon.currentHP > 0:
                     end_battle, keep_turn = node_enemy.value["function"]()
                     if keep_turn:
                         if end_battle: outcome = True

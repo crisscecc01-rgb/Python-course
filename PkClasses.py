@@ -223,6 +223,8 @@ class PokemonCharacterClass:
                 print(f"{move.name} is NOT MUCH EFFECTIVE on {opponent.name}!")
             elif effectiveness == 2.0:
                 print(f"{move.name} is SUPER EFFECTIVE on {opponent.name}!")
+            elif effectiveness == 4.0:
+                print(f"{move.name} is HYPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
             #print(f"HP left of {opponent.name}: {opponent.currentHP}")
             return False, True

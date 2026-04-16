@@ -63,7 +63,7 @@ if __name__ == "__main__":
                             "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
                         })
         df_master_complete = pd.DataFrame(records)
-        print(df_master_complete)
+        #print(df_master_complete)
         df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
 
 
@@ -152,7 +152,7 @@ if __name__ == "__main__":
         master_damage_filtered = df_master_complete[df_master_complete['pk_Move'].str.strip()!=""]
         #print(master_damage_filtered)
         pk_damage_lvl_dist = master_damage_filtered.groupby(['Starter','Starter_Level'])['pk_Damage'].mean().reset_index()
-        print(pk_damage_lvl_dist)
+        #print(pk_damage_lvl_dist)
 
         fig4, axes = plt.subplots(1, 3, figsize=(15, 6))
         index_starter = df_master_complete['Starter'].unique()
@@ -175,10 +175,10 @@ if __name__ == "__main__":
         # =========================================================
         df_master_complete = df_master_complete.explode('Enemy_Pokemon_Types')
         df_master_complete = df_master_complete.reset_index(drop=True)
-        print(df_master_complete)
+        #print(df_master_complete)
         image_3d_plot_df = df_master_complete[['Starter','Win','Enemy_Pokemon_Level','Enemy_Pokemon_Types']]
         image_3d_plot_df_mean = df_master_complete.groupby(['Starter', 'Enemy_Pokemon_Level','Enemy_Pokemon_Types'])['Win'].mean().reset_index()
-        print(image_3d_plot_df_mean)
+        #print(image_3d_plot_df_mean)
         found_types = sorted(image_3d_plot_df_mean['Enemy_Pokemon_Types'].unique())
         type_to_num = {tipo: i for i, tipo in enumerate(found_types)}
         cmaps = {
