@@ -9,6 +9,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
+
 if __name__ == "__main__":
     number_cycles = 151
     story = {"Bulbasaur": [],
