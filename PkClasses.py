@@ -1,6 +1,5 @@
 import random
 from math import floor
-
 import Database as Db
 import BaseClasses
 
