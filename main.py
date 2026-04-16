@@ -1,14 +1,16 @@
 import PokemonStory
-import numpy
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
 import Database as Db
-
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.cm as cm
+import matplotlib.colors as mcolors
 
 if __name__ == "__main__":
-    number_cycles = 4
+    number_cycles = 151
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -42,6 +44,7 @@ if __name__ == "__main__":
                     for t in range(sim["total_num_turns"][i]):
                         records.append({
                             "Starter": starter,
+                            "Starter_Level": sim["my_level"][i],
                             "Game": game_idx + 1,
                             "Battle_Number": i + 1,
                             "Enemy_Pokemon": sim["wild_pokemons"][i],
@@ -60,7 +63,7 @@ if __name__ == "__main__":
                             "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
                         })
         df_master_complete = pd.DataFrame(records)
-        #print(df_master_complete)
+        print(df_master_complete)
         df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
 
 
@@ -113,13 +116,13 @@ if __name__ == "__main__":
 
         plt.tight_layout()
 
+        df_master_types_exploded = df_master_complete['Enemy_Pokemon_Types'].explode().reset_index()
+        enemy_types_found = df_master_types_exploded['Enemy_Pokemon_Types'].value_counts().reset_index()
 
-        # ==================================================
+        database_types_exploded = Db.P_db.Pokemon_df['types'].explode().reset_index()
+        database_types = database_types_exploded['types'].value_counts().reset_index()
 
-        enemy_types_found = df_master_complete['Enemy_Pokemon_Types'].value_counts().reset_index()
-        database_types = Db.P_db.Pokemon_df['types'].value_counts().reset_index()
-        database_types['types'] = database_types['types'].astype(str)
-        enemy_types_found['Enemy_Pokemon_Types'] = enemy_types_found['Enemy_Pokemon_Types'].astype(str)
+
         #print(database_types)
         #print(enemy_types_found)
 
@@ -132,6 +135,8 @@ if __name__ == "__main__":
         ax_usage.set_title(f"Enemy Pokemon Types found", fontsize=14, fontweight='bold')
         plt.tight_layout()
 
+        #========================================================
+
         fig3, axes = plt.subplots(1, 2, figsize=(15, 6))
         sns.barplot(data = database_types, x= 'types', y= 'count', ax=axes[0], hue= 'types',legend=False)
         axes[0].set_title(f"Database Pokemon types", fontsize=14, fontweight='bold')
@@ -141,17 +146,85 @@ if __name__ == "__main__":
         axes[1].tick_params(axis='x',rotation=90)
         plt.tight_layout()
 
+        # =========================================================
+        # BAR PLOT
+        # =========================================================
+        master_damage_filtered = df_master_complete[df_master_complete['pk_Move'].str.strip()!=""]
+        #print(master_damage_filtered)
+        pk_damage_lvl_dist = master_damage_filtered.groupby(['Starter','Starter_Level'])['pk_Damage'].mean().reset_index()
+        print(pk_damage_lvl_dist)
 
+        fig4, axes = plt.subplots(1, 3, figsize=(15, 6))
+        index_starter = df_master_complete['Starter'].unique()
 
+        for col, pokemon in enumerate(index_starter):
+            df_filtered = pk_damage_lvl_dist[pk_damage_lvl_dist['Starter'] == pokemon]
+            sns.barplot(data=df_filtered, x='Starter_Level', y='pk_Damage', ax=axes[col], hue='Starter', palette=colors_starter, legend=False)
+            axes[col].set_title(f"Average Damage done by {index_starter[col]}", fontsize=14, fontweight='bold')
+            axes[col].tick_params(axis='x', rotation=90)
+            axes[col].set_xlabel(f"{index_starter[col]} level")
+            if col == 0:
+                axes[col].set_ylabel("Pk Damage")
+            else:
+                axes[col].set_ylabel("")
+
+        plt.tight_layout()
+
+        # =========================================================
+        # IMAGE PLOT
+        # =========================================================
+        df_master_complete = df_master_complete.explode('Enemy_Pokemon_Types')
+        df_master_complete = df_master_complete.reset_index(drop=True)
+        print(df_master_complete)
+        image_3d_plot_df = df_master_complete[['Starter','Win','Enemy_Pokemon_Level','Enemy_Pokemon_Types']]
+        image_3d_plot_df_mean = df_master_complete.groupby(['Starter', 'Enemy_Pokemon_Level','Enemy_Pokemon_Types'])['Win'].mean().reset_index()
+        print(image_3d_plot_df_mean)
+        found_types = sorted(image_3d_plot_df_mean['Enemy_Pokemon_Types'].unique())
+        type_to_num = {tipo: i for i, tipo in enumerate(found_types)}
+        cmaps = {
+            'Bulbasaur': mcolors.LinearSegmentedColormap.from_list("BulbaG", ["#f0f0f0", "forestgreen"]),
+            'Charmander': mcolors.LinearSegmentedColormap.from_list("CharG", ["#f0f0f0", "crimson"]),
+            'Squirtle': mcolors.LinearSegmentedColormap.from_list("SquirG", ["#f0f0f0", "royalblue"])
+        }
+
+        fig5, ax = plt.subplots(1,3,figsize=(15, 6))
+        for col, pokemon in enumerate(index_starter):
+            df_filtered = image_3d_plot_df_mean[image_3d_plot_df_mean['Starter'] == pokemon]
+
+            ax = fig5.add_subplot(1, 3, col + 1, projection='3d')
+
+            x = df_filtered['Enemy_Pokemon_Level'].values
+            y = df_filtered['Enemy_Pokemon_Types'].map(type_to_num).values
+            z = np.zeros(len(df_filtered))
+
+            dx = 0.5
+            dy = 0.5
+            dz = df_filtered['Win'].values
+            current_cmap = cmaps.get(pokemon, plt.get_cmap('viridis'))
+            bar_colors = current_cmap(dz)
+            for i in range(len(bar_colors)):
+                bar_colors[i, 3] = 0.3 + (dz[i] * 0.6)  # Parte da 0.3 e arriva a 0.9
+
+            ax.bar3d(x, y, z, dx, dy, dz, color = bar_colors, alpha=0.7, edgecolors='black', linewidth=0.2)
+
+            ax.set_title(f"Win Rate: {pokemon}", fontsize=15, fontweight='bold', pad=20)
+            ax.set_xlabel('Enemy Level', fontsize=10)
+            ax.set_ylabel('Enemy Type', fontsize=10)
+            ax.set_zlabel('Win %', fontsize=10)
+
+            ax.set_yticks(range(len(found_types)))
+            ax.set_yticklabels(found_types, fontsize=7, rotation=-15, ha='right')
+            ax.set_zlim(0, 1)
+            ax.view_init(elev=25, azim=-50)
+        plt.suptitle("3D Analysis: Win Rate by Level and Enemy Type", fontsize=20, fontweight='bold', y=0.95)
         plt.show()
-
 
         '''
         # =========================================================
         # SIMPLE PLOT
         # =========================================================
     
-        plt.figure(1, figsize=(10, 5))
+        plt.figure(20, figsize=(10, 5))
         cumulative_wins = df_master_battles.groupby(['Starter', 'Battle_Number'])['Win'].mean().groupby(
             'Starter').cumsum().reset_index()
         sns.lineplot(data=cumulative_wins, x="Battle_Number", y="Win", hue="Starter",
@@ -166,7 +239,7 @@ if __name__ == "__main__":
         # =========================================================
         # BOXPLOT
         # =========================================================
-        fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+        fig10, axes = plt.subplots(1, 2, figsize=(15, 6))
 
         sns.boxplot(data=df_master_battles, x="Starter", y="Turns", hue="Starter", palette=colors_starter, ax=axes[0])
         axes[0].set_title("Battle Lengths (Number of Turns)", fontweight='bold')
@@ -206,8 +279,8 @@ if __name__ == "__main__":
 
 
 
-        fig1, axes1 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
-        fig1.suptitle("Win Percentage per Enemy Pokemon", fontsize=16, fontweight='bold')
+        fig11, axes1 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+        fig11.suptitle("Win Percentage per Enemy Pokemon", fontsize=16, fontweight='bold')
 
         for i, starter in enumerate(index_starter):
             ax = axes1[i]
@@ -231,8 +304,8 @@ if __name__ == "__main__":
 
         plt.tight_layout()
 
-        fig2, axes2 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
-        fig2.suptitle("Mean and Standard Deviation of Residual HP per Enemy", fontsize=16, fontweight='bold')
+        fig12, axes2 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+        fig12.suptitle("Mean and Standard Deviation of Residual HP per Enemy", fontsize=16, fontweight='bold')
 
         for i, starter in enumerate(index_starter):
             ax = axes2[i]
@@ -284,8 +357,8 @@ if __name__ == "__main__":
 
         df_grouped["Mean_Win"] *= 100
 
-        fig5, axes3 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
-        fig5.suptitle("Pokémon Suitable for Novice and Skilled Users", fontsize=16, fontweight='bold')
+        fig13, axes3 = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+        fig13.suptitle("Pokémon Suitable for Novice and Skilled Users", fontsize=16, fontweight='bold')
 
 
         for i, starter in enumerate(index_starter):
@@ -318,9 +391,12 @@ if __name__ == "__main__":
                 ax.set_ylabel("Win Rate %")
             else:
                 ax.set_ylabel("")
-        '''
+
         plt.tight_layout()
+        '''
+
         plt.show()
+
 
 
 
