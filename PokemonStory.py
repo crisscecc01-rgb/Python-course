@@ -66,12 +66,8 @@ def BeginStory(starter,story,choice):
             break
     GameEngine.eval_current()
 
-    if starter == "Bulbasaur":
-        story["Bulbasaur"].append(GameEngine.trainer.random_stats)
-    elif starter == "Charmander":
-        story["Charmander"].append(GameEngine.trainer.random_stats)
-    elif starter == "Squirtle":
-        story["Squirtle"].append(GameEngine.trainer.random_stats)
+    story.append(GameEngine.trainer.random_stats)
+
 
 
 

@@ -374,7 +374,13 @@ def scale_stats(base_stats, level):
         else:
             scaled_stats[stat] = floor(value*2*level/100)+level+10
     return scaled_stats
-
+def pokemon_level_up(pokemon):
+   hp_percentage = pokemon.currentHP/pokemon.stats["hp"]
+   pokemon.level += 1
+   scaled_stats = scale_stats(pokemon.stat, pokemon.level)
+   pokemon.stats = scaled_stats
+   pokemon.currentHP = int(pokemon.stats["hp"]*hp_percentage)
+   return pokemon
 
 
 

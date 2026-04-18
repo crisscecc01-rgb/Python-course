@@ -344,6 +344,7 @@ def createCharacter(fsm):
     if choice == "new":
         trainer_name = input("What's your name: ")
         random_stats = {"my_level":[],
+                        "my_pokemons": [],
                         "wild_pokemons": [],
                         "win_loss": [],
                         "num_turns": 0,
@@ -379,6 +380,8 @@ def createCharacter(fsm):
 def createCharacterRandomize(fsm):
     trainer_name = "PEL"
     random_stats = {"my_level":[],
+                    "my_pokemons": [],
+                   "my_pokemon_type":[],
                     "wild_pokemons": [],
                     "wild_pokemon_type": [],
                     "wild_pokemon_level": [],
@@ -388,7 +391,10 @@ def createCharacterRandomize(fsm):
                     "left_hp": [],
                     "battle_turn_details": []}
     trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
-    starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
+    #starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
+    randomPkName = Db.P_db.Pokemon_df["display_name"].sample(1).iloc[0]
+    print(randomPkName)
+    starterPokemon = create_playable_pokemon(randomPkName, random.randint(1, 20))
     trainer.pk_list.append(starterPokemon)
     heals = [HealClass("Potion", 10)]
     pokeballs = [PokeBallClass("PokeBall", 10)]
@@ -510,6 +516,7 @@ def wild_Battle(trainer):
     Pokeball_priority = 800
 
     trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
+
 
     battle_ongoing = True
     while battle_ongoing:
@@ -678,7 +685,9 @@ def random_wild_Battle(trainer,randomize):
     Escape_priority = 1000
     trainer.random_stats["my_level"].append(trainer.pk_list[trainer.pk_active_index].level)
     trainer.random_stats["wild_pokemons"].append(enemy_pokemon.name)
+    trainer.random_stats["my_pokemons"].append(trainer.pk_list[trainer.pk_active_index].name)
     trainer.random_stats["wild_pokemon_type"].append(enemy_pokemon.types)
+    trainer.random_stats["my_pokemon_type"].append(trainer.pk_list[trainer.pk_active_index].types)
     trainer.random_stats["wild_pokemon_level"].append(enemy_pokemon.level)
     battle_details = {"my_pk": [],
                       "enemy_pk": []}

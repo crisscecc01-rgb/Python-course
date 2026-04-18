@@ -11,10 +11,8 @@ import matplotlib.colors as mcolors
 
 
 if __name__ == "__main__":
-    number_cycles = 151
-    story = {"Bulbasaur": [],
-             "Charmander": [],
-             "Squirtle": []}
+    number_cycles = 16
+    story = []
     end_story = None
     print("Want to randomize? (y/n)")
     choice = input("> ").strip().lower()
@@ -29,46 +27,41 @@ if __name__ == "__main__":
     elif choice == "y":
         for i in range(number_cycles):
             print(f"{i}")
-            if i < round((number_cycles-1)/3)*1:
-                PokemonStory.BeginStory(list(story.keys())[0],story,choice)
-            elif i < round((number_cycles - 1) / 3)*2:
-                PokemonStory.BeginStory(list(story.keys())[1],story,choice)
-            elif i < round((number_cycles - 1) / 3)*3:
-                PokemonStory.BeginStory(list(story.keys())[2],story,choice)
-
+            PokemonStory.BeginStory("Bulbasaur", story, choice)
+    
         records = []
-        for starter, simulations in story.items():
-            for game_idx, sim in enumerate(simulations):
-                num_battles = len(sim["wild_pokemons"])
 
-                for i in range(num_battles):
-                    for t in range(sim["total_num_turns"][i]):
-                        records.append({
-                            "Starter": starter,
-                            "Starter_Level": sim["my_level"][i],
-                            "Game": game_idx + 1,
-                            "Battle_Number": i + 1,
-                            "Enemy_Pokemon": sim["wild_pokemons"][i],
-                            "Enemy_Pokemon_Types": sim["wild_pokemon_type"][i],
-                            "Enemy_Pokemon_Level": sim["wild_pokemon_level"][i],
-                            "Win": sim["win_loss"][i],
-                            "Win_Percentage": sim["win_loss"][i]*100,
-                            "Left_HP": sim["left_hp"][i],
-                            "Turns": sim["total_num_turns"][i],
-                            "Actual_turn": t+1,
-                            "pk_HP": sim["battle_turn_details"][i]["my_pk"][t]["pk_hp"],
-                            "pk_Move": sim["battle_turn_details"][i]["my_pk"][t]["pk_move"],
-                            "pk_Damage": sim["battle_turn_details"][i]["my_pk"][t]["pk_damage"],
-                            "Enemy_HP": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_hp"],
-                            "Enemy_Move": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_move"],
-                            "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
-                        })
+        for game_idx, sim in enumerate(story):
+            num_battles = len(sim["wild_pokemons"])
+
+            for i in range(num_battles):
+                for t in range(sim["total_num_turns"][i]):
+                    records.append({
+                        "Starter": sim["my_pokemons"][i],
+                        "Starter_Types": sim["my_pokemon_type"][i],
+                        "Starter_Level": sim["my_level"][i],
+                        "Game": game_idx + 1,
+                        "Battle_Number": i + 1,
+                        "Enemy_Pokemon": sim["wild_pokemons"][i],
+                        "Enemy_Pokemon_Types": sim["wild_pokemon_type"][i],
+                        "Enemy_Pokemon_Level": sim["wild_pokemon_level"][i],
+                        "Win": sim["win_loss"][i],
+                        "Win_Percentage": sim["win_loss"][i]*100,
+                        "Left_HP": sim["left_hp"][i],
+                        "Turns": sim["total_num_turns"][i],
+                        "Actual_turn": t+1,
+                        "pk_HP": sim["battle_turn_details"][i]["my_pk"][t]["pk_hp"],
+                        "pk_Move": sim["battle_turn_details"][i]["my_pk"][t]["pk_move"],
+                        "pk_Damage": sim["battle_turn_details"][i]["my_pk"][t]["pk_damage"],
+                        "Enemy_HP": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_hp"],
+                        "Enemy_Move": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_move"],
+                        "Enemy_Damage": sim["battle_turn_details"][i]["enemy_pk"][t]["pk_damage"],
+                    })
         df_master_complete = pd.DataFrame(records)
-        #print(df_master_complete)
+        print(df_master_complete)
+
+        '''
         df_master_battles = df_master_complete.drop_duplicates(subset=["Starter", "Game", "Battle_Number"])
-
-
-
         sns.set_theme()
         colors_starter = {"Bulbasaur": "green", "Charmander": "red", "Squirtle": "blue"}
 
@@ -81,8 +74,9 @@ if __name__ == "__main__":
         df_master_complete['HP_reduction'] = df_master_complete['pk_HP_perc'] - df_master_complete['next_pk_HP_perc']
         df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 1), 'HP_reduction'] = 0
         df_master_complete.loc[(df_master_complete['next_pk_HP_perc'].isna()) & (df_master_complete['Win'] == 0), 'HP_reduction'] = df_master_complete['pk_HP_perc']
+        '''
 
-        #print(df_master_complete)
+        '''
         plt.figure(1, figsize=(10, 5))
         sns.lineplot(data=df_master_complete, x="Actual_turn", y="HP_reduction", hue="Starter",
                      palette=colors_starter,errorbar='sd', marker='o', linewidth=2)
@@ -99,8 +93,9 @@ if __name__ == "__main__":
         move_usage = df_master_moves.groupby(['Starter'])['pk_Move'].value_counts().reset_index()
         damage_df = df_master_moves.groupby(['Starter','pk_Move'])['pk_Damage'].sum().reset_index()
         move_usage = pd.merge(move_usage, damage_df, on=['Starter','pk_Move'], how='right')
-        #print(move_usage)
-
+        print(move_usage)
+        '''
+        '''
         fig1, axes = plt.subplots(2, 3, figsize=(15, 6))
         index_starter = df_master_complete['Starter'].unique()
 
@@ -219,7 +214,7 @@ if __name__ == "__main__":
             ax.view_init(elev=25, azim=-50)
         plt.suptitle("3D Analysis: Win Rate by Level and Enemy Type", fontsize=20, fontweight='bold', y=0.95)
         plt.show()
-
+        '''
         '''
         # =========================================================
         # SIMPLE PLOT
@@ -395,8 +390,7 @@ if __name__ == "__main__":
 
         plt.tight_layout()
         '''
-
-        plt.show()
+        #plt.show()
 
 
 
