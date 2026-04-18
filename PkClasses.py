@@ -126,15 +126,17 @@ class PokemonTrainerClass:
             return False, can_use_pk
 
 class PokemonCharacterClass:
-    def __init__(self, name, level, types, stats, modifiers, moves, currentHP, analytics_pk):
+    def __init__(self, name, level, baseStats, types, stats, modifiers, moves, currentHP, analytics_pk, experience):
         self.name = name
         self.level = level
         self.types = types
+        self.baseStats = baseStats
         self.stats = stats
         self.modifiers = modifiers
         self.moves = moves
         self.currentHP = currentHP
         self.analytics_pk = analytics_pk
+        self.experience = experience
 
     def __str__(self):
         string = f"{self.name} --> [level={self.level} | types={self.types} | HP={self.currentHP}]"
@@ -230,6 +232,19 @@ class PokemonCharacterClass:
 
     def use_move_random(self, move, opponent):
         # check if the move is a status move or a damage move
+        useStruggle = False
+        if move.name == "struggle":
+            move.pp = move.pp
+        elif move.pp > 0:
+            move.pp -= 1
+        else:
+            useStruggle = True
+            for m in self.moves:
+                if m.pp > 0:
+                    useStruggle = False
+            if not useStruggle:
+                return False, False
+
         if move.category == "status":
             modifierIndex = 0
             # check the target of the status move
@@ -269,7 +284,18 @@ class PokemonCharacterClass:
                         else:
                             pass
                         modifierIndex = modifierIndex + 1
+        elif useStruggle:
+            damage = self.level
+            opponent.currentHP = max(0, opponent.currentHP - damage)
 
+            self.analytics_pk["pk_move"] = "struggle"
+            self.analytics_pk["pk_damage"] = damage
+
+            if opponent.currentHP <= 0:
+                opponent.analytics_pk["pk_move"] = ""
+                opponent.analytics_pk["pk_damage"] = 0
+
+            return False, True
         else:
             # Choose correct attack/defense stat
             if move.category == "physical":
@@ -294,6 +320,8 @@ class PokemonCharacterClass:
                 opponent.analytics_pk["pk_damage"] = 0
 
             return False, True
+
+
     # get the modified stats from the applied status to the Pk
     def get_modified_stat(self, stat):
         if self.modifiers[stat] >= 0:
@@ -341,6 +369,19 @@ class PokemonCharacterClass:
     def calc_luck():
         return random.uniform(0.85, 1.0)
 
+    def pokemon_level_up(self):
+        if self.experience > 4:
+            self.experience = 0
+            hp_percentage = self.currentHP / self.stats["hp"]
+            self.level += 1
+            scaled_stats = scale_stats(self.baseStats, self.level)
+            self.stats = scaled_stats
+            self.currentHP = int(self.stats["hp"] * hp_percentage)
+        else:
+            self.experience = self.experience + 1
+
+
+
 def create_playable_pokemon(name_pokemon, level):
     # i'm selecting the raw from the dataframe
     row = Db.P_db.Pokemon_df.loc[Db.P_db.Pokemon_df["display_name"] == name_pokemon].iloc[0]
@@ -351,20 +392,23 @@ def create_playable_pokemon(name_pokemon, level):
     ]
     #this way the stats are adjusted only when the pokemon is created (if the pokemon level increment is added this should be modified)
     scaled_stats = scale_stats(row["base_stats"], level)
-
+    experience = 0
     analytics_pk = {"pk_hp": 0,
                     "pk_move": "",
                     "pk_damage": 0}
     return PokemonCharacterClass(
-        row["display_name"],      # name
-        level,                    # level
-        row["types"],             # types
-        scaled_stats,        # base stats
-        {"attack": 0, "defense": 0, "speed": 0, "special": 0},  # in battle modifiers
-        move_objects,             # Moves
-        scaled_stats["hp"], # Hp init
-        analytics_pk
+        row["display_name"],  # name
+        level,  # level
+        row["base_stats"],  # baseStats
+        row["types"],  # types
+        scaled_stats,  # stats
+        {"attack": 0, "defense": 0, "speed": 0, "special": 0},  # modifiers ✔
+        move_objects,  # moves
+        scaled_stats["hp"],  # currentHP
+        analytics_pk,  # analytics
+        experience      #starting experience
     )
+
 def scale_stats(base_stats, level):
     scaled_stats= {}
 
@@ -374,14 +418,6 @@ def scale_stats(base_stats, level):
         else:
             scaled_stats[stat] = floor(value*2*level/100)+level+10
     return scaled_stats
-def pokemon_level_up(pokemon):
-   hp_percentage = pokemon.currentHP/pokemon.stats["hp"]
-   pokemon.level += 1
-   scaled_stats = scale_stats(pokemon.stat, pokemon.level)
-   pokemon.stats = scaled_stats
-   pokemon.currentHP = int(pokemon.stats["hp"]*hp_percentage)
-   return pokemon
-
 
 
 

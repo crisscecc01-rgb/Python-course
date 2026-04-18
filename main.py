@@ -27,8 +27,8 @@ if __name__ == "__main__":
     elif choice == "y":
         for i in range(number_cycles):
             print(f"{i}")
-            PokemonStory.BeginStory("Bulbasaur", story, choice)
-    
+            PokemonStory.BeginStory("1", story, choice)
+
         records = []
 
         for game_idx, sim in enumerate(story):

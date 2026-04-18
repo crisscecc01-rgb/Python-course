@@ -144,6 +144,8 @@ class State:
 
             if self.outcome:
                 fsm.trainer.random_stats["win_loss"].append(1)
+                if fsm.trainer.pk_list[fsm.trainer.pk_active_index].level < 100:
+                    fsm.trainer.pk_list[fsm.trainer.pk_active_index].pokemon_level_up()
                 return Story_state
             else:
                 fsm.trainer.random_stats["win_loss"].append(0)
