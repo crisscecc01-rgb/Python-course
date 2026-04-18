@@ -396,7 +396,7 @@ def createCharacterRandomize(fsm):
     #starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
     randomPkName = Db.P_db.Pokemon_df["display_name"].sample(1).iloc[0]
     print(randomPkName)
-    starterPokemon = create_playable_pokemon(randomPkName, random.randint(1, 20))
+    starterPokemon = create_playable_pokemon(randomPkName, random.randint(5, 10))
     trainer.pk_list.append(starterPokemon)
     heals = [HealClass("Potion", 10)]
     pokeballs = [PokeBallClass("PokeBall", 10)]
