@@ -8,6 +8,8 @@ with open(os.path.join(dir_js, "type_effectiveness.json"), "r", encoding="utf-8"
 
 type_chart_df = pd.DataFrame(TYPE_CHART)
 type_chart_df = type_chart_df.fillna(1)
-'''
-print(type_chart_df.head())
-'''
+
+#print(type_chart_df)
+all_types = list(type_chart_df.index)
+
+

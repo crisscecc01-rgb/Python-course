@@ -5,6 +5,8 @@ from PkClasses import *
 from BaseClasses import *
 import random
 import pickle
+import pandas as pd
+
 
 
 # Template of the State class for the FSM
@@ -98,7 +100,7 @@ class State:
                 if fsm.wild and fsm.randomize:
                     self.outcome = random_wild_Battle(fsm.trainer,fsm.randomize)
                 elif fsm.wild and not fsm.randomize:
-                    self.outcome = wild_Battle(fsm.trainer)
+                    self.outcome = wild_Battle(fsm.trainer, fsm.model, fsm.features)
                 pass
             case _:
                 if not fsm.randomize:
@@ -384,9 +386,11 @@ def createCharacterRandomize(fsm):
     random_stats = {"my_level":[],
                     "my_pokemons": [],
                    "my_pokemon_type":[],
+                    "my_pokemon_stats":[],
                     "wild_pokemons": [],
                     "wild_pokemon_type": [],
                     "wild_pokemon_level": [],
+                    "wild_pokemon_stats": [],
                     "win_loss": [],
                     "num_turns": 0,
                     "total_num_turns": [],
@@ -499,10 +503,19 @@ def HealPokemons(trainer):
 
     return trainer
 
-def wild_Battle(trainer):
+def wild_Battle(trainer, model, features):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
     enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
+
+    if model is not None:
+        row = build_feature_row(trainer.pk_list[trainer.pk_active_index], enemy_pokemon, Db.T_db.all_types)
+        df_row = pd.DataFrame([row])
+        df_row = df_row.reindex(columns=features, fill_value=0)
+        prob = model.predict_proba(df_row)[0][1]
+        print(f"Victory probability: {prob*100:.2f} %")
+
+
     for index,pokemon in enumerate(trainer.pk_list):
         if pokemon.currentHP > 0:
             trainer.pk_active_index = index
@@ -691,6 +704,8 @@ def random_wild_Battle(trainer,randomize):
     trainer.random_stats["wild_pokemon_type"].append(enemy_pokemon.types)
     trainer.random_stats["my_pokemon_type"].append(trainer.pk_list[trainer.pk_active_index].types)
     trainer.random_stats["wild_pokemon_level"].append(enemy_pokemon.level)
+    trainer.random_stats["my_pokemon_stats"].append(trainer.pk_list[trainer.pk_active_index].stats)
+    trainer.random_stats["wild_pokemon_stats"].append(enemy_pokemon.stats)
     battle_details = {"my_pk": [],
                       "enemy_pk": []}
 
@@ -851,6 +866,31 @@ def use_escape_battle():
         print("You cannot escape battle")
         return False, True
 
+def build_feature_row(starter, enemy, all_types):
+    row = {
+        "Starter_Level": starter.level,
+        "Starter_Stat_hp": starter.stats["hp"],
+        "Starter_Stat_attack": starter.stats["attack"],
+        "Starter_Stat_defense": starter.stats["defense"],
+        "Starter_Stat_special": starter.stats["special"],
+        "Starter_Stat_speed": starter.stats["speed"],
+
+        "Enemy_Pokemon_Level": enemy.level,
+        "Enemy_Stat_hp": enemy.stats["hp"],
+        "Enemy_Stat_attack": enemy.stats["attack"],
+        "Enemy_Stat_defense": enemy.stats["defense"],
+        "Enemy_Stat_special": enemy.stats["special"],
+        "Enemy_Stat_speed": enemy.stats["speed"],
+    }
+
+    # One-hot encoding dei tipi
+    for t in all_types:
+        row[f"Starter_Type_1_{t}"] = 1 if starter.types[0] == t else 0
+        row[f"Starter_Type_2_{t}"] = 1 if len(starter.types) > 1 and starter.types[1] == t else 0
+        row[f"Enemy_Type_1_{t}"] = 1 if enemy.types[0] == t else 0
+        row[f"Enemy_Type_2_{t}"] = 1 if len(enemy.types) > 1 and enemy.types[1] == t else 0
+
+    return row
 
 
 

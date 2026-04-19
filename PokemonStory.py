@@ -1,11 +1,10 @@
 import FSM
 
 
-def BeginStory(starter,story,choice):
+def BeginStory(starter,story,choice, model, features):
 
     #print("Welcome in Pokémon simulator!")
     GameEngine = FSM.FiniteStateMachine()
-
     CreateCharacter = FSM.State("CreateCharacter")
     Story = FSM.State("Story")
     Exit = FSM.State("Exit")
@@ -43,6 +42,8 @@ def BeginStory(starter,story,choice):
     GameEngine.wild = True
     GameEngine.randomize = False
     GameEngine.starter = starter
+    GameEngine.model = model
+    GameEngine.features = features
 
     GameEngine.initialize()
 
