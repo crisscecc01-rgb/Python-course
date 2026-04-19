@@ -509,11 +509,29 @@ def wild_Battle(trainer, model, features):
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
 
     if model is not None:
-        row = build_feature_row(trainer.pk_list[trainer.pk_active_index], enemy_pokemon, Db.T_db.all_types)
-        df_row = pd.DataFrame([row])
-        df_row = df_row.reindex(columns=features, fill_value=0)
-        prob = model.predict_proba(df_row)[0][1]
-        print(f"Victory probability: {prob*100:.2f} %")
+        prob_list = []
+        maxIndex, maxProb = 0,0
+        for pokemon in trainer.pk_list:
+            row = build_feature_row(pokemon, enemy_pokemon, Db.T_db.all_types)
+            df_row = pd.DataFrame([row])
+            df_row = df_row.reindex(columns=features, fill_value=0)
+            prob = model.predict_proba(df_row)[0][1]
+            prob_list.append(prob)
+        for i,p in enumerate(prob_list):
+            if i == 0:
+                maxIndex = i
+                maxProb = p
+            else:
+                if p > maxProb:
+                    maxIndex = i
+                    maxProb = p
+        if maxProb > 0.5:
+            print(f"{trainer.pk_list[maxIndex].name} in position {maxIndex+1}) has the highest probability of winning against {enemy_pokemon.name} opponent!")
+        else:
+            print(f"It is suggested to run! the best option would be {trainer.pk_list[maxIndex].name}")
+            print(f" with only {maxProb*100:.1f}% probability of winning!")
+
+
 
 
     for index,pokemon in enumerate(trainer.pk_list):
