@@ -10,7 +10,7 @@ import matplotlib.cm as cm
 import matplotlib.colors as mcolors
 
 if __name__ == "__main__":
-    number_cycles = 16
+    number_cycles = 451
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
@@ -187,7 +187,8 @@ if __name__ == "__main__":
             'Squirtle': mcolors.LinearSegmentedColormap.from_list("SquirG", ["#f0f0f0", "royalblue"])
         }
 
-        fig5, ax = plt.subplots(1,3,figsize=(15, 6))
+        fig5 = plt.figure(figsize=(18, 6))
+
         for col, pokemon in enumerate(index_starter):
             df_filtered = image_3d_plot_df_mean[image_3d_plot_df_mean['Starter'] == pokemon]
 
@@ -200,24 +201,39 @@ if __name__ == "__main__":
             dx = 0.5
             dy = 0.5
             dz = df_filtered['Win'].values
+
             current_cmap = cmaps.get(pokemon, plt.get_cmap('viridis'))
             bar_colors = current_cmap(dz)
             for i in range(len(bar_colors)):
-                bar_colors[i, 3] = 0.3 + (dz[i] * 0.6)  # Parte da 0.3 e arriva a 0.9
+                bar_colors[i, 3] = 0.3 + (dz[i] * 0.6)
 
-            ax.bar3d(x, y, z, dx, dy, dz, color = bar_colors, alpha=0.7, edgecolors='black', linewidth=0.2)
+            ax.bar3d(x - dx / 2, y - dy / 2, z, dx, dy, dz, color=bar_colors, alpha=0.7, edgecolors='black',
+                     linewidth=0.2)
 
             ax.set_title(f"Win Rate: {pokemon}", fontsize=15, fontweight='bold', pad=20)
-            ax.set_xlabel('Enemy Level', fontsize=10)
-            ax.set_ylabel('Enemy Type', fontsize=10)
-            ax.set_zlabel('Win %', fontsize=10)
+            ax.set_xlabel('Enemy Level', fontsize=10, labelpad=10)
+            ax.set_ylabel('Enemy Type', fontsize=10, labelpad=15)
+            ax.set_zlabel('Win %', fontsize=10, labelpad=10)
+
+
+
+            levels = sorted(image_3d_plot_df_mean['Enemy_Pokemon_Level'].unique())
+            ax.set_xticks(levels)
+
+            ax.set_xticklabels(levels, fontsize=8, ha='center', va='center')
+            ax.tick_params(axis='x', pad=5)
+
 
             ax.set_yticks(range(len(found_types)))
-            ax.set_yticklabels(found_types, fontsize=7, rotation=-15, ha='right')
+
+            ax.set_yticklabels(found_types, fontsize=8, rotation=-15, ha='center', va='center')
+            ax.tick_params(axis='y', pad=8)
+
             ax.set_zlim(0, 1)
             ax.view_init(elev=35, azim=-20)
-        plt.suptitle("3D Analysis: Win Rate by Level and Enemy Type", fontsize=20, fontweight='bold', y=0.95)
-        plt.show()
+
+        plt.suptitle("3D Analysis: Win Rate by Level and Enemy Type", fontsize=20, fontweight='bold', y=0.98)
+        plt.tight_layout()
 
 
 
