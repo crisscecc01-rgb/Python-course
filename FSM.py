@@ -31,7 +31,9 @@ class State:
             case "Story":
                 if not fsm.randomize:
                     print("You just entered the story!")
-                    print(fsm.trainer)
+                    #print(fsm.trainer)
+                    for index,pk in enumerate(fsm.trainer.pk_list):
+                        print(pk)
             case "Exit":
                 if not fsm.randomize:
                     pickle_out = open("trainer.pickle","wb")
@@ -363,7 +365,7 @@ def createCharacter(fsm):
                          "pokeballs": pokeballs}
 
         print(f"you selected {trainer.pk_list[0].name}!")
-        print(trainer)
+
 
     return trainer
 
@@ -525,44 +527,44 @@ def wild_Battle(trainer):
         choice = None
         # TRAINER TREE
         rootTrainer = Node("Menu", value={"function": printMenu, "choice": choice}, print_show = None)
-        movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
-        HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
-        PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
-        Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer, print_show = None)
+        movesTrainerMenu = Node("1) Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
+        changeTrainerPokemonMenu = Node("2) Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
+        itemTrainerMenu = Node("3) Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer, print_show = None)
+        HealTrainerMenu = Node("1) Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
+        PokeballTrainerMenu = Node("2) Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu, print_show = None)
+        Node("4) Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer, print_show = None)
 
-        for move in active_pokemon.moves:
-            Node(move.name,
+        for index, move in enumerate(active_pokemon.moves):
+            Node(str(index + 1) + ") " + move.name,
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu,
                  print_show = f"{move.pp}/{Db.M_db.MovesList[move.name][5]}")
 
-        for heal in trainer.items["heals"]:
-            healNode = Node(heal.name,
+        for index, heal in enumerate(trainer.items["heals"]):
+            healNode = Node(str(index + 1) + ") " + heal.name,
                             value={"function": printMenu,
                                    "choice": choice},
                             parent=HealTrainerMenu,
                             print_show =  heal.number)
 
-            for pokemon in trainer.pk_list:
+            for index_in, pokemon in enumerate(trainer.pk_list):
                 if 0 < pokemon.currentHP <= pokemon.stats["hp"]:
-                    Node(pokemon.name,
+                    Node(str(index_in + 1) + ") " + pokemon.name,
                          value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p, h),
                                 "priority": Heal_priority},
                          parent=healNode,
                          print_show = f"{pokemon.currentHP}/{pokemon.stats['hp']}")
 
-        for pokeball in trainer.items["pokeballs"]:
-            Node(pokeball.name,
+        for index, pokeball in enumerate(trainer.items["pokeballs"]):
+            Node(str(index + 1) + ") " + pokeball.name,
                  value={"function": lambda pb=pokeball, e=enemy_pokemon : trainer.use_pokeball(pb, e),
                         "priority": Pokeball_priority},
                  parent=PokeballTrainerMenu,
                  print_show = pokeball.number)
 
-        for pokemon in trainer.pk_list:
-            Node(pokemon.name,
+        for index, pokemon in enumerate(trainer.pk_list):
+            Node(str(index + 1) + ") " + pokemon.name,
                  value={"function": lambda pk=pokemon: trainer.use_change_pokemon(pk),
                         "priority": Pokemon_priority},
                  parent=changeTrainerPokemonMenu,
@@ -573,8 +575,8 @@ def wild_Battle(trainer):
         movesEnemyMenu = Node("Moves", value={"function": printMenu_ai, "choice": choice}, parent=rootEnemy)
         Node("Escape", value={"function": lambda: use_escape_battle(), "priority": Escape_priority}, parent=rootEnemy)
 
-        for move in enemy_pokemon.moves:
-            Node(move.name,
+        for index, move in enumerate(enemy_pokemon.moves):
+            Node(str(index + 1) + ") " + move.name,
                  value={"function": lambda m=move: enemy_pokemon.use_move(m, trainer.pk_list[trainer.pk_active_index]),
                         "priority": enemy_pokemon.get_modified_stat("speed")},
                  parent=movesEnemyMenu,
@@ -835,9 +837,9 @@ def printMenu(node):
     print("0) BACK")
     for index,child in enumerate(node.children):
         if child.print_show is not None:
-            print(f"{index+1}) {child.name} -> [{child.print_show}]")
+            print(f"{child.name} -> [{child.print_show}]")
         else:
-            print(f"{index + 1}) {child.name}")
+            print(f"{child.name}")
     try:
         return int(input("> ").strip())
     except ValueError:
