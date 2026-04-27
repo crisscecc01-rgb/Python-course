@@ -7,7 +7,7 @@ import seaborn as sns
 
 
 if __name__ == "__main__":
-    number_cycles = 31
+    number_cycles = 1501
     story = {"Bulbasaur": [],
              "Charmander": [],
              "Squirtle": []}
