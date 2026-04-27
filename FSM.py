@@ -30,6 +30,8 @@ class State:
                 print("You just created the trainer and selected your first pokemon!")
             case "Story":
                 print("You just entered the story!")
+                for pokemon in fsm.trainer.pk_list:
+                    print(f"{pokemon}")
             case "Exit":
                 print("You just exited the story. By!")
             case "PokemonStore":
@@ -449,40 +451,40 @@ def wild_Battle(trainer):
         choice = None
         # TRAINER TREE
         rootTrainer = Node("Menu", value={"function": printMenu, "choice": choice})
-        movesTrainerMenu = Node("Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-        changeTrainerPokemonMenu = Node("Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-        itemTrainerMenu = Node("Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
-        HealTrainerMenu = Node("Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-        PokeballTrainerMenu = Node("Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
-        Node("Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
+        movesTrainerMenu = Node("1) Moves", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        changeTrainerPokemonMenu = Node("2) Pokemons", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        itemTrainerMenu = Node("3) Items", value={"function": printMenu, "choice": choice}, parent=rootTrainer)
+        HealTrainerMenu = Node("1) Heals", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+        PokeballTrainerMenu = Node("2) Pokeball", value={"function": printMenu, "choice": choice}, parent=itemTrainerMenu)
+        Node("4) Escape", value={"function": use_escape_battle, "priority": Escape_priority}, parent=rootTrainer)
 
-        for move in active_pokemon.moves:
-            Node(move.name,
+        for index, move in enumerate(active_pokemon.moves):
+            Node(str(index+1) + ") " + move.name,
                  value={"function": lambda m=move: active_pokemon.use_move(m, enemy_pokemon),
                         "priority": active_pokemon.get_modified_stat("speed")},
                  parent=movesTrainerMenu)
 
-        for heal in trainer.items["heals"]:
-            healNode = Node(heal.name,
+        for index, heal in enumerate(trainer.items["heals"]):
+            healNode = Node(str(index+1) + ") " + heal.name,
                             value={"function": printMenu,
                                    "choice": choice},
                             parent=HealTrainerMenu)
 
-            for pokemon in trainer.pk_list:
+            for index, pokemon in enumerate(trainer.pk_list):
                 if 0 < pokemon.currentHP <= pokemon.stats["hp"]:
-                    Node(pokemon.name,
+                    Node(str(index+1) + ") " + pokemon.name,
                          value={"function": lambda h=heal, p=pokemon: trainer.use_heal(p, h),
                                 "priority": Heal_priority},
                          parent=healNode)
 
-        for pokeball in trainer.items["pokeballs"]:
-            Node(pokeball.name,
+        for index, pokeball in enumerate(trainer.items["pokeballs"]):
+            Node(str(index+1) + ") " + pokeball.name,
                  value={"function": lambda pb=pokeball, e=enemy_pokemon : trainer.use_pokeball(pb, e),
                         "priority": Pokeball_priority},
                  parent=PokeballTrainerMenu)
 
-        for pokemon in trainer.pk_list:
-            Node(pokemon.name,
+        for index, pokemon in enumerate(trainer.pk_list):
+            Node(str(index+1) + ") " + pokemon.name,
                  value={"function": lambda pk=pokemon: trainer.use_change_pokemon(pk),
                         "priority": Pokemon_priority},
                  parent=changeTrainerPokemonMenu)
@@ -573,7 +575,7 @@ def ExploreJungle(prob):
 def printMenu(node):
     print("0) BACK")
     for index,child in enumerate(node.children):
-        print(f"{index+1}) {child.name}")
+        print(f"{child.name}")
     try:
         return int(input("> ").strip())
     except ValueError:
