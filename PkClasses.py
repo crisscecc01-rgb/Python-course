@@ -145,57 +145,37 @@ class PokemonCharacterClass:
     # function used to apply status or damage from a move
     def use_move(self, move, opponent):
         # reduces the pp of the move
+        useStruggle = False
         if move.name == "struggle":
             print(f"{self.name} uses {move.name} against {opponent.name}!")
+            move.pp = move.pp
         elif move.pp > 0:
             move.pp -= 1
             print(f"{self.name} uses {move.name} against {opponent.name}!")
         else:
-            print(f"{self.name} can't use {move.name}!")
-            return False, False
-
+            useStruggle = True
+            for m in self.moves:
+                if m.pp > 0:
+                    useStruggle = False
+            if not useStruggle:
+                print(f"{self.name} can't use {move.name}!")
+                return False, False
 
         # check if the move is a status move or a damage move
-        if move.category == "status":
-            modifierIndex = 0
-            # check the target of the status move
-            if move.effect["target_stat"][0] == "self":
-                # modification of the modifiers attribute
-                for stat in move.effect["target_stat"][1:]:
-                    # check the boundaries
-                    if self.modifiers[stat] > 5:
-                        print(f"{stat} of {self.name} can't increase any further!")
-                    elif self.modifiers[stat] < -5:
-                        print(f"{stat} of {self.name} can't decrease any further!")
-                    else:
-                        # apply the status
-                        self.modifiers[stat] = self.modifiers[stat] + move.effect["change"][modifierIndex]
+        if useStruggle:
+            print(f"{self.name} must uses STRUGGLE against {opponent.name}!")
+            damage = self.level
+            print(f"{opponent.name} takes {damage} HP damage.")
+            opponent.currentHP = max(0, opponent.currentHP - damage)
 
-                        if move.effect["change"][modifierIndex] > 0:
-                            print(f"{stat} of {self.name} increased!")
-                        else:
-                            print(f"{stat} of {self.name} decreased!")
-                        modifierIndex = modifierIndex + 1
-            # same procedure in case the target is the opponent
-            else:
-                # Accuracy check
-                if random.random() > move.accuracy:
-                    print("\nBut it failed!")
-                    return False, True
+            self.analytics_pk["pk_move"] = "struggle"
+            self.analytics_pk["pk_damage"] = damage
 
-                for stat in move.effect["target_stat"][1:]:
-                    if opponent.modifiers[stat] > 5:
-                        print(f"{stat} of {opponent.name} can't increase any further!")
-                    elif opponent.modifiers[stat] < -5:
-                        print(f"{stat} of {opponent.name} can't decrease any further!")
-                    else:
-                        opponent.modifiers[stat] = opponent.modifiers[stat] + move.effect["change"][modifierIndex]
-                        if move.effect["change"][modifierIndex] > 0:
-                            print(f"{stat} of {opponent.name} increased!")
-                        else:
-                            print(f"{stat} of {opponent.name} decreased!")
-                        modifierIndex = modifierIndex + 1
+            if opponent.currentHP <= 0:
+                opponent.analytics_pk["pk_move"] = ""
+                opponent.analytics_pk["pk_damage"] = 0
 
+            return False, True
         else:
             # Choose correct attack/defense stat
             if move.category == "physical":
@@ -227,7 +207,6 @@ class PokemonCharacterClass:
             elif effectiveness == 4.0:
                 print(f"{move.name} is HYPER EFFECTIVE on {opponent.name}!")
             print(f"{opponent.name} takes {damage} HP damage.")
-            #print(f"HP left of {opponent.name}: {opponent.currentHP}")
             return False, True
 
     def use_move_random(self, move, opponent):
@@ -245,46 +224,7 @@ class PokemonCharacterClass:
             if not useStruggle:
                 return False, False
 
-        if move.category == "status":
-            modifierIndex = 0
-            # check the target of the status move
-            if move.effect["target_stat"][0] == "self":
-                # modification of the modifiers attribute
-                for stat in move.effect["target_stat"][1:]:
-                    # check the boundaries
-                    if self.modifiers[stat] > 5:
-                        pass
-                    elif self.modifiers[stat] < -5:
-                        pass
-                    else:
-                        # apply the status
-                        self.modifiers[stat] = self.modifiers[stat] + move.effect["change"][modifierIndex]
-
-                        if move.effect["change"][modifierIndex] > 0:
-                            pass
-                        else:
-                            pass
-                        modifierIndex = modifierIndex + 1
-            # same procedure in case the target is the opponent
-            else:
-                # Accuracy check
-                if random.random() > move.accuracy:
-                    pass
-                    return False, True
-
-                for stat in move.effect["target_stat"][1:]:
-                    if opponent.modifiers[stat] > 5:
-                        pass
-                    elif opponent.modifiers[stat] < -5:
-                        pass
-                    else:
-                        opponent.modifiers[stat] = opponent.modifiers[stat] + move.effect["change"][modifierIndex]
-                        if move.effect["change"][modifierIndex] > 0:
-                            pass
-                        else:
-                            pass
-                        modifierIndex = modifierIndex + 1
-        elif useStruggle:
+        if useStruggle:
             damage = self.level
             opponent.currentHP = max(0, opponent.currentHP - damage)
 
@@ -418,6 +358,8 @@ def scale_stats(base_stats, level):
         else:
             scaled_stats[stat] = floor(value*2*level/100)+level+10
     return scaled_stats
+
+
 
 
 

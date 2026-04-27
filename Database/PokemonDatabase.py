@@ -8,16 +8,10 @@ dir_js = os.path.dirname(os.path.abspath(__file__))
 
 with open(os.path.join(dir_js, "pokemons.json"), "r", encoding="utf-8") as f:
     pokemons_data = json.load(f)
-'''
-def pick_moves(pokemon_types, n=4):
-    allowed_types = set(t for t in pokemon_types) | {"normal"}
-    pool = MoveList_df[MoveList_df["type"].isin(allowed_types) & MoveList_df["power"].notna() & MoveList_df["accuracy"].notna()]
-    return tuple(random.sample(list(pool.index), min(n, len(pool))))
-'''
+
 
 def pick_moves(pokemon_types, n=4):
     allowed_types = set(t for t in pokemon_types) | {"normal"}
-
     pool = MoveList_df[
         MoveList_df["type"].isin(allowed_types)
         & MoveList_df["power"].notna()

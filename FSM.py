@@ -357,20 +357,25 @@ def createCharacter(fsm):
                         "battle_turn_details": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterLevel = random.randint(1,20)
+        starterLevel = random.randint(5,10)
         starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
                           create_playable_pokemon("Charmander", starterLevel),
                           create_playable_pokemon("Squirtle", starterLevel)]
         for pokemon, opt in enumerate(starterPokemon):
             print(pokemon + 1, ':', opt.name)
         choice = (input("> "))
-        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon):
+        while not choice.isdigit() or int(choice) < 1 or int(choice) > len(starterPokemon)+1:
             print("Select between 1 and " + str(len(starterPokemon)) + ":")
             for pokemon, opt in enumerate(starterPokemon):
                 print(pokemon + 1, ':', opt.name)
+            print(4, ':', "random")
             choice = (input("> "))
-
-        trainer.pk_list.append(starterPokemon[int(choice) - 1])
+        if choice == 4:
+            randomPkName = Db.P_db.Pokemon_df["display_name"].sample(1).iloc[0]
+            starter_random = create_playable_pokemon(randomPkName,starterLevel)
+            trainer.pk_list.append(starter_random)
+        else:
+            trainer.pk_list.append(starterPokemon[int(choice) - 1])
         heals = [HealClass("Potion", 10)]
         pokeballs = [PokeBallClass("PokeBall", 10)]
         trainer.items = {"heals": heals,
@@ -385,7 +390,7 @@ def createCharacterRandomize(fsm):
     trainer_name = "PEL"
     random_stats = {"my_level":[],
                     "my_pokemons": [],
-                   "my_pokemon_type":[],
+                    "my_pokemon_type":[],
                     "my_pokemon_stats":[],
                     "wild_pokemons": [],
                     "wild_pokemon_type": [],
@@ -397,7 +402,6 @@ def createCharacterRandomize(fsm):
                     "left_hp": [],
                     "battle_turn_details": []}
     trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
-    #starterPokemon = create_playable_pokemon(fsm.starter, random.randint(1, 20))
     randomPkName = Db.P_db.Pokemon_df["display_name"].sample(1).iloc[0]
     print(randomPkName)
     starterPokemon = create_playable_pokemon(randomPkName, random.randint(5, 10))
@@ -907,7 +911,6 @@ def build_feature_row(starter, enemy, all_types):
         row[f"Enemy_Type_1_{t}"] = 1 if enemy.types[0] == t else 0
         row[f"Enemy_Type_2_{t}"] = 1 if len(enemy.types) > 1 and enemy.types[1] == t else 0
     return row
-
 
 
 
