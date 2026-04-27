@@ -31,7 +31,8 @@ class State:
             case "Story":
                 if not fsm.randomize:
                     print("You just entered the story!")
-                    print(fsm.trainer)
+                    for index,pk in enumerate(fsm.trainer.pk_list):
+                        print(pk)
             case "Exit":
                 if not fsm.randomize:
                     pickle_out = open("trainer.pickle","wb")
@@ -372,7 +373,6 @@ def createCharacter(fsm):
                          "pokeballs": pokeballs}
 
         print(f"you selected {trainer.pk_list[0].name}!")
-        #print(trainer)
 
     return trainer
 
@@ -819,9 +819,9 @@ def printMenu(node):
     print("0) BACK")
     for index,child in enumerate(node.children):
         if child.print_show is not None:
-            print(f"{index+1}) {child.name} -> [{child.print_show}]")
+            print(f"{child.name} -> [{child.print_show}]")
         else:
-            print(f"{index + 1}) {child.name}")
+            print(f"{child.name}")
     try:
         return int(input("> ").strip())
     except ValueError:
