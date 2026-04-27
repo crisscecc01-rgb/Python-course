@@ -216,6 +216,7 @@ if __name__ == "__main__":
             ax.set_zlabel('Win %', fontsize=10, labelpad=10)
 
 
+
             levels = sorted(image_3d_plot_df_mean['Enemy_Pokemon_Level'].unique())
             ax.set_xticks(levels)
 
