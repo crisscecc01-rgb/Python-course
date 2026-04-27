@@ -9,7 +9,7 @@ import os
 if __name__ == "__main__":
     model = None
     feature_names = None
-    number_cycles = 100
+    number_cycles = 1000
     story = []
     end_story = None
     print("Want to randomize? (y/n)")
