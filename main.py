@@ -3,7 +3,6 @@ from PKGame import *
 from PkClasses import *
 from Database import PokemonDatabase as Pk_db
 
-
 def main():
     print("welcome in Pokémon simulator!")
     trainer_name = input("what's your name: ")
@@ -21,8 +20,6 @@ def main():
         for pokemon, opt in enumerate(starterPokemon):
             print(pokemon + 1, ':', opt.name)
         choice = (input("> "))
-
-
 
     trainer.pk_list.append(starterPokemon[int(choice)-1])
 
@@ -43,8 +40,6 @@ def main():
         print(f"you've won the battle")
     elif BattleResult == 2:
         print(f"you've lost the battle")
-
-
 
 if __name__ == "__main__":
     main()
