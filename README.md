@@ -1,5 +1,36 @@
-Ho modificato la classe delle mosse per aggiungere mosse di stato
-Ho messo i modificatori delle statistiche per le mosse di stato
-Bisognerebbe separare la funzione use_move in PkClass per avere codice pulito ed aggiungere la possibilità di avere mosse che fanno sia danno che applicano status
-bisognerebbe aggiungere mosse che applicano attributi tipo veleno, paralisi, scottattura,...
+1) create VENV
+    
+WINDOWS:
+
+    py -m venv pk_venv
+
+LINUX\MACOS:
+
+    python3 -m venv pk_venv
+
+2) activate VENV:
+	
+WINDOWS:
+	
+    pk_venv\Scripts\activate
+
+UX\MACOS:
+	
+    source pk_venv/bin/activate
+
+3) install requirements:
+
+WINDOWS/LINUX/MACOS: 
+    
+    pip install -r requirements.txt
+
+4) run program:
+
+WINDOWS:
+    
+    py main.py
+
+LINUX\MACOS:
+
+	python3 main.py
 
