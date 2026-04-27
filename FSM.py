@@ -900,14 +900,12 @@ def build_feature_row(starter, enemy, all_types):
         "Enemy_Stat_special": enemy.stats["special"],
         "Enemy_Stat_speed": enemy.stats["speed"],
     }
-
-    # One-hot encoding dei tipi
+    # One-hot encoding for types
     for t in all_types:
         row[f"Starter_Type_1_{t}"] = 1 if starter.types[0] == t else 0
         row[f"Starter_Type_2_{t}"] = 1 if len(starter.types) > 1 and starter.types[1] == t else 0
         row[f"Enemy_Type_1_{t}"] = 1 if enemy.types[0] == t else 0
         row[f"Enemy_Type_2_{t}"] = 1 if len(enemy.types) > 1 and enemy.types[1] == t else 0
-
     return row
 
 
