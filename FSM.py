@@ -32,7 +32,8 @@ class State:
             case "Story":
                 if not fsm.randomize:
                     print("You just entered the story!")
-                    #print(fsm.trainer)
+                    for index,pk in enumerate(fsm.trainer.pk_list):
+                        print(pk)
             case "Exit":
                 if not fsm.randomize:
                     pickle_out = open("trainer.pickle","wb")
@@ -384,8 +385,6 @@ def createCharacter(fsm):
         print(f"you selected {trainer.pk_list[0].name}!")
         print("You just created the trainer and selected your first pokemon!")
 
-    for index,pokemon in enumerate(trainer.pk_list):
-        print(f"{trainer.pk_list[index]}")
     return trainer
 
 def createCharacterRandomize(fsm):
