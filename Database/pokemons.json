@@ -234,7 +234,7 @@
         36,
         "Clefable",
         [
-            "fairy"
+            "normal"
         ],
         {
             "hp": 95,
@@ -248,7 +248,7 @@
         35,
         "Clefairy",
         [
-            "fairy"
+            "normal"
         ],
         {
             "hp": 70,
@@ -826,10 +826,7 @@
     "Jigglypuff": [
         39,
         "Jigglypuff",
-        [
-            "normal",
-            "fairy"
-        ],
+        ["normal"],
         {
             "hp": 115,
             "attack": 45,
@@ -1085,8 +1082,7 @@
         81,
         "Magnemite",
         [
-            "electric",
-            "steel"
+            "electric"
         ],
         {
             "hp": 25,
@@ -1214,8 +1210,7 @@
         122,
         "Mr. mime",
         [
-            "psychic",
-            "fairy"
+        "psychic"
         ],
         {
             "hp": 40,
@@ -2139,8 +2134,7 @@
         40,
         "Wigglytuff",
         [
-            "normal",
-            "fairy"
+        "normal"
         ],
         {
             "hp": 140,
