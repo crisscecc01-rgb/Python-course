@@ -1,13 +1,5 @@
 import PokemonStory
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-import seaborn as sns
-import Database as Db
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.cm as cm
-import matplotlib.colors as mcolors
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, roc_auc_score
@@ -17,7 +9,7 @@ import os
 if __name__ == "__main__":
     model = None
     feature_names = None
-    number_cycles = 200
+    number_cycles = 100
     story = []
     end_story = None
     print("Want to randomize? (y/n)")
@@ -111,6 +103,7 @@ if __name__ == "__main__":
 
         enemy_type_cols = ["Enemy_Type_1", "Enemy_Type_2"]
         enemy_stat_cols = [c for c in df_master_complete.columns if c.startswith("Enemy_Stat_")]
+
         # All the other columns
         other_cols = [
             c for c in df_master_complete.columns
@@ -145,7 +138,7 @@ if __name__ == "__main__":
             "Win_Percentage",
             "Turns",
             "Actual_turn",
-            "pk_HP",
+            "Starter_Stat_hp",
             "pk_Damage",
             "Enemy_HP",
             "Enemy_Damage",
@@ -156,6 +149,15 @@ if __name__ == "__main__":
         # ============================
         # 2. ONE-HOT ENCODING For pk types
         # ============================
+
+        first_cols = ["Starter_Level", "pk_HP"]
+        other_cols = [
+            c for c in df_ml.columns
+            if c not in first_cols
+        ]
+
+        df_ml = df_ml[first_cols+other_cols]
+
         type_cols = [
             "Starter_Type_1", "Starter_Type_2",
             "Enemy_Type_1", "Enemy_Type_2"
