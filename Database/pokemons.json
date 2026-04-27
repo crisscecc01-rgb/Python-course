@@ -1209,7 +1209,9 @@
     "Mr. mime": [
         122,
         "Mr. mime",
-        "psychic",
+        [
+        "psychic"
+        ],
         {
             "hp": 40,
             "attack": 45,
