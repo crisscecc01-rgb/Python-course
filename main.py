@@ -233,7 +233,7 @@ if __name__ == "__main__":
             ax.view_init(elev=35, azim=-20)
 
         plt.suptitle("3D Analysis: Win Rate by Level and Enemy Type", fontsize=20, fontweight='bold', y=0.98)
-        plt.tight_layout()
+
 
 
 
