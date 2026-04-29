@@ -357,7 +357,7 @@ def createCharacter(fsm):
                         "battle_turn_details": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterLevel = random.randint(10,10)
+        starterLevel = random.randint(5,10)
         starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
                           create_playable_pokemon("Charmander", starterLevel),
                           create_playable_pokemon("Squirtle", starterLevel)]
@@ -510,34 +510,36 @@ def HealPokemons(trainer):
 
 def wild_Battle(trainer, model, features):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(10, 10))
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
 
     if model is not None:
         prob_list = []
-        maxIndex, maxProb = 0,0
-        for pokemon in trainer.pk_list:
+        for i,pokemon in enumerate(trainer.pk_list):
             if pokemon.currentHP > 0:
                 row = build_feature_row(pokemon, enemy_pokemon, Db.T_db.all_types)
                 df_row = pd.DataFrame([row])
                 df_row = df_row.reindex(columns=features, fill_value=0)
                 prob = model.predict_proba(df_row)[0][1]
-                prob_list.append({"pokemon": pokemon.name,"prob":prob})
+                prob_list.append({"pokemon": pokemon.name,"pos": i,"prob":prob})
         maxPk = None
         maxProb = None
+        maxPos = None
         for i,prob_pk in enumerate(prob_list):
             if i == 0:
                 maxPk = prob_pk["pokemon"]
                 maxProb = prob_pk["prob"]
+                maxPos = prob_pk["pos"]
             else:
                 if prob_pk["prob"] > maxProb:
                     maxPk = prob_pk["pokemon"]
                     maxProb = prob_pk["prob"]
+                    maxPos = prob_pk["pos"]
         if maxProb > 0.5:
-            print(f"{maxPk} has the highest probability \n"
-                  f"of winning ({maxProb*100:.1f}) against {enemy_pokemon.name} opponent!")
+            print(f"{maxPk} in position ({maxPos+1}) has the highest probability \n"
+                  f"of winning ({maxProb*100:.1f})% against {enemy_pokemon.name} opponent!")
         else:
-            print(f"It is suggested to run! the best option would be {maxPk} \n"
+            print(f"It is suggested to run! the best option would be {maxPk} in pos ({maxPos+1}) \n"
                   f"with only {maxProb*100:.1f}% probability of winning!")
 
 
