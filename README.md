@@ -1,6 +1,6 @@
 This is ASSIGNMENT 4 of the Python course. It has been developed by group N.5 :
 Alberto De Davide mat. 2186228, phd student at DTG
-Cristian Ceccolin mat. XXXXXXX, phd student at DEI
+Cristian Ceccolin mat. 2185895, phd student at DEI
 
 
 Assignment description:
