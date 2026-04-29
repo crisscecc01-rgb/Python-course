@@ -27,7 +27,7 @@ if __name__ == "__main__":
         PokemonStory.BeginStory("1", story, choice)
     elif choice == "y":
         for i in range(number_cycles):
-            print(f"{i}")
+            print(f"Game: {i}")
             if i < round((number_cycles-1)/3)*1:
                 PokemonStory.BeginStory(list(story.keys())[0],story,choice)
             elif i < round((number_cycles - 1) / 3)*2:
