@@ -2,6 +2,7 @@ This is ASSIGNMENT 1 of the Python course. It has been developed by group N.5 :
 Alberto De Davide mat. 2186228, phd student at DTG
 Cristian Ceccolin mat. 2185895, phd student at DEI
 
+Assignment description:
 This Python project implements a prototype of the main classes required in order to develop a Pokémon simulator 
 (first gen). The Database folder contains the main base Pokémon, a list of possible moves and the TYPE_CHART which 
 is used to evaluate the effectivness of the moves based on the Pokémon types.
