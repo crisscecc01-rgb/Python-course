@@ -1,10 +1,14 @@
+from scipy.constants import precision
+
 import PokemonStory
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, roc_auc_score, balanced_accuracy_score, precision_score, jaccard_score, \
+    confusion_matrix
 import joblib
 import os
+import scipy.stats as randint
 
 if __name__ == "__main__":
     model = None
@@ -180,12 +184,29 @@ if __name__ == "__main__":
         # ============================
         # 5. RANDOM FOREST
         # ============================
+
         model = RandomForestClassifier(
-            n_estimators=300,
             class_weight="balanced",
             random_state=42
         )
-        model.fit(X_train, y_train)
+        param_dist = {
+            'n_estimators': randint.randint(100, 500),
+            'max_depth': randint.randint(3, 20),
+            'min_samples_split': randint.randint(2, 10)
+        }
+
+        rand_search = RandomizedSearchCV(
+            estimator=model,
+            param_distributions=param_dist,
+            n_iter=10,
+            cv=5,
+            n_jobs=-1,
+        )
+
+        rand_search.fit(X_train, y_train)
+
+        model = rand_search.best_estimator_
+        print("Best hyperparameters:", rand_search.best_params_)
         # ============================
         # 6. Evaluation
         # ============================
@@ -194,9 +215,18 @@ if __name__ == "__main__":
 
         acc = accuracy_score(y_test, pred)
         auc = roc_auc_score(y_test, probs)
+        bal_acc = balanced_accuracy_score(y_test, pred)
+        prec = precision_score(y_test, pred)
+        jacc = jaccard_score(y_test, pred)
+        conf = confusion_matrix(y_test, pred)
 
         print("Accuracy:", acc)
         print("ROC AUC:", auc)
+        print("Balanced Accuracy:", bal_acc)
+        print("Precision:", prec)
+        print("JACCARD:", jacc)
+        print("Confusion Matrix:", conf)
+
 
         joblib.dump(model, "pokemon_rf_model.pkl")
         feature_names = list(X.columns)
