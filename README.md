@@ -1,3 +1,12 @@
+This is ASSIGNMENT 5 of the Python course. It has been developed by group N.5 :
+Alberto De Davide mat. 2186228, phd student at DTG
+Cristian Ceccolin mat. XXXXXXX, phd student at DEI
+
+
+Assignment description:
+In this fifth assignment 
+
+
 ALL THE FOLLOWING COMMANDS CAN BE SKIPPED BY EXECUTING FILE: initialize.bat
 1) create VENV
     
