@@ -39,7 +39,7 @@ if __name__ == "__main__":
         PokemonStory.BeginStory("1", story, choice, model, feature_names)
     elif choice == "y":
         for i in range(number_cycles):
-            print(f"{i}")
+            print(f"Game: {i}")
             PokemonStory.BeginStory("1", story, choice, None, None)
 
         records = []
