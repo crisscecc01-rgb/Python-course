@@ -1,0 +1,4 @@
+bigtree==1.4.0
+matplotlib==3.10.9
+networkx==3.6.1
+Requests==2.33.1
