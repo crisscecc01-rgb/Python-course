@@ -33,7 +33,10 @@ class PokemonCharacterClass:
         if move in self.moves:
             #reduces the pp of the move
             if move.pp > 0:
-                print(f"{self.name} uses {move.name} against {opponent.name}!")
+                if move.category == "status":
+                    print(f"{self.name} uses {move.name}!")
+                else:
+                    print(f"{self.name} uses {move.name} against {opponent.name}!")
                 move.pp -= 1
             else:
                 print(f"{self.name} can't use {move.name}!")
