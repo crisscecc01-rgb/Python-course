@@ -1,3 +1,5 @@
+import copy
+
 from PkClasses import *
 from Database import MovesDatabase as Mdb
 from Database import PokemonDatabase as Pk_db

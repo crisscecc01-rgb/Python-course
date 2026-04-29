@@ -25,6 +25,7 @@ def main():
                 print(pokemon + 1, ':', opt.name)
             choice = (input("> "))
 
+        trainer.pk_list = []
         trainer.pk_list.append(starterPokemon[int(choice)-1])
 
         #print(trainer.pk_list)
