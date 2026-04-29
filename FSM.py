@@ -357,7 +357,7 @@ def createCharacter(fsm):
                         "battle_turn_details": []}
         trainer = PokemonTrainerClass(trainer_name, [],0, [], random_stats)
         print("Select your starter pokémon:")
-        starterLevel = random.randint(5,10)
+        starterLevel = random.randint(10,10)
         starterPokemon = [create_playable_pokemon("Bulbasaur", starterLevel),
                           create_playable_pokemon("Charmander", starterLevel),
                           create_playable_pokemon("Squirtle", starterLevel)]
@@ -377,8 +377,8 @@ def createCharacter(fsm):
             trainer.pk_list.append(starter_random)
         else:
             trainer.pk_list.append(starterPokemon[int(choice) - 1])
-        heals = [HealClass("Potion", 10)]
-        pokeballs = [PokeBallClass("PokeBall", 10)]
+        heals = [HealClass("SuperPotion", 10)]
+        pokeballs = [PokeBallClass("UltraBall", 10)]
         trainer.items = {"heals": heals,
                          "pokeballs": pokeballs}
 
@@ -510,31 +510,34 @@ def HealPokemons(trainer):
 
 def wild_Battle(trainer, model, features):
     rand_wild_pk_name = Db.P_db.Pokemon_df.sample(1).index[0]
-    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(1, 20))
+    enemy_pokemon = create_playable_pokemon(rand_wild_pk_name,random.randint(10, 10))
     print(f"Battle starts against a wild {enemy_pokemon.name}!")
 
     if model is not None:
         prob_list = []
         maxIndex, maxProb = 0,0
         for pokemon in trainer.pk_list:
-            row = build_feature_row(pokemon, enemy_pokemon, Db.T_db.all_types)
-            df_row = pd.DataFrame([row])
-            df_row = df_row.reindex(columns=features, fill_value=0)
-            prob = model.predict_proba(df_row)[0][1]
-            prob_list.append(prob)
-        for i,p in enumerate(prob_list):
+            if pokemon.currentHP > 0:
+                row = build_feature_row(pokemon, enemy_pokemon, Db.T_db.all_types)
+                df_row = pd.DataFrame([row])
+                df_row = df_row.reindex(columns=features, fill_value=0)
+                prob = model.predict_proba(df_row)[0][1]
+                prob_list.append({"pokemon": pokemon.name,"prob":prob})
+        maxPk = None
+        maxProb = None
+        for i,prob_pk in enumerate(prob_list):
             if i == 0:
-                maxIndex = i
-                maxProb = p
+                maxPk = prob_pk["pokemon"]
+                maxProb = prob_pk["prob"]
             else:
-                if p > maxProb:
-                    maxIndex = i
-                    maxProb = p
+                if prob_pk["prob"] > maxProb:
+                    maxPk = prob_pk["pokemon"]
+                    maxProb = prob_pk["prob"]
         if maxProb > 0.5:
-            print(f"{trainer.pk_list[maxIndex].name} in position {maxIndex+1}) has the highest probability \n"
+            print(f"{maxPk} has the highest probability \n"
                   f"of winning ({maxProb*100:.1f}) against {enemy_pokemon.name} opponent!")
         else:
-            print(f"It is suggested to run! the best option would be {trainer.pk_list[maxIndex].name} \n"
+            print(f"It is suggested to run! the best option would be {maxPk} \n"
                   f"with only {maxProb*100:.1f}% probability of winning!")
 
 

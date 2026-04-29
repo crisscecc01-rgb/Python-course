@@ -18,7 +18,6 @@ if __name__ == "__main__":
         print("please select y or n")
         choice = input("> ").strip().lower()
 
-
     if choice == "n":
         i=1
         model_path = "pokemon_rf_model.pkl"
