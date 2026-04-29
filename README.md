@@ -1,3 +1,14 @@
+This is ASSIGNMENT 4 of the Python course. It has been developed by group N.5 :
+Alberto De Davide mat. 2186228, phd student at DTG
+Cristian Ceccolin mat. XXXXXXX, phd student at DEI
+
+
+Assignment description:
+In this fourth assignment dataframes are used also for saving the database information from the json
+files. More analytics data are gathered regarding the turns of each battle. New plots are added to show
+how the random game behaves. The user can always choose between random (statistical) game and playable
+game.
+
 ALL THE FOLLOWING COMMANDS CAN BE SKIPPED BY EXECUTING FILE: initialize.bat
 1) create VENV
     
