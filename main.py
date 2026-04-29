@@ -165,6 +165,7 @@ if __name__ == "__main__":
             "Starter_Type_1", "Starter_Type_2",
             "Enemy_Type_1", "Enemy_Type_2"
         ]
+
         df_ml = pd.get_dummies(df_ml, columns=type_cols)
         #print(df_ml)
         # ============================
