@@ -404,7 +404,7 @@ def createCharacterRandomize(fsm):
                     "battle_turn_details": []}
     trainer = PokemonTrainerClass(trainer_name, [], 0, [], random_stats)
     randomPkName = Db.P_db.Pokemon_df["display_name"].sample(1).iloc[0]
-    print(randomPkName)
+    print(f"Starter: {randomPkName}")
     starterPokemon = create_playable_pokemon(randomPkName, random.randint(5, 10))
     trainer.pk_list.append(starterPokemon)
     heals = [HealClass("Potion", 10)]

@@ -121,7 +121,7 @@ if __name__ == "__main__":
             enemy_stat_cols +
             other_cols
             ]
-        print(df_master_complete)
+        #print(df_master_complete)
         # ============================
         # 1. Copy of the dataset
         # ============================
@@ -166,7 +166,7 @@ if __name__ == "__main__":
             "Enemy_Type_1", "Enemy_Type_2"
         ]
         df_ml = pd.get_dummies(df_ml, columns=type_cols)
-        print(df_ml)
+        #print(df_ml)
         # ============================
         # 3. Features and target definition
         # ============================
@@ -184,6 +184,8 @@ if __name__ == "__main__":
         # ============================
         # 5. RANDOM FOREST
         # ============================
+
+        print("Training model...pls wait")
 
         model = RandomForestClassifier(
             class_weight="balanced",
